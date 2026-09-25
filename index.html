@@ -305,6 +305,7 @@ select.other{font:inherit;color:var(--ink);background:#FBF8F0;border:1px solid v
 <div class="tip" id="tip"></div>
 <div class="fade" id="fade" aria-live="polite"><div class="ft" id="fadeT"></div><div class="fs" id="fadeS"></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 
 
@@ -1353,7 +1354,58 @@ async function offerFile(name,text){
   try{if(window.claude&&claude.use){const dl=await claude.use("downloads");if(dl){await dl.save({filename:name,data:text});return true}}}catch(e){if(e&&e.code==="declined")return false}
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"application/json"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);return true;
 }
+/* ---- online saves, tied to an email address ---- */
+const SB_URL="https://lqmrmkhwvkjglrygmciv.supabase.co",SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbXJta2h3dmtqZ2xyeWdtY2l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzNzAwNjAsImV4cCI6MjEwNTk0NjA2MH0.mJgNSaKPsnO3HER9_1kJ85zVz0q8rea8a7ydbqec5Vs",SB_TABLE="hollow_creek_saves";
+let sb=null,sbUser=null,sbMsg="",sbBlocked=false,cloudTimer=null;
+function cloudInit(){
+  sbBlocked=/claude\.(ai|site)|claudeusercontent|anthropic/.test(location.hostname)||location.protocol==="file:";
+  if(sbBlocked||!window.supabase||!window.supabase.createClient)return;
+  try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:"implicit",storageKey:"hollowcreek.auth"}})}catch(e){sb=null;return}
+  sb.auth.onAuthStateChange((ev,session)=>{const u=session&&session.user,was=sbUser;sbUser=u||null;if(u&&(!was||was.id!==u.id))cloudPull().then(cloudPushAll);refreshRegister()});
+  sb.auth.getSession().then(({data})=>{const u=data&&data.session&&data.session.user;if(u&&!sbUser){sbUser=u;cloudPull().then(cloudPushAll)}refreshRegister()});
+}
+function refreshRegister(){if(S&&S.desk&&S.desk.includes("register"))refresh()}
+const rowOf=r=>({user_id:sbUser.id,save_id:r.id,data:r,updated_at:new Date(r.updated||Date.now()).toISOString()});
+async function cloudPull(){
+  if(!sb||!sbUser)return;sbMsg="Fetching your saves...";refreshRegister();
+  const {data,error}=await sb.from(SB_TABLE).select("save_id,data,updated_at");
+  if(error){sbMsg="Couldn't reach your online saves just now. Your saves here are safe; they'll sync later.";refreshRegister();return}
+  const n=mergeSaves((data||[]).map(r=>r.data));sbMsg=n?`${n} save${n===1?"":"s"} brought down from your account.`:"Your saves are up to date.";refreshRegister();
+}
+async function cloudPushAll(){
+  if(!sb||!sbUser)return;const rows=readSaves().map(rowOf);if(!rows.length)return;
+  const {error}=await sb.from(SB_TABLE).upsert(rows,{onConflict:"user_id,save_id"});
+  if(error){sbMsg="Couldn't upload your saves just now. They'll sync next time you save.";refreshRegister()}
+}
+function cloudPushSoon(id){
+  if(!sb||!sbUser)return;clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(()=>{const r=readSaves().find(x=>x.id===id);if(!r)return;sb.from(SB_TABLE).upsert(rowOf(r),{onConflict:"user_id,save_id"}).then(({error})=>{if(error)console.warn("Online save failed",error)})},3000);
+}
+async function cloudDelete(id){if(sb&&sbUser)await sb.from(SB_TABLE).delete().eq("save_id",id)}
+function cloudSection(){
+  let body;
+  if(sbBlocked)body=`<p class="muted" style="font-size:13px;margin:6px 0">Online saves work on the website version of the game. Here, use a save code or a file to carry your progress across.</p>`;
+  else if(!sb)body=`<p class="muted" style="font-size:13px;margin:6px 0">Online saves couldn't load. Check your internet connection and reload the page.</p>`;
+  else if(!sbUser)body=`<p class="muted" style="font-size:13px;margin:6px 0">Sign in with your email and your saves are kept online, safe from cleared browsers, and follow you to any computer or phone. We'll email you a sign-in link. No password.</p>
+    <div class="sign" style="margin-top:6px"><label for="cloudEmail" class="muted">Email</label><input id="cloudEmail" class="namein" type="email" autocomplete="email" placeholder="you@example.com"><button class="btn" id="cloudSend">Email me a sign-in link</button></div>`;
+  else body=`<p style="margin:6px 0">Signed in as <b>${esc(sbUser.email||"")}</b>. Your saves are kept online automatically and will appear on any device where you sign in with this email.</p>
+    <div class="sign" style="margin-top:6px;gap:10px 16px"><button class="btn" id="cloudSync">Sync now</button><button class="btn" id="cloudOut">Sign out</button></div>`;
+  return `<div class="sect">KEEP YOUR SAVES ONLINE</div>${body}<p class="muted" id="cloudMsg" style="font-size:13px;min-height:1em" aria-live="polite">${esc(sbMsg)}</p>`;
+}
+function wireCloud(root){
+  const send=root.querySelector("#cloudSend"),em=root.querySelector("#cloudEmail"),msg=t=>{sbMsg=t;const m=root.querySelector("#cloudMsg");if(m)m.textContent=t};
+  if(send){const go=async()=>{const e=em.value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){msg("That doesn't look like an email address.");em.focus();return}
+      send.disabled=true;msg("Sending...");
+      const {error}=await sb.auth.signInWithOtp({email:e,options:{emailRedirectTo:location.origin+location.pathname}});
+      send.disabled=false;
+      if(error)msg(/rate|seconds|too many/i.test(error.message)?"Too many sign-in emails just now. Please wait a little while and try again.":"Couldn't send the email: "+error.message);
+      else msg(`Sent. Check ${e} for an email from Supabase and click the link in it on this device. It may take a minute, and may land in spam.`)};
+    send.onclick=go;em.onkeydown=ev=>{if(ev.key==="Enter")go()}}
+  const sy=root.querySelector("#cloudSync");if(sy)sy.onclick=async()=>{sy.disabled=true;await cloudPull();await cloudPushAll();sy.disabled=false};
+  const out=root.querySelector("#cloudOut");if(out)out.onclick=async()=>{await sb.auth.signOut();sbUser=null;sbMsg="Signed out. Your saves stay in this browser, and online.";refreshRegister()};
+}
 function wireRegister(root){
+  wireCloud(root);
   const msg=t=>{const m=root.querySelector("#expMsg");if(m)m.textContent=t};
   const f=root.querySelector("#expFile");if(f)f.onclick=async()=>{const code=await packSaves();const ok=await offerFile("hollow-creek-register.json",JSON.stringify({code}));msg(ok?"Register saved to a file.":"Not saved.")};
   const c=root.querySelector("#expCode");if(c)c.onclick=async()=>{const code=await packSaves();try{await navigator.clipboard.writeText(code);msg(`Save code copied (${Math.round(code.length/1024)} KB of text). Paste it into an email to yourself.`)}catch(e){const ta=root.querySelector("#impCode");ta.value=code;ta.select();msg("Your browser wouldn't copy automatically, so the code is in the box below. Copy it from there.")}};
@@ -1389,6 +1441,7 @@ function saveGame(){
   const copy=Object.assign({},S);delete copy.heard;
   const blob={v:1,N:N.map(n=>({rel:n.rel,jailed:n.jailed,jailUntil:n.jailUntil||0,known:[...n.known],secretKnown:n.secretKnown,villain:n.villain,ht:n.ht,wt:n.wt})),S:enc(copy)};
   const list=readSaves().filter(x=>x.id!==S.saveId);
+  cloudPushSoon(S.saveId);
   list.push({id:S.saveId,name:S.name,updated:Date.now(),day:S.day,phase:S.phase,outcome:S.outcome||null,rep:S.rep,unrest:S.unrest,stats:{...S.stats},spirit:S.rite?S.rite.stage>=4:false,heist:S.heist&&S.heist.news?S.heist.news:null,art:S.art&&S.art.news?S.art.news:null,pages:{...S.pages},blob});
   writeSaves(list);
 }
@@ -1404,12 +1457,13 @@ function loadGame(id){
   setTimeout(processQueue,1200);
 }
 function clearVisitor(){if(typeof G!=="undefined"){if(G.visitor){G.scene.remove(G.visitor.sp);G.visitor=null;G.doorOpen=false}G.talkItem=null}if(typeof TALK!=="undefined"&&TALK){clearInterval(TALK.timer)}const t=document.getElementById("talk");if(t)t.classList.remove("show")}
-function deleteSave(id){writeSaves(readSaves().filter(x=>x.id!==id));refresh()}
+function deleteSave(id){writeSaves(readSaves().filter(x=>x.id!==id));cloudDelete(id);refresh()}
 function registerDoc(){
   const list=readSaves().sort((a,b)=>successRate(b.stats)-successRate(a.stats)||b.rep-a.rep);
   const cur=S&&S.saveId;
   return `<article class="paper"><div class="lh">REGISTER OF DETECTIVES, WAPSIE COUNTY</div>
     <p class="muted" style="font-size:13px">Every appointment to Hollow Creek is entered here and saved as you go: each morning, each evening, and whenever you file or call on someone. Saves are kept in this browser.</p>
+    ${cloudSection()}
     <div class="sect">NEW APPOINTMENT</div>
     <div class="sign" style="margin-top:8px"><label for="newName" class="muted">Name</label><input id="newName" class="namein" maxlength="28" placeholder="e.g. Harriet Lowe" autocomplete="off"><button class="btn" id="newBtn">Take the post</button></div>
     <div class="sect">STANDING OF ALL DETECTIVES</div>
@@ -2738,6 +2792,7 @@ function endVisit(msg){
 
 $("sitBack").onclick=closeReading;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(picker){picker=null;S.say="";refresh()}else if(reading)closeReading()}});
+cloudInit();
 init3D();
 startGame("");
 place("register");
