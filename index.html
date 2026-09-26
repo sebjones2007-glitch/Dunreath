@@ -156,6 +156,9 @@ button:focus-visible,textarea:focus-visible,input:focus-visible+label{outline:2p
 .convo .said{font-family:var(--news);font-style:italic;font-size:17px;padding-left:16px;border-left:2px solid var(--rule)}
 
 /* notebook */
+.nbnav{grid-column:1/-1;display:flex;justify-content:space-between;padding:8px 14px 0;position:relative;z-index:2}
+.nbnav button{font-family:var(--type);font-size:13px;color:#5a4431}
+.nbnav button:disabled{visibility:hidden}
 .nb{display:grid;grid-template-columns:1fr 1fr;background:#FBF8F0;color:var(--ink);box-shadow:0 1px 0 rgba(0,0,0,.25),0 16px 36px rgba(0,0,0,.45);position:relative;min-height:560px}
 .nb::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:18px;margin-left:-9px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.12),transparent)}
 @media(max-width:760px){.nb{grid-template-columns:1fr}.nb::after{display:none}.nb .pg.left{border-bottom:1px solid var(--rule)}}
@@ -287,6 +290,15 @@ select.other{font:inherit;color:var(--ink);background:#FBF8F0;border:1px solid v
 .rdocs.n1 .nb.worn{grid-template-columns:1fr 1fr}
 @media(max-width:760px){.rdocs.n1 .nb.worn{grid-template-columns:1fr}}
 @media(max-width:760px){.say{font-size:17px}}
+
+/* the notebook always lies open as a two-page spread */
+.nb.worn,.slot .nb.worn,.rdocs .nb.worn,.rdocs.n1 .nb.worn{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.nb.worn::after,.slot .nb.worn::after,.rdocs .nb.worn::after{display:block}
+.nb.worn .pg.left{border-bottom:none!important;border-right:1px solid rgba(90,60,30,.18)}
+.rdocs.n2 .nb.worn .pg,.rdocs.n3 .nb.worn .pg,.slot .nb.worn .pg{padding:14px 10px 12px 30px}
+.rdocs.n2 .nb.worn textarea,.rdocs.n3 .nb.worn textarea{font-size:21px}
+@media(max-width:520px){.nb.worn,.rdocs.n1 .nb.worn{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.nb.worn .pg{padding:12px 8px 10px 22px}.nb.worn textarea{font-size:19px}}
+.wit2{border-top:1px dashed var(--rule);margin:10px 0}
 </style>
 </head>
 <body>
@@ -388,11 +400,15 @@ const CAST=[
  {name:"Jonah Reed",called:"Jonah",press:"Jonah Reed",full:"Jonah Reed",sex:"m",age:50,role:"Ferryman",place:"ferry landing",addr:"Ferry house, the river landing",born:"Hollow Creek, Iowa",eyes:"Blue",hair:"Brown",church:"First Methodist (lapsed)",
   build:"heavy",height:"average",hand:"right",pipe:false,pub:["boat"],hid:["night"],shady:2,
   habits:"Does not smoke.",remarks:"Operates the river ferry.",extra:"Pulled three people from the river in the flood of '26.",
-  secret:"ferries bootleg liquor across the river at night, no questions asked"}
+  secret:"ferries bootleg liquor across the river at night, no questions asked"},
+ {name:"Laurence Whitcombe",called:"Mr. Whitcombe",press:"Mr. Laurence Whitcombe",full:"Laurence Everett Whitcombe",sex:"m",age:34,role:"Grain broker; agent, Cedar Valley Elevator Co.",place:"office",addr:"Whitcombe's office, Main Street",born:"Evanston, Illinois",eyes:"Gray",hair:"Sandy",church:"First Presbyterian",
+  build:"slight",height:"tall",hand:"right",pipe:false,pub:["letters"],hid:["keys"],shady:1.6,
+  habits:"Smokes cigarettes, never a pipe.",remarks:"Buys grain for the elevator company and keeps its books. Holds keys to the elevator office and its safe.",extra:"Drives the only Packard in town.",
+  secret:"has lost the elevator company's money on wheat futures, and is borrowing from Mrs. Ashby to hide it"}
 ];
-const FAMILY=[[0,1,"mother","son"],[2,3,"father","daughter"],[4,5,"mother","son"],[6,7,"brother","brother"]];
-const FRIENDS=[[1,5],[3,10],[4,11],[6,16],[7,13],[8,0],[9,2],[15,12],[10,8],[11,13],[16,13],[4,16],[3,1],[12,10],[14,9],[2,6]];
-const RIVALS=[[0,4],[0,14],[2,14],[2,7],[3,7],[4,10],[5,13],[6,11],[6,13],[8,12],[9,15],[11,16],[1,16]];
+const FAMILY=[[0,1,"mother","son"],[2,3,"father","daughter"],[4,5,"mother","son"],[6,7,"brother","brother"],[17,3,"sweetheart","sweetheart"]];
+const FRIENDS=[[1,5],[3,10],[4,11],[6,16],[7,13],[8,0],[9,2],[15,12],[10,8],[11,13],[16,13],[4,16],[3,1],[12,10],[14,9],[2,6],[17,2],[17,14]];
+const RIVALS=[[0,4],[0,14],[2,14],[2,7],[3,7],[4,10],[5,13],[6,11],[6,13],[8,12],[9,15],[11,16],[1,16],[17,1],[17,10]];
 const MAYOR=2, DAYS=20;
 const TAG={keys:"Has keys to buildings",tools:"Owns proper tools",poisons:"Knows poisons and remedies",horses:"Handles horses",night:"Out and about at night",letters:"Writes a practised hand",occult:"Dabbles in old rites",flour:"Works with flour",boat:"Has a boat"};
 const TAGQ={keys:"can get into half the buildings in town",night:"is out wandering most nights",poisons:"knows more about poisons than any honest soul should",tools:"keeps a full set of tools under a tarp",letters:"writes a better hand than the schoolteacher",occult:"reads from strange old books by candlelight",boat:"keeps a little boat tied up below the mill",horses:"has a way with horses",flour:"always has flour on their hands"};
@@ -417,7 +433,7 @@ const CLUES={
  "tag:boat":["Wet footprints come up from the river, and there is river weed on the step.","A smell of river water in the room, and a coil of damp rope left behind."]
 };
 const NOISE=["The victim's dog was found shut in the woodshed, unharmed.","A single glove lies in the lane. Nobody will admit it's theirs.","The church clock was heard striking one not long before.","Two sets of footprints in the mud, but the rain has ruined both.","A neighbour's cat has sat on the doorstep ever since and won't be moved.","Someone left a half-eaten apple on the wall outside.","A shutter along the lane was banging all night. Nobody got up to see why."];
-const SPEECH={slight:"they were narrow, like a shadow turned sideways",heavy:"they moved like a cart, all weight and no hurry",tall:"they had to duck under the eaves",short:"the hedge hid most of them",left:"they held the lamp the wrong way round, if you follow me",pipe:"I caught a whiff of something as they passed, sour and warm",
+const SPEECH={"shoe:boots":"I heard nailed boots on the stones, a working man's walk","shoe:oxfords":"their shoes caught the lamplight, polished like a deacon's","shoe:heels":"I heard quick little steps, click, click, going away","shoe:plain":"flat shoes, quiet, a sensible sort of walk","shoe:soft":"they made no sound walking, none at all","shoe:big":"they walked like a boy in his father's boots",slight:"they were narrow, like a shadow turned sideways",heavy:"they moved like a cart, all weight and no hurry",tall:"they had to duck under the eaves",short:"the hedge hid most of them",left:"they held the lamp the wrong way round, if you follow me",pipe:"I caught a whiff of something as they passed, sour and warm",
  "tag:keys":"they didn't fumble at the door, not for a second","tag:night":"they didn't carry a light, and didn't seem to need one","tag:horses":"a horse nickered when they passed, like it knew them","tag:tools":"something clinked in their bag, metal on metal","tag:boat":"they went off toward the water, not the road","tag:letters":"they stopped under the lamp to read something","tag:occult":"they paused at the door and made a sign over it","tag:flour":"there was something pale on their sleeves","tag:poisons":"they had a little bottle they kept checking"};
 const EERIE=["There were no footprints in the mud, not even the victim's.","Every dog on the lane howled at once, then fell silent.","The iron horseshoe over the door was found bent double.","The room was bitterly cold, though the fire was lit.","Every candle in the house guttered out at the same moment.","Strange lights drifted over the river bottoms at the hour it happened.","A smell of wet earth and river weed, far from any water.","Every clock in the house stopped at ten past three."];
 const STRANGE=["A drover swears he saw a woman in white walking on the millpond.","Children say a voice calls their names from the old well.","The lights on the river bottoms were seen again, nearer town than before.","The goats on the east farm refuse to cross the bridge.","A black dog with no master was seen at three crossroads at once.","Frost formed on the windows of St. Brendan's on a mild night.","Hoofbeats rode down the high street at midnight, but nobody saw a horse.","The graveyard yews were found hung with knotted red thread."];
@@ -509,7 +525,7 @@ function newGame(){
   S={day:1,rep:50,unrest:14,cases:[],next:[],idx:0,verdicts:[],history:[],notes:[],noteSeq:0,heard:{},heardSeq:0,snap:[],phase:"morning",
      stats:{solved:0,wrong:0,shelved:0,unexplained:0}};
 }
-const free=()=>N.filter(n=>!n.jailed);
+const free=()=>N.filter(n=>!n.jailed&&!n.away);
 function relOf(a,b){if(a===b)return null;if(a.fam.some(f=>f.id===b.id))return "family";if(a.friends.includes(b.id))return "friend";if(a.rivals.includes(b.id))return "rival";return null}
 const famLabel=(a,b)=>(a.fam.find(f=>f.id===b.id)||{}).label;
 const trustLvl=r=>r<30?"hostile":r<60?"wary":r<80?"friendly":"confidant";
@@ -520,6 +536,7 @@ function attrsOf(n,visibleOnly){
   if(n.height!=="average")a.push(n.height);
   if(n.hand==="left")a.push("left");
   if(n.pipe)a.push("pipe");
+  if(typeof n.id==="number"&&WEAR[n.id])a.push("shoe:"+WEAR[n.id].shoe);
   (visibleOnly?n.pub:tags(n)).forEach(t=>a.push("tag:"+t));
   return a;
 }
@@ -527,6 +544,7 @@ function fits(n,k){
   if(k.startsWith("tag:"))return tags(n).includes(k.slice(4));
   if(k==="left")return n.hand==="left";
   if(k==="pipe")return n.pipe;
+  if(k.startsWith("shoe:"))return !!(typeof n.id==="number"&&WEAR[n.id]&&WEAR[n.id].shoe===k.slice(5));
   return n.build===k||n.height===k;
 }
 const titleOf=(c)=>typeof c.crime.t==="function"?c.crime.t(c.victim):c.crime.t;
@@ -534,16 +552,21 @@ const titleOf=(c)=>typeof c.crime.t==="function"?c.crime.t(c.victim):c.crime.t;
 /* ================= pacing ================= */
 function tierFor(d){
   const r=Math.random();
+  if(quietSunday(d))return "petty";
+  if(d===19)return r<.85?"grave":"serious";
   if(d<=4)return "petty";
   if(d<=6)return r<.5?"petty":"serious";
   if(d<=12)return r<.15?"petty":r<.85?"serious":"grave";
   if(d<=15)return r<.5?"grave":"serious";
   return r<.78?"grave":"serious";
 }
-const casesFor=d=>d===1?1:d<=12?2:3;
+const isSunday=d=>dateOf(d).getDay()===0;
+const quietSunday=d=>isSunday(d)&&d<19;
+const spiritUp=()=>!!(S&&S.rite&&S.rite.stage<4);
+const casesFor=d=>d===1?1:quietSunday(d)?((S&&S.sunN&&S.sunN[d])||1):d===19?5:d<=12?2:3;
 function riteF(){return !S||!S.rite?1:S.rite.stage>=4?0:1}
-const superChance=d=>(d<=4?0:d<=6?((S&&S.superCount)?0:.12):Math.min(.36,.05+.018*d))*riteF();
-const reportsFor=d=>Math.floor((d<12?1:2)*riteF());
+const superChance=d=>quietSunday(d)?0:(d<=4?0:d<=6?((S&&S.superCount)?0:.12):Math.min(.36,.05+.018*d))*riteF();
+const reportsFor=d=>quietSunday(d)?0:d===19?3*riteF():Math.floor((d<12?1:2)*riteF());
 
 /* ================= case generation ================= */
 function genCase(day){
@@ -588,22 +611,25 @@ function genHuman(day,tier,opt={}){
       const target=rnd(inns),opts=attrsOf(target,false).filter(k=>!fits(culprit,k)&&!keys.includes(k));
       if(opts.length){misleading=rnd(opts);keys[Math.floor(Math.random()*keys.length)]=misleading}
     }
-    const clueTexts=keys.map(k=>({text:rnd(CLUES[k]),eerie:false}));
-    if(day>=10&&Math.random()<.15)clueTexts.push({text:rnd(EERIE),eerie:true});
-    if(day>=2&&Math.random()<.55)clueTexts.push({text:rnd(NOISE),eerie:false});
     let named=[culprit,...inns],outsider=false;
     if(!opt.crime&&day>=6&&Math.random()<Math.min(.14,.04+.005*day)){
       const spare=innPool.filter(x=>!inns.includes(x));
       if(spare.length){named=[wpick(spare,x=>1+keys.filter(k=>fits(x,k)).length),...inns];outsider=true}
     }
     const crPool=CRIMES[tier].filter(k=>!k.late||day>=13),crLate=crPool.filter(k=>k.late);
-    let crimeP=opt.crime||(crLate.length&&Math.random()<Math.min(.8,(day-12)*.12)?rnd(crLate):rnd(crPool.filter(k=>!k.late)));
+    let crimeP=opt.crime||(crLate.length&&Math.random()<Math.min(.8,(day-12)*.12)?pickCrime(crLate):pickCrime(crPool.filter(k=>!k.late)));
     if(!opt.crime&&culprit.id===8&&tier!=="petty"){const am=CRIMES.grave.filter(k=>k.n==="Attempted murder"&&(!k.late||day>=13));if(tier!=="grave"||!am.length)continue;crimeP=rnd(am)}
+    const srcOf=k=>fits(culprit,k)?culprit:(inns.find(x=>fits(x,k))||culprit);
+    const clueTexts=keys.map(k=>({text:clueFor(k,crimeP,srcOf(k)),eerie:false}));
+    if(day>=10&&!quietSunday(day)&&Math.random()<.15)clueTexts.push({text:rnd(EERIE),eerie:true});
+    if(day>=2&&Math.random()<.55)clueTexts.push({text:rnd(noiseFor(day)),eerie:false});
+    if(tier!=="petty"&&day>=3&&Math.random()<.22){const cc=clothClue(culprit,crimeP);if(cc)clueTexts.push({text:cc,eerie:false})}
     const c={kind:"human",tier,culprit,victim,suspects:shuffle(named),keys,clues:shuffle(clueTexts),crime:crimeP,misleading,outsider};
     c.witness=genWitness(c);c.reasons=pickReasons(c);
+    if(tier!=="petty"&&c.witness){const w2=genWitness(c,c.witness.n);if(w2&&!(w2.kind===c.witness.kind&&w2.about===c.witness.about&&w2.kind!=="hint"))c.witness2=w2}
     if(!opt.crime&&day>=5&&!outsider&&Math.random()<.09){c.murky=true;const shared=attrsOf(culprit,true).filter(k=>c.suspects.every(x=>fits(x,k)));
-      c.clues=shuffle([...shuffle(NOISE).slice(0,2).map(t=>({text:t,eerie:false})),...(shared.length?[{text:rnd(CLUES[rnd(shared)]),eerie:false}]:[])]);
-      c.witness=Math.random()<.5?null:c.witness&&c.witness.kind==="hint"?null:c.witness}
+      c.clues=shuffle([...shuffle(noiseFor(day)).slice(0,2).map(t=>({text:t,eerie:false})),...(shared.length?[{text:clueFor(rnd(shared),c.crime,culprit,true),eerie:false}]:[])]);
+      c.witness=Math.random()<.5?null:c.witness&&c.witness.kind==="hint"?null:c.witness;c.witness2=null}
     return c;
   }
   return null;
@@ -616,18 +642,18 @@ function genSuper(day,tier){
     const s=wpick(others.filter(o=>!suspects.includes(o)),o=>(o.pub.includes("occult")?1.8:1)+(o.rivals.includes(victim.id)?2:0)+o.shady*.5);
     suspects.push(s);
   }
-  const clues=shuffle(EERIE).slice(0,day>=12?1:2).map(t=>({text:t,eerie:true}));
+  const crime=rnd(SUPER),clues=shuffle(EERIE).slice(0,day>=12?1:2).map(t=>({text:t,eerie:true}));
   // mundane clues come from different suspects, so they point in different directions
   const hs=shuffle(suspects).slice(0,day>=12?2:1),used=[];
-  hs.forEach(h=>{const hk=attrsOf(h,day<=6).filter(k=>!used.includes(k)&&!hs.filter(o=>o!==h).some(o=>fits(o,k)));if(hk.length){const k=rnd(hk);used.push(k);clues.push({text:rnd(CLUES[k]),eerie:false})}});
-  if(Math.random()<.5)clues.push({text:rnd(NOISE),eerie:false});
-  const c={kind:"super",tier:tier==="petty"?"serious":tier,culprit:null,victim,suspects:shuffle(suspects),keys:[],clues:shuffle(dedupe(clues)),crime:rnd(SUPER)};
+  hs.forEach(h=>{const hk=attrsOf(h,day<=6).filter(k=>!used.includes(k)&&!hs.filter(o=>o!==h).some(o=>fits(o,k)));if(hk.length){const k=rnd(hk);used.push(k);clues.push({text:clueFor(k,crime,h),eerie:false})}});
+  if(Math.random()<.5)clues.push({text:rnd(noiseFor(day)),eerie:false});
+  const c={kind:"super",tier:tier==="petty"?"serious":tier,culprit:null,victim,suspects:shuffle(suspects),keys:[],clues:shuffle(dedupe(clues)),crime};
   c.witness=genWitness(c);c.reasons=pickReasons(c);
   return c;
 }
 function dedupe(cl){const s=new Set();return cl.filter(c=>!s.has(c.text)&&s.add(c.text))}
-function genWitness(c){
-  const pool=free().filter(x=>!c.suspects.includes(x)&&x!==c.victim);
+function genWitness(c,not){
+  const pool=free().filter(x=>!c.suspects.includes(x)&&x!==c.victim&&x!==not);
   if(!pool.length)return null;
   const fam=pool.filter(w=>c.suspects.some(s=>relOf(w,s)==="family"));
   const riv=pool.filter(w=>c.suspects.some(s=>relOf(w,s)==="rival"));
@@ -698,7 +724,7 @@ function gossip(src,cases,{allowOwn=false}={}){
 function adj(n,d){if(n.id===MAYOR&&d<0)d*=.5;n.rel=clamp(n.rel+d)}
 function revealSecret(t){t.secretKnown=true;t.hid.forEach(h=>t.known.add(h))}
 function firstPerson(s){
-  return s.replace(/^owes /,"owe ").replace(/^slips /,"slip ").replace(/^took /,"took ").replace(/^meets /,"meet ").replace(/^sells /,"sell ")
+  return s.replace(/^has lost /,"have lost ").replace(/, and is borrowing/,", and am borrowing").replace(/^owes /,"owe ").replace(/^slips /,"slip ").replace(/^took /,"took ").replace(/^meets /,"meet ").replace(/^sells /,"sell ")
    .replace(/^copies /,"copy ").replace(/^lost his /,"lost my ").replace(/^poaches /,"poach ").replace(/^keeps /,"keep ").replace(/^takes /,"take ")
    .replace(/^writes /,"write ").replace(/^isn't /,"am not ").replace(/^fences /,"fence ").replace(/^holds /,"hold ").replace(/^leaves /,"leave ").replace(/^ferries /,"ferry ")
    .replace(/her father would disown her/,"my father would disown me").replace(/his hands shake/,"my hands shake").replace(/\band wants\b/,"and want").replace(/\band is wanted\b/,"and am wanted").replace(/\bshe calls\b/,"I call").replace(/who she says she is/,"who I say I am").replace(/in his cart/,"in my cart").replace(/\band sells\b/,"and sell");
@@ -732,7 +758,7 @@ function setupHeist(){
   const mate=pals.length?wpick(pals,n=>n.shady+(boss.friends.includes(n.id)?2:0)):rnd(N.filter(n=>n!==boss&&n.id!==8));
   const ti=Math.floor(Math.random()*HEIST_TARGETS.length);
   const preps=shuffle(PREPS).slice(0,3).map((p,i)=>({crime:p,day:[3,6,9][i],by:i===1?boss:mate,solved:false,done:false}));
-  S.heist={target:HEIST_TARGETS[ti],crime:HEIST_CRIMES[ti],boss,mate,preps,day:12,resolved:false,stopped:false,news:null};
+  S.heist={target:HEIST_TARGETS[ti],crime:HEIST_CRIMES[ti],boss,mate,preps,day:11,resolved:false,stopped:false,news:null};
 }
 const ART_CRIMES=[
  {t:"The false Madonna",n:"Grand larceny",vict:8,art:1,d:v=>`The painting of the Madonna that Mrs. Ashby lent to St. Brendan's was taken down for dusting, and ${v.name} saw at once that it was wrong. The canvas is new. Someone has swapped it for a copy.`},
@@ -745,6 +771,267 @@ const VIG_CRIMES=[
  {t:"The beating on Front Street",n:"Assault with intent to do great bodily injury",vig:"beating",d:v=>`${v.name} was set upon on Front Street by three men with lanterns and clubs, and beaten half to death for "helping the wrong sort." ${v.name} knew one of the voices.`}
 ];
 CRIME_ALL=[...CRIME_ALL,...ART_CRIMES,...VIG_CRIMES];
+
+/* ---- evidence that fits the crime ----
+   Each crime has a kind of scene. A left hand shows on a door handle at a break-in,
+   in the bruising after an assault, in the smeared ink of a forged letter, in where
+   the barrel rested before a shot. */
+const V3_CRIMES={
+ petty:[
+  {v3:1,ctx:"yard",t:"The fired rubbish heap",n:"Malicious mischief",d:v=>`Someone set ${v.name}'s rubbish heap alight against the back fence at midnight. The fence was scorched black before the neighbours put it out.`},
+  {v3:1,ctx:"yard",t:"The burned scarecrow",n:"Malicious mischief",d:v=>`The scarecrow in ${v.name}'s garden was set on fire in the night, and the flames caught the bean poles.`}],
+ serious:[
+  {v3:1,ctx:"fire",t:"The corn crib fire",n:"Arson",d:v=>`${v.name}'s corn crib was set alight in the small hours. Most of the winter's corn is gone.`},
+  {v3:1,ctx:"yard",t:"The burned wagon",n:"Arson",d:v=>`${v.name}'s wagon was pushed out into the lane, soaked in coal oil, and burned where it stood.`},
+  {v3:1,ctx:"fire",t:"The shed fire",n:"Arson",d:v=>`The tool shed behind ${v.name}'s ${v.place} burned down in the night. There was a smell of coal oil on the air till morning.`},
+  {v3:1,ctx:"fire",t:"The fire in the privy",n:"Arson",d:v=>`${v.name}'s outbuildings were fired one after another, the privy first. Only the rain stopped it reaching the house.`}],
+ grave:[
+  {v3:1,ctx:"fire",t:"The fire on the stairs",n:"Arson with intent to kill",late:1,d:v=>`A fire was set at the foot of the stairs in ${v.name}'s ${v.place} while the household slept above. ${v.name} woke choking and got everyone out by the back roof.`},
+  {v3:1,ctx:"fire",t:"The three fires",n:"Arson",d:v=>`Three fires were set in one night along ${v.name}'s side of the street. ${v.name}'s ${v.place} took the worst of it and is a shell this morning.`},
+  {v3:1,ctx:"fire",t:"The icehouse fire",n:"Arson",d:v=>`${v.name}'s icehouse and the sawdust stored in it were set alight, and burned for a day and a night.`}]
+};
+Object.keys(V3_CRIMES).forEach(k=>CRIMES[k].push(...V3_CRIMES[k]));
+CRIME_ALL=[...CRIME_ALL,...V3_CRIMES.petty,...V3_CRIMES.serious,...V3_CRIMES.grave];
+const FIRE_GRAVE=CRIMES.grave.filter(k=>/arson/i.test(k.n)&&!k.late);
+function pickCrime(list){return wpick(list,k=>/arson/i.test(k.n)?1.25:/murder/i.test(k.n)?.4:1)}
+
+const CTX_T={"The missing pies":"yard","The daubed door":"yard","The stripped apple tree":"yard","The rotten eggs":"yard","The cut clothesline":"yard","The scattered hens":"animal","The stolen milk bottles":"yard","The tipped outhouse":"yard","The pilfered coal":"yard","The soaped windows":"yard","The loosed cow":"animal","The stolen pig":"animal","The painted horse":"animal","The chimney stuffed with sacking":"sabotage",
+ "The emptied strongbox":"entry","The woodpile fire":"yard","The nailed letter":"paper","The stolen horse":"animal","The vanished silver":"entry","The smashed windows":"yard","The forged check":"forgery","The stolen Ford":"yard","The slaughtered hog":"animal","The rifled mailbox":"yard","The poisoned dog":"poison","The rigged scales":"sabotage","The stolen harness":"entry","The flooded cellar":"sabotage",
+ "The attack on the road":"blow","The poisoned supper":"poison","The lost savings":"entry","The robbed grave":"grave","The cut bridge rope":"sabotage","The shotgun blast":"gun","The extortion letters":"paper","The wedged door":"fire","The pillow in the night":"blow","The shot from the tree line":"gun","The stolen team":"animal","The barn fire":"fire","The knife in the dark":"blow","The poisoned well":"poison","The church plate":"entry","The cut brake":"sabotage","The hayloft fire":"fire","The relief money":"blow",
+ "The missing tools":"entry","The forced file drawer":"entry","The disturbed key board":"entry","The missing blasting powder":"entry","The borrowed team":"animal",
+ "The false Madonna":"entry","The schoolroom paints":"entry","The empty frame":"entry","The crates on the night ferry":"entry","The killing on the bottoms":"blow","The beating on Front Street":"blow",
+ "The circle of sheep":"animal","The drowned hens":"animal","The footprints that stop":"yard","The doll on the step":"yard","The stones on the roof":"yard","The red well":"yard"};
+function ctxOf(cr){
+  if(!cr)return "entry";if(cr.ctx)return cr.ctx;
+  const t=typeof cr.t==="string"?cr.t:"";if(CTX_T[t])return CTX_T[t];
+  const s=(cr.n+" "+t).toLowerCase();
+  if(/arson|fire/.test(s))return "fire";if(/poison/.test(s))return "poison";if(/shot|deadly weapon/.test(s))return "gun";
+  if(/murder|assault|violence/.test(s))return "blow";if(/grave/.test(s))return "grave";if(/forg|letter|extortion|mails|fraud/.test(s))return "paper";
+  if(/horse|livestock|team|animal/.test(s))return "animal";return "entry";
+}
+/* clues that make sense anywhere */
+const ANY_CLUES={
+ slight:["The prints in the soft ground are small and shallow, and set close together.","A gap in the hedge that nobody else could have used has fresh breaks in it."],
+ heavy:["The prints in the soft ground are deep, and the heels have dug in hard.","A fence rail someone leaned on is cracked right through."],
+ tall:["A long stride in the soft ground. Longer than the sergeant can manage.","A branch along the way is broken off well above most people's heads."],
+ short:["The stride in the soft ground is short and quick.","Whoever it was went under the low branch along the way without breaking a twig."],
+ left:["Everything that was moved was moved to the left of where it stood.","The gate latch was lifted from the wrong side, the way you'd do it with your other hand."],
+ pipe:["A little heap of burnt tobacco, knocked out against a post.","A spent match by the gate, and another, and another. Somebody waited a long while."],
+ "tag:keys":["Every lock along the way was opened and closed again without a mark.","Nothing was forced anywhere. Whoever it was let themselves in and out."],
+ "tag:tools":["There are neat, square tool marks where anyone else would have used their hands.","A cold chisel, freshly ground, was left behind in the grass."],
+ "tag:poisons":["A little glass stopper was found nearby, the kind from a chemist's bottle.","The grass by the path is withered in a ring, as though something was spilled."],
+ "tag:horses":["Hoofprints and bootprints side by side, and the horse walked as calm as you like.","A few coarse horsehairs are caught on the fence where someone climbed it."],
+ "tag:night":["It was done in the black hours, with no lamp. The neighbours saw no light at all.","Whoever it was crossed ground in pitch darkness that trips people up in daylight."],
+ "tag:letters":["A scrap of paper was dropped nearby: a few words in a careful, looping hand.","Whoever it was left a note behind. The spelling is perfect."],
+ "tag:occult":["A sign was scratched into the gatepost. It isn't any letter you know.","A little bundle of twigs and red thread was left on the ground."],
+ "tag:flour":["A pale smudge on the gate, like chalk but softer.","Fine white dust on a fence rail, half blown away."],
+ "tag:boat":["The tracks go down to the water's edge, and stop there.","A smell of river water, and a coil of damp rope left behind."]
+};
+const CLUE_CTX={
+ entry:CLUES,
+ yard:{
+  slight:["They came through the hedge where there's barely a gap, and hardly broke a twig.","The back gate is chained and only opens a hand's width. Somebody slipped through it anyway."],
+  heavy:["The fence was climbed, and the top rail came down with them.","The ground is churned deep on the far side of the fence, where somebody heavy dropped down."],
+  tall:["Whatever they wanted was reached over the top of the wall. No ladder, no crate.","The marks on the wall start higher than most people could reach flat-footed."],
+  short:["An upturned bucket was dragged to the fence to climb it.","The damage is all low down. Nothing above waist height was touched."],
+  left:["The latch on the gate was lifted left-handed. The mud on it is on the wrong side.","Every stroke of the damage runs from right to left."],
+  pipe:["There's a heap of pipe dottle by the fence. Someone stood there a good while first.","Someone knocked out a pipe against the gatepost. The ash is still in the crack."],
+  "tag:keys":["The padlock on the gate was opened, not broken, and snapped shut again.","The chain on the gate hangs just as it was left. It was unlocked and locked again."],
+  "tag:tools":["The hasp was taken off with a screwdriver, and the screws laid in a row on the post.","Wire cutters were used on the fence. A clean snip, not a tear."],
+  "tag:horses":["The dog never barked, but the horse next door stamped and whickered as if it knew who passed.","Hoofprints come up the lane and stop. Someone rode in and walked the last bit."],
+  "tag:occult":["Chalk marks on the path, half rubbed out: circles, and crosses turned the wrong way."]},
+ animal:{
+  slight:["The animal was led out through the narrow stall, past its flank. There isn't room there for most people.","The little door at the back of the pen was used, not the gate."],
+  heavy:["The gate hinges are bent where someone heavy swung on it.","The bootprints beside the hoofprints sink nearly as deep."],
+  tall:["The halter was taken from a hook high on the barn wall, well above most people's reach.","The top bar of the gate was lifted clean off its pins and set down again."],
+  short:["A milking stool was dragged to the gate to reach the latch.","The rope was tied off low on the post, below a grown man's waist."],
+  left:["The knot left in the tether was tied backwards, the way a left-handed person ties it.","The animal was led out on the off side, as a left-handed person would lead it."],
+  pipe:["Somebody smoked a pipe in the barn, hay and all. There's ash on the sill.","The animals were restless all morning, and the barn smelled of pipe tobacco."],
+  "tag:keys":["The barn padlock was opened and hung back on the hasp, locked.","The stall bolt was drawn back, not forced."],
+  "tag:tools":["The hinges of the pen gate were knocked out with a punch.","The chain was cut with a hacksaw. The filings are still in the straw."],
+  "tag:horses":["Not one animal made a fuss. Whoever it was knew exactly how to handle stock.","The animal went quietly, which it never does for a stranger."],
+  "tag:poisons":["The feed trough smells sweetish. The other animals were drowsy all morning."],
+  "tag:flour":["There's a pale dusting on the gatepost, and on the neck of the animal next to it, where somebody patted it quiet."],
+  "tag:boat":["The tracks go down to the river. The animal was taken across on the water."],
+  "tag:occult":["A circle was drawn in the straw with a stick, and something was burned in the middle of it."]},
+ fire:{
+  slight:["The fire was started inside, through a gap under the boards you could barely get an arm through.","Whoever set it got in through the coal chute. It's a very tight squeeze."],
+  heavy:["The door was shouldered in before the fire was set. The frame is split.","Heavy boots trampled the soft ground by the wall, deep enough to hold water."],
+  tall:["It was started up under the eaves, higher than most people could reach. There was no ladder.","The scorch marks start high on the wall, as if the rag was pushed up into the eaves."],
+  short:["The oil was splashed low along the wall. Nothing above waist height.","A crate was stood against the wall to reach the window. It's still there, scorched."],
+  left:["A half-burned box of matches was found in the lane. They were struck on the left side of the box, every one.","The coal oil was poured along the wall from right to left. You can see where it was splashed."],
+  pipe:["It was started in a heap of rags, lit with a paper spill rather than a match. The kind a pipe smoker keeps in a jar.","A blackened pipe cleaner was found in the ash near where it began."],
+  "tag:keys":["The door was still locked when the fire was found, and the key was on its nail inside.","Whoever set it had been inside first. Nothing was broken to get in."],
+  "tag:tools":["A board was prised off the back wall to start the fire inside. The pry marks are square.","A hole was bored through the wall with a brace and bit, so the oil would run inside."],
+  "tag:poisons":["It burned green at first, the neighbours say. There was something besides coal oil in it.","It smelled of chemicals, not wood, and it went up far faster than it should have."],
+  "tag:horses":["The horses were led out first, calmly, before the fire was set. Someone cared for the animals but not the building.","The stock was turned out before the fire began. Someone knew what they were doing with horses."],
+  "tag:night":["It was set at the dead hour, three in the morning, when the town is darkest.","No one on the street saw any lamp before the flames. Whoever set it worked in the dark."],
+  "tag:letters":["A note was pushed under a neighbour's door an hour before: 'Look to the fire.' A good, careful hand."],
+  "tag:occult":["A sign was drawn in soot on the one wall still standing. It was not there before the fire."],
+  "tag:flour":["The fire went up with a flash, like a mill when the flour dust catches. An empty white sack was found in the lane."],
+  "tag:boat":["The oil can was found at the water's edge, beside the mark of a boat pulled up on the mud."]},
+ gun:{
+  slight:["The shot came from a gap in the hedge that most people couldn't have hidden in.","The spent shell was found in a hollow under the fence, where only a slight person could lie."],
+  heavy:["Where the shooter knelt, the ground is pressed deep, and the fence rail they leaned on has split.","The recoil pushed the shooter back a step, and the heel mark digs deep."],
+  tall:["The shot was fired downward through the window, from higher than most people stand. There was nothing there to stand on.","The bark where the gun was rested is scraped at shoulder height for someone well over six feet."],
+  short:["The barrel was rested in the fork of a low branch, no higher than a boy's shoulder.","The shot came in low and went up into the ceiling."],
+  left:["The bark where the barrel rested is scraped on the right side of the trunk. The shooter leaned out from the left.","The spent shells were broken out and dropped to the left of where the shooter stood."],
+  pipe:["There's pipe ash in the grass where the shooter waited, and a burnt match beside the spent shell.","Whoever fired waited a long time first, and knocked out a pipe against the tree."],
+  "tag:keys":["The shot came from inside the yard, and the gate was locked before and after."],
+  "tag:tools":["The spent shell was hand-loaded, crimped with a proper tool, the wads cut from felt.","A two-inch ring of barrel steel, freshly sawn, was left in the grass. Someone shortened the gun."],
+  "tag:horses":["Hoofprints in the lane. The shooter rode away, and rode well, straight across the ploughed field."],
+  "tag:night":["The shot came in the dark, from the one place on the lane where that window can be seen."],
+  "tag:letters":["A paper spill was found with the spent shell, torn from a letter written in a lovely hand."],
+  "tag:occult":["The shot dug from the wall has a cross cut into it, the old way to make a ball for killing a witch."],
+  "tag:flour":["There's a white thumbprint on the spent shell."],
+  "tag:boat":["The shooter came and went by the river. There are drag marks on the bank."]},
+ blow:{
+  slight:["The victim says the hands at the throat were thin and bony, and quick.","Whoever it was was light enough to be thrown off, and was, twice."],
+  heavy:["The victim was knocked flat by the weight of whoever it was, and had the wind driven clean out of them.","The bruises are wide and deep. The doctor says a heavy fist, with a heavy body behind it."],
+  tall:["The blow landed on the crown of the head, from above. The doctor says a tall assailant.","The victim remembers looking up. A long way up."],
+  short:["The blow came from below, under the ribs. The doctor thinks the attacker was shorter than the victim.","The victim felt breath on the back of the neck, low down, at the shoulder."],
+  left:["The bruising is all on the right side of the victim. A left-handed blow, the doctor says.","The cut runs from right to left across the coat."],
+  pipe:["The victim smelled stale pipe tobacco on the hand over their mouth.","The victim remembers the smell of pipe smoke on the attacker's breath."],
+  "tag:keys":["The victim heard keys jingling as the attacker ran off.","The attacker was waiting inside, and the door had been locked."],
+  "tag:tools":["The doctor says the blow was struck with something hard and square-edged. A tool, not a stick.","A hammer, wiped clean, was found in the ditch."],
+  "tag:poisons":["The victim smelled something sweet on a cloth pressed to the face before breaking free."],
+  "tag:horses":["The attacker smelled of horses and liniment.","A horse snorted in the dark just before, and there were hoofbeats after."],
+  "tag:night":["It happened on the darkest stretch of the lane, where the last lamp is out. Whoever it was waited there, and saw perfectly well."],
+  "tag:letters":["A note was found in the victim's pocket afterwards: one line, in a fine hand."],
+  "tag:occult":["The attacker muttered something while striking, in words the victim didn't know."],
+  "tag:flour":["The victim's collar has white finger marks where it was grabbed."],
+  "tag:boat":["The attacker ran toward the river, not the town. There was a splash of oars soon after."]},
+ poison:{
+  slight:["The kitchen window was used: a little sash nobody locks, because nobody could fit through it."],
+  heavy:["Someone sat heavily on the kitchen chair while they waited, and cracked its seat."],
+  tall:["The poison was put in the crock on the top shelf, which the family needs a stool to reach."],
+  short:["The poison went into the bottom crock. The ones above weren't touched."],
+  left:["The bottle was put back on the left of the shelf. The family always keeps it on the right.","The spoon in the pot was laid down on the wrong side."],
+  pipe:["There's a little pipe ash on the kitchen table, and nobody in the house smokes."],
+  "tag:keys":["The pantry was locked, and still was. Whoever did it had a key."],
+  "tag:tools":["The pantry door came off its hinges and was hung again. There are screwdriver marks on every screw."],
+  "tag:poisons":["Whoever did it knew the dose. The doctor says a little more would have killed outright, a little less would have done nothing.","It was a proper poison, not rat bait. Someone knew what to get, or already had it."],
+  "tag:horses":["It's a horse drench, a worming dose. The doctor knew the smell at once."],
+  "tag:letters":["The chemist's label was torn off the bottle and burned. The scrap that's left is in a fine, careful hand."],
+  "tag:occult":["A little bag of herbs and hair was found tucked behind the pantry door."],
+  "tag:flour":["The poison was mixed into the flour bin. Whoever did it knew their way round a kitchen."]},
+ paper:{
+  slight:["The porch boards didn't creak, and they always creak. Whoever came to the door was light as a cat.","The letter was pushed through a gap under the door no wider than a finger. The mud beside it shows a small, narrow boot."],
+  heavy:["The porch step is split where someone stood to deliver it.","The prints up the path to the door are deep, and the heels drag."],
+  tall:["It was nailed up high on the door, above the knocker, higher than most people could reach.","The nail was driven in at the height of a tall man's eye."],
+  short:["It was nailed low on the door, below the knocker.","A flowerpot was moved under the door to stand on, and not put back."],
+  left:["The ink is smeared along every line, the way a left hand drags through wet writing.","The writing slopes backwards. Whoever wrote it wasn't using their right hand."],
+  pipe:["The paper smells of pipe smoke.","There's a small burn at one corner of the paper, the size of a pipe ember."],
+  "tag:keys":["It was left inside, on the desk. The door was locked all night."],
+  "tag:tools":["It was nailed up with square cut nails, driven straight with a proper hammer, three blows each.","The words were cut from the Courier and pasted down with a craftsman's care, every edge trimmed square."],
+  "tag:poisons":["It's written in a brown ink that smells faintly bitter. The chemist says it's none he sells."],
+  "tag:horses":["There's a coarse horsehair caught in the fold of the paper, and the paper smells of the stable."],
+  "tag:night":["It was there by the time the lamplighter came round at midnight. Nobody saw who left it."],
+  "tag:letters":["The hand is good. Better than good. Whoever wrote it had schooling, and practice.","Every letter is perfectly formed, and not one word is misspelled. Whoever wrote it has done a great deal of writing."],
+  "tag:occult":["It's signed with a sign, not a name: a circle with a line through it."],
+  "tag:flour":["There are pale thumbprints on the envelope."],
+  "tag:boat":["The paper is water-stained, and smells of the river."]},
+ forgery:{
+  slight:["The bank clerk at the county seat remembers a thin person, swallowed up in their coat.","The clerk remembers someone so slight the counter hid half of them."],
+  heavy:["The clerk remembers a heavy-set customer leaning on the counter until it creaked.","The clerk remembers someone big, breathing hard after the bank steps."],
+  tall:["The clerk had to look up to speak to whoever cashed it.","The clerk remembers someone who ducked coming in under the bank door."],
+  short:["The clerk remembers a hat bobbing just over the counter.","The clerk had to lean over the counter to see who was cashing it."],
+  left:["The ink of the signature is smeared, the way a left hand drags through wet writing.","The signature slopes backwards. The victim's own slopes forward."],
+  pipe:["The check smells of pipe smoke, and there is a speck of ash in the fold.","The clerk remembers the customer smelled of pipe tobacco."],
+  "tag:keys":["The check was torn from the victim's own checkbook, kept in a locked drawer. The drawer wasn't forced."],
+  "tag:tools":["The check was cut from the book with a blade, dead straight. Not torn."],
+  "tag:poisons":["The clerk remembers the customer's fingers were stained yellow-brown, like a chemist's."],
+  "tag:horses":["The clerk remembers mud and horsehair on the customer's trousers. They'd ridden in, not taken the train."],
+  "tag:night":["The victim's checkbook was taken and put back in a single night. Nobody in the house heard a thing."],
+  "tag:letters":["The signature is copied so well that the victim nearly believed it. Someone who has practised a great deal with a pen.","The writing on the check is perfect copperplate. The victim has never written so well in their life."],
+  "tag:occult":["There's a small mark pencilled on the back of the check, a circle with a line through it."],
+  "tag:flour":["There's a pale thumbprint on the back of the check."],
+  "tag:boat":["The clerk remembers the customer came up from the river landing, not the depot."]},
+ sabotage:{
+  slight:["The work was done from underneath, lying flat in a space too narrow for most people."],
+  heavy:["The planks where they knelt to work are cracked."],
+  tall:["The work was done high up, well over a man's head, and there's no sign a ladder was used."],
+  short:["It was done low down, from underneath. A small person could sit up under there."],
+  left:["The saw cuts go in at an angle, from the left. The sergeant tried it himself and couldn't match it right-handed."],
+  pipe:["There is pipe ash where they sat to work. They took their time."],
+  "tag:keys":["The shed where it was done was locked before and after."],
+  "tag:tools":["The cut is clean and straight, made with a good fine-toothed saw by someone who knows how to use one.","It was done with the right tools, by someone who knew exactly how far to weaken it so it would hold a while and then fail."],
+  "tag:horses":["Whoever did it knew wagons and harness better than most."],
+  "tag:occult":["A mark is cut into the wood beside the damage, a sign like a crooked cross."],
+  "tag:boat":["There's river mud on the tools left behind."]},
+ grave:{
+  slight:["The hole was dug narrow, barely wide enough to kneel in."],
+  heavy:["The spade left behind has a cracked handle. Somebody put a great deal of weight on it."],
+  tall:["The earth was thrown far from the grave, beyond the next headstone. Long arms."],
+  short:["They stood on the next headstone to climb out. There's mud on top of it."],
+  left:["The earth was thrown to the left of the grave every time. The sexton digs the other way."],
+  pipe:["There's pipe ash on the headstone. Whoever it was sat and smoked while they dug."],
+  "tag:keys":["The cemetery gate was locked all night, and nobody climbed it."],
+  "tag:tools":["The coffin lid was opened with a proper pry bar, the nails drawn out neatly."],
+  "tag:horses":["A horse stood tied by the cemetery wall for hours. The ground there is trodden and dunged."],
+  "tag:night":["Whoever did it found one grave among two hundred, in the pitch dark."],
+  "tag:letters":["They read the headstones to find the one they wanted, old lettering and all."],
+  "tag:occult":["A candle stub and a circle of salt were left beside the open grave."],
+  "tag:boat":["The earth has river sand in it, carried in on boots."]}
+};
+
+/* ---- what people wear: footprints and threads ----
+   Never written in the files. The player learns it by watching who walks in and what they say. */
+const WEAR={
+ 0:{shoe:"plain",cloth:"calico",hint:["~Martha smooths down the front of her brown sprigged dress before she speaks.","Twenty years in the same flat shoes, detective. They know the way to the bakery on their own."]},
+ 1:{shoe:"boots",cloth:"denim",hint:["~Tom's overalls are faded near white at the knees.","Sorry about your floor. The stable yard's ankle-deep, and there's no getting it out from round the nails."]},
+ 2:{shoe:"oxfords",cloth:"worsted",hint:["~The Mayor stops in the doorway to flick a speck of mud from his toecap.","I had these made in Des Moines. Look at them, after one walk down your street.","~The Mayor brushes at the sleeve of his good dark suit."]},
+ 3:{shoe:"heels",cloth:"serge",hint:["~Wren's steps tap sharply across the boards.","I walked here from the schoolhouse, and I shan't do it again in these. Not in this mud.","~She is in her schoolroom navy, with chalk on one cuff."]},
+ 4:{shoe:"plain",cloth:"gingham",hint:["~Greta is still in her red check from the lunchroom, apron and all.","On my feet since five. Flat soles, detective. It's the only way to stand behind a counter all day."]},
+ 5:{shoe:"big",cloth:"homespun",hint:["~Pip clumps in, his feet sliding about in whatever he has on.","Mama says I'll grow into them. They were Papa's."]},
+ 6:{shoe:"boots",cloth:"leather",hint:["~Hugo's feet ring on the boards like a horse being led in.","Don't mind the scorch marks on me. I've come straight from the forge, apron and all."]},
+ 7:{shoe:"boots",cloth:"flannel",hint:["~Karl brings sawdust and wet bark in on his soles and doesn't wipe them.","~Karl's red check shirt is torn at the elbow."]},
+ 8:{shoe:"oxfords",cloth:"broadcloth",hint:["~Father Dunn's shoes are polished as if for the altar, though the street has done its best to them.","My housekeeper blacks my shoes every night, whether I ask or not."]},
+ 9:{shoe:"oxfords",cloth:"worsted",hint:["Vienna shoes, detective. Thirty years old and still better than anything made in Iowa.","~The doctor's dark suit is good cloth, gone shiny at the elbows."]},
+ 10:{shoe:"heels",cloth:"wool",hint:["~You hear Miss Marsh on the step before you see her: a small, precise tap, tap.","Nobody makes a lady's boot properly any more. I have mine mended rather than buy the new sort.","~Her grey wool dress is darned so finely you can barely see it."]},
+ 11:{shoe:"boots",cloth:"blackwool",hint:["~There's grave clay on Silas's feet, and on the hem of his old black coat.","Can't keep a shine where I work. The clay gets in round the nails and stops there."]},
+ 12:{shoe:"soft",cloth:"velvet",hint:["~Madame Ysolde crosses the room without making a sound.","Shoes? I was born in a wagon, darling. The ground and I understand each other.","~Her plum velvet is worn thin at the cuffs."]},
+ 13:{shoe:"boots",cloth:"tweed",hint:["~Crow's feet don't sound alike on the boards. One rings, the other thuds.","~His patched brown tweed coat smells of the junk yard."]},
+ 14:{shoe:"heels",cloth:"silk",hint:["~Mrs. Ashby's steps click across the boards like a clock ticking.","I shall not stand long on this floor. It is ruining my shoes.","~Her black silk rustles whenever she moves."]},
+ 15:{shoe:"soft",cloth:"homespun",hint:["~Maud comes in so quietly you don't hear the door.","Shoes pinch, detective. I gave them up the year Cleveland was elected the second time.","~Her brown homespun shawl smells of herbs and woodsmoke."]},
+ 17:{shoe:"oxfords",cloth:"pinstripe",hint:["~Mr. Whitcombe wipes each shoe on the mat with great care before he steps inside.","I had these from Marshall Field's. I confess I had not reckoned on the streets of Hollow Creek.","~His grey pinstripe is pressed to an edge you could slice bread with."]},
+ 16:{shoe:"boots",cloth:"oilskin",hint:["~Jonah leaves big wet prints across the boards.","I can't hear myself walk on dry land. Too used to the deck, and the nails in my soles."]}
+};
+const CLOTH={calico:"brown calico with a little white sprig in it",denim:"faded blue denim",worsted:"good dark worsted, the kind a town suit is cut from",serge:"navy serge",gingham:"red and white gingham",homespun:"coarse brown homespun",leather:"scorched leather",flannel:"red plaid flannel",broadcloth:"fine black broadcloth",wool:"grey wool, very finely darned",blackwool:"black wool gone rusty with age",velvet:"plum-coloured velvet",tweed:"old brown tweed",silk:"black silk",oilskin:"stiff yellowed oilskin",pinstripe:"grey pinstriped flannel, of a city cut"};
+const CLOTH_AT={entry:"Caught on the splintered window frame",yard:"Caught on the fence wire",animal:"Snagged on a nail in the stall",fire:"Caught in the brambles by the lane, untouched by the fire",gun:"Caught on the thorns where the shooter knelt",blow:"Clutched in the victim's fist on coming round",poison:"Caught in the pantry door hinge",paper:"Caught under the head of the nail",sabotage:"Snagged on a splinter where the work was done",grave:"Caught on the cemetery railings"};
+function clothClue(n,cr){const at=CLOTH_AT[ctxOf(cr)],w=WEAR[n.id];if(!at||!w)return null;return `${at}: a few threads of ${CLOTH[w.cloth]}.`}
+const SHOE_PRINT={
+ boots:["Heavy boot prints, the soles studded with hobnails.","Broad boot prints with a ring of nail heads round each sole, the kind that strike sparks on stone."],
+ oxfords:["A narrow, smooth-soled print with a sharp edge. A good town shoe, hardly worn.","The print of a fine shoe, the sort kept polished for Sunday."],
+ heels:["Small prints with a separate little mark behind each, punched deep.","A neat pointed toe, and behind it a narrow heel sunk into the ground."],
+ plain:["A plain flat shoe, laced, worn down on the outside edge.","Sensible flat soles, patched at the ball of the foot."],
+ soft:["Hardly a print at all: soft soles with no heel, like slippers or moccasins.","The marks are soft and rounded with no heel at all. Whoever it was might almost have been barefoot."],
+ big:["Big boot prints, but shallow, and the toes drag as if the boots were too large for the feet inside them.","The prints of a man's boots, but the stride is a child's."]};
+const SHOE_CTX={
+ blow:{boots:["The victim heard nailed soles ring on the stones as the attacker ran."],oxfords:["The victim remembers, of all things, a shine of polished shoes in the lamplight."],heels:["The victim heard quick steps clicking away down the boardwalk."],plain:["The victim remembers the scuff of flat soles, nothing heavy."],soft:["The victim never heard them come. Not one footstep."],big:["The victim heard boots flapping as they ran, clumsy, as if they didn't fit."]},
+ forgery:{boots:["The clerk noticed mud-caked working boots under the counter, and thought it odd."],oxfords:["The clerk remembers good polished shoes. A person of means, he thought."],heels:["The clerk heard sharp little steps on the bank's marble floor."],plain:["The clerk remembers plain, flat, scuffed shoes."],soft:["The clerk never heard the customer cross the floor."],big:["The clerk noticed boots far too big for the one wearing them."]},
+ paper:{boots:["The porch boards are scored with nail marks where someone stood to deliver it."],oxfords:["There's a clean, narrow shoe print on the porch step. A good shoe."],heels:["There are little round dents in the porch boards, pressed deep."],plain:["A plain flat shoe print on the porch step, worn at the edge."],soft:["Nothing on the porch at all. Not a mark."],big:["Big boot prints on the step, the toes dragging."]}};
+function shoeClue(k,cr){const t=k.slice(5),cx=ctxOf(cr);const o=SHOE_CTX[cx]&&SHOE_CTX[cx][t];return rnd(o||SHOE_PRINT[t]||["Prints nobody can make sense of."])}
+function wearHint(n){const w=typeof n.id==="number"&&WEAR[n.id];if(!w)return null;const h=rnd(w.hint);return h[0]==="~"?{n:true,t:h.slice(1)}:{t:h}}
+const PHYS=["entry","yard","animal","fire","gun","blow","sabotage","grave"];
+const r5=x=>Math.round(x/5)*5;
+function measureClue(k,cx,src){
+  if(!src||!src.ht||!PHYS.includes(cx))return null;
+  if(k==="tall"||k==="short"){const lo=src.ht-1-(Math.random()<.5?1:0),hi=src.ht+1;
+    return cx==="blow"?`The doctor has worked it out from the angle of the blow. He puts the attacker at between ${ftIn(lo)} and ${ftIn(hi)}.`
+      :rnd([`Obermeyer paced out the stride in the soft ground. He reckons whoever made it stands between ${ftIn(lo)} and ${ftIn(hi)}.`,`A sleeve was torn away on the wire. Held up against a yardstick, it was cut for someone between ${ftIn(lo)} and ${ftIn(hi)}.`])}
+  if(k==="heavy"||k==="slight"){const lo=r5(src.wt-12),hi=r5(src.wt+12);
+    return rnd([`Obermeyer compared the prints with his own, and he knows what he weighs. He'd put whoever made them at ${lo} to ${hi} pounds.`,`The planks sagged where they stood. Tested with sacks of feed, the sergeant makes it ${lo} to ${hi} pounds.`])}
+  return null;
+}
+function clueFor(k,cr,src,plain){
+  if(k.startsWith("shoe:"))return shoeClue(k,cr);
+  const cx=ctxOf(cr),t=CLUE_CTX[cx]&&CLUE_CTX[cx][k];
+  const pool=t&&t.length?(Math.random()<.8||!PHYS.includes(cx)?t:[...t,...(ANY_CLUES[k]||[])]):(ANY_CLUES[k]||CLUES[k]||["Nothing useful."]);
+  return rnd(pool);
+}
+const NOISE2=["A wheelbarrow was found upended in the lane, nowhere near where it belongs.","A brass watch chain, snapped, lies near the step. The cheap sort sold at the depot.","The neighbour's rooster crowed at midnight, which it never does.","A child's marble was found on the step.","A man's coat button, horn, the common kind, lies in the lane.","Somebody's dog followed the complainant all morning and won't go home.","The complainant insists the church clock was striking wrong all week, though nobody else noticed."];
+const noiseFor=day=>[...NOISE,...NOISE2].filter(t=>weatherOf(day)!=="fair"||!/rain/.test(t));
 function setupArt(){
   const H=S.heist,avoid=[H.boss,H.mate];
   const pool=N.filter(n=>!avoid.includes(n)&&n.id!==8&&n.shady>=1.4);
@@ -754,6 +1041,12 @@ function setupArt(){
   S.art={thief,fence,stages:[{crime:ART_CRIMES[0],day:10,by:thief,tier:"grave"},{crime:ART_CRIMES[1],day:13,by:fence,tier:"serious"},{crime:ART_CRIMES[2],day:16,by:thief,tier:"grave"}].map(x=>({...x,solved:false,done:false})),day:19,resolved:false,news:null};
 }
 function vigLeader(){const h=N[6],k=N[7];return !h.jailed?h:!k.jailed?k:null}
+function thirdSunday(){
+  if(S.d19done)return;S.d19done=true;
+  const up=spiritUp(),bump=up?20:10;
+  S.unrest=clamp(Math.max(S.unrest,Math.min(97,S.unrest+bump)));
+  if(up){const r=S.rite;if(r.stage>=2)r.correct=Math.max(1,r.correct);r.angry=true}
+}
 function genDay(d){
   const list=[],H=S.heist,A=S.art,V=S.vig;
   if(V&&V.outcome==="frenzy"&&!V.killed){V.killed=true;const t=N[V.target];t.dead=d;t.jailed=true;t.jailUntil=0;V.deadName=t.name;
@@ -781,12 +1074,18 @@ function genDay(d){
     const by=!prep.by.jailed?prep.by:[H.boss,H.mate].find(x=>!x.jailed);
     if(by){const c=genHuman(d,"serious",{culprit:by,crime:prep.crime,victim:N[prep.crime.vict]});if(c){c.prep=prep;prep.by=by;prep.done=true;list.push(c)}}
   }
+  if(d===19&&!S.pip&&!N[5].jailed&&!N[5].dead){N[5].away=true;S.pip={search:null,found:false}}
+  if(d===19){
+    // a night of fires, whatever else walks
+    for(let t=0;t<6;t++){const c=genHuman(d,"grave",{crime:rnd(FIRE_GRAVE)});if(c&&c.culprit.id!==8){list.push(c);break}}
+    if(spiritUp())for(let t=0;t<2;t++){const c=genSuper(d,"grave");if(c)list.push(c)}
+  }
   while(list.length<casesFor(d)){const c=genCase(d);if(c)list.push(c);else break}
   return shuffle(list);
 }
 
 /* ================= period helpers ================= */
-const START=new Date(1931,2,2);
+const START=new Date(1931,2,4);
 function dateOf(d){const x=new Date(START);x.setDate(x.getDate()+d-1);return x}
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const WDAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -821,7 +1120,7 @@ function startGame(name){
   Object.assign(S,{name:name||null,saveId:name?("s"+Date.now().toString(36)):null,visit:null,desk:[],say:"",slips:[],call:null,memo:[],pages:{},printed:new Set(),record:{},caseNo:30,nbLeft:null,paper:null});
   S.sgt=55;
   S.wind=Array.from({length:DAYS},(_,i)=>{const b=i>=17?.92+i*.004:Math.pow(i/17,1.5)*.85;return Math.min(1,b+(Math.random()<.3&&i<17?.18+Math.random()*.22:0))});
-  S.blackoutDay=12+Math.floor(Math.random()*7);S.coffee=4;
+  S.blackoutDay=13+Math.floor(Math.random()*6);S.coffee=4;S.sunN={5:Math.random()<.5?1:2,12:Math.random()<.5?1:2};[5,12].forEach(d=>{if(S.wind[d-1]!=null)S.wind[d-1]=Math.min(S.wind[d-1],.12)});S.wind[18]=1;
   setupHeist();setupArt();
   S.vig={formDay:11,mobDay:13,beating:Math.random()<.5,beatDay:16,target:null,outcome:null,deadName:null};
   S.rite={stage:0,story:rnd(RITES),partner:Math.random()<.5?15:12,correct:0,justDone:false,v2:true};
@@ -833,10 +1132,10 @@ function startGame(name){
 function numberCases(list){list.forEach(c=>{c.no=++S.caseNo;c.filed=false;c.choice=null;c.who=null;c.reported=false})}
 
 const WEATHERS=["fair","rain","fog","heavy","storm"];
-const weatherOf=d=>WEATHERS[Math.min(4,Math.floor((d-1)/4))];
+const weatherOf=d=>quietSunday(d)?"fair":WEATHERS[Math.min(4,Math.floor((d-1)/4))];
 function morning(firstDay){
   S.phase="day";S.idx=0;S.verdicts=[];S.snap=N.map(n=>n.rel);S.memo=[];
-  const back=[];N.forEach(n=>{if(n.jailUntil&&S.day>=n.jailUntil){n.jailed=false;n.jailUntil=0;adj(n,-10);back.push(n)}});
+  const back=[],night=[];N.forEach(n=>{if(n.jailUntil&&S.day>=n.jailUntil){n.jailed=false;n.jailUntil=0;if(n.jailNight){n.jailNight=false;adj(n,-3);night.push(n)}else{adj(n,-10);back.push(n)}}});
   const prev=S.history[S.history.length-1];
   const reports=shuffle(STRANGE).slice(0,reportsFor(S.day));
   if(!firstDay)S.unrest=clamp(Math.max(S.unrest+2+2*reports.length,unrestFloor(S.day)));
@@ -844,20 +1143,29 @@ function morning(firstDay){
   const A=S.art;if(A&&A.news&&!A.applied){A.applied=true;if(A.news==="recovered"){S.rep=clamp(S.rep+14);S.unrest=clamp(S.unrest-10)}else{S.rep=clamp(S.rep-12);S.unrest=clamp(S.unrest+14)}}
   if(H&&H.news&&!H.applied){H.applied=true;if(H.news==="foiled"){S.rep=clamp(S.rep+15);S.unrest=clamp(S.unrest-15)}else{S.rep=clamp(S.rep-15);S.unrest=clamp(S.unrest+20)}}
   S.history.push({day:S.day,cases:[],visited:null,reports});
+  if(S.day===19&&!firstDay)thirdSunday();
   S.paper=buildPaper(prev,reports);
   S.visit=S.name?planVisit():null;S.eveVisit=null;S.coffee=sgtMood()>=38?4:1;S.weakCoffee=sgtMood()<38;S.letterGiven=S.letterGiven||false;S.reportGiven=false;S.creeps=0;
   S.queue=[];
   if(S.name){
     if(firstDay){S.queue.push({kind:"superior"});S.queue.push({kind:"tutorial"})}
     const V=S.vig;if(V&&S.day===V.mobDay&&V.formed&&vigLeader()){let t=[12,15].map(i=>N[i]).filter(x=>!x.jailed);if(!t.length)t=[13,11].map(i=>N[i]).filter(x=>!x.jailed);if(t.length){const tg=t.length>1?(t[0].id===12&&Math.random()<.6?t[0]:rnd(t)):t[0];V.target=tg.id;S.queue.push({kind:"mob",target:tg.id})}}
+    if(S.day===5&&!N[8].jailed&&!N[8].dead)S.queue.unshift({kind:"mystic",npc:N[8],when:"morning",step:"sunday"});
+    if(S.day===19&&S.pip){const m=[N[4],N[6],N[0]].find(x=>!x.jailed&&!x.dead);if(m){S.pip.by=m.id;S.queue.unshift({kind:"mystic",npc:m,when:"morning",step:"pip"})}}
+    if(S.day===19&&spiritUp()){const w=[N[8],N[15],N[12]].find(x=>!x.jailed&&!x.dead);if(w)S.queue.unshift({kind:"mystic",npc:w,when:"morning",step:"sunday19"})}
     if(S.visit&&S.visit.when==="morning")S.queue.push(S.visit);
     else if(S.visit)S.eveVisit=S.visit;
     S.cases.forEach((c,i)=>S.queue.push({kind:"complaint",ci:i}));
   }
-  if(!firstDay){S.desk=[];S.say=weatherLine()+(S.weakCoffee?" Obermeyer only made half a cup of coffee this morning.":"")+(back.length?` ${back.map(n=>n.name).join(" and ")} ${back.length>1?"are":"is"} back in town, let out by the county.`:"")}
+  if(!firstDay){S.desk=[];S.say=sundayLine()+(S.weakCoffee?" Obermeyer only made half a cup of coffee this morning.":"")+(back.length?` ${back.map(n=>n.name).join(" and ")} ${back.length>1?"are":"is"} back in town, let out by the county.`:"")+(night.length?` Obermeyer let ${night.map(n=>n.name).join(" and ")} out of the lockup at first light, the fine${night.length>1?"s":""} paid.`:"")}
   if(S.unrest>=100){finish("unrest");return}
   refresh();
   if(!firstDay)saveGame();
+}
+function sundayLine(){
+  if(quietSunday(S.day))return rnd(["Sunday. Church bells all across town, and a pale sun on the window.","Sunday morning. The street is full of people in their church clothes, walking slowly.","Sunday. The bells of St. Brendan's and the Methodist church are ringing against each other. Mild, for once."]);
+  if(S.day===19)return spiritUp()?"Sunday. The storm is the worst yet. Somewhere a church bell is tolling, though nobody would be out in this to ring it. The station clock has stopped at ten past three.":"Sunday. The storm is the worst yet, and the fire bell has been going since before light.";
+  return weatherLine();
 }
 function weatherLine(){return rnd({fair:["A fine, mild morning. Sun on the window.","A pleasant morning, for March.","Clear skies. The street is dry for once."],rain:["Rain, steady now.","The rain has settled in.","A grey, wet morning."],fog:["Fog, thick as wool. You can barely see the street.","The fog has not lifted. The window is a blank.","Fog again. Sounds carry strangely in it."],heavy:["Heavy rain. The gutters are overflowing.","It is raining hard.","Rain hammers on the roof."],storm:["The storm has not let up.","Wind and rain batter the station.","Another night of storm, and a black morning."]}[weatherOf(S.day)])}
 /* ================= newspaper ================= */
@@ -883,11 +1191,11 @@ const LATE_BRIEFS=[
 ];
 const FILLER=["The Ladies' Aid Society will meet Thursday afternoon in the Methodist church parlors.","Bostwick's Hardware reports the arrival of a car of garden seed and fencing.","Roads west of town are nearly impassable owing to the rain, and the mail carrier was two hours late Monday.","The high school basketball five lost a close game at Anamosa Friday evening, 18 to 16.","Hog prices at the Cedar Rapids yards were steady yesterday at $7.10.","The Odd Fellows will hold a card party and oyster supper Saturday evening.","The council has again deferred the question of a new town pump.","The creamery reports that milk deliveries have been late all week owing to the state of the roads.","The Rialto announces a picture of the supernatural sort for Friday and Saturday evenings. Admission 25 cents.","Relief committee members ask that donations of flour and coal be left at the town hall."];
 const ADS=[["BOSTWICK'S HARDWARE","Garden seed, poultry netting, lamp chimneys. Front Street."],["KESSLER'S LIVER TONIC","For that tired feeling. At all druggists, 50c."],["RIALTO THEATRE","Friday and Saturday. Doors open 7 p.m."],["HALE'S BAKERY","Fresh bread daily. Pies to order for church suppers."],["CRANE LIVERY & FEED","Horses boarded. Teams for hire by the day."],["VOSS LUNCHROOM","Plate lunch 25c. Open late."]];
-const SENT={petty:["let off with a warning","fined $2 and costs","fined $10 and given three days in the lockup"],
-  serious:["fined $25 and released","held for the county court","held without bail, the prosecutor pressing for the full term"],
+const SENT={petty:["let off with a warning","fined $2 and costs","fined $10 and given a night in the lockup"],
+  serious:["fined $25 and costs","fined $50 and given a night in the lockup","held for the county court, the prosecutor pressing for a term in jail"],
   grave:["held for the county court, with bail set","held without bail","held without bail, the prosecutor asking the maximum penalty"]};
-const SENT_OPT={petty:["Let off with a warning","Fine of $2 and costs","Fine of $10 and three days in the lockup"],
-  serious:["Fine of $25, then release","Hold for the county court","Hold without bail; press for the full term"],
+const SENT_OPT={petty:["Let off with a warning","Fine of $2 and costs","Fine of $10 and a night in the lockup"],
+  serious:["Fine of $25 and costs","Fine of $50 and a night in the lockup","Hold for the county court; press for a jail term"],
   grave:["Hold for the county court; allow bail","Hold without bail","Hold without bail; ask the maximum penalty"]};
 function storyFor(c){
   const v=c.victim,w=c.who,tiny=c.tier==="petty",nat=c.crime.n.toLowerCase(),T=titleCase(low(titleOf(c)).replace(/^the /,""));
@@ -895,8 +1203,8 @@ function storyFor(c){
   const dl=`<span class="dl">Hollow Creek, ${shortD(S.day-1)}.</span>`;
   switch(c.outcome){
     case "guilty":{
-      const head=tiny?[`${SUR} LET OFF WITH WARNING`,`${SUR} FINED`,`${SUR} GIVEN THREE DAYS`][sev]
-        :c.tier==="serious"?[`${SUR} FINED AND RELEASED`,`${SUR} HELD ON ${c.crime.n.toUpperCase()} CHARGE`,`${SUR} HELD WITHOUT BAIL`][sev]
+      const head=tiny?[`${SUR} LET OFF WITH WARNING`,`${SUR} FINED`,`${SUR} FINED; NIGHT IN LOCKUP`][sev]
+        :c.tier==="serious"?[`${SUR} FINED $25`,`${SUR} FINED $50; NIGHT IN LOCKUP`,`${SUR} HELD FOR COUNTY COURT`][sev]
         :[`${SUR} HELD; BAIL SET`,`${SUR} HELD ON ${c.crime.n.toUpperCase()} CHARGE`,`STATE TO ASK MAXIMUM FOR ${SUR}`][sev];
       const decks=[`Admits Guilt in ${T} Case`];
       if(c.outsider)decks.push("Detective Looked Beyond Those First Named");
@@ -939,6 +1247,11 @@ function buildPaper(prev,reports){
     if(prev)paper.stories.unshift(lead);
     lead={head:"STRANGE DOINGS CEASE",decks:[`Quiet Night at ${titleCase(S.rite.story.place.replace(/^the /,""))}`,"Residents Breathe Easier"],body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> For the first time in some weeks, no report of queer sights or sounds reached the Courier overnight. A light was seen moving at ${S.rite.story.place} late last evening, and some claim to have heard singing. Two figures were seen walking home near midnight, carrying a lantern, and would say nothing to a Courier reporter.`};
   }
+  if(d===19){if(prev)paper.stories.unshift(lead);const up=spiritUp(),st=S.rite&&S.rite.story;
+    lead={head:up?"NIGHT OF TERROR IN HOLLOW CREEK":"STORM AND FIRE LASH TOWN",decks:up?["Fires, Flood and Stranger Things","Families Barricade Doors; Church Bell Rings at Three"]:["Worst Storm of the Season","Fire Bell Rings Three Times Before Dawn"],
+      body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> The worst storm of the season broke over Hollow Creek last night. The river is over the bottoms road, the ferry is not running, and the fire company was called out three times before dawn. `+(up?`Residents along Front Street say the bell of St. Brendan's rang at three o'clock with the church locked and dark, and more than one person swears to having seen a figure standing at ${st?st.place:"the river"} while the lightning lasted. Several families spent the night together in the Odd Fellows hall and would not go home.`+(S.pip?` Philip Voss, fourteen, son of Mrs. Greta Voss of the lunchroom, did not come home last night.`:""):`No lives were lost, though several families on the low ground were taken off by wagon. The council asks all able-bodied men to report to the town hall with shovels.`+(S.pip?` Philip Voss, fourteen, son of Mrs. Greta Voss of the lunchroom, did not come home last night.`:""))};
+  }
+  if(d>=6&&d%3===0&&S.name){S.letters=S.letters||[];const L=letterFor(d);if(L){S.letters.push(L);paper.letter=L}}
   paper.lead=lead;
   paper.stories.push(rnd(BRIEFS.filter(b=>!b.wet||["rain","heavy","storm"].includes(weatherOf(S.day)))));
   if(d>=13){shuffle(LATE_BRIEFS).slice(0,d>=17?2:1).forEach(b=>paper.stories.unshift(b))}
@@ -947,6 +1260,7 @@ function buildPaper(prev,reports){
   if(H&&!H.resolved&&H.preps.filter(p=>p.done).length>=2)paper.stories.push({head:"THEFTS CONTINUE",decks:["Tools and Papers Missing"],body:"Another of the odd thefts that have troubled the town these past days was reported yesterday. Nothing of great value has gone, which some find more worrying than if it had. A bank at Anamosa was robbed in January after a similar run of small thefts."});
   const vics=[...new Set(S.cases.map(c=>c.victim.press))];
   if(vics.length)paper.stories.push({head:"COMPLAINTS LODGED",decks:[],body:`Complaints were lodged at the town hall early this morning by ${vics.length>1?vics.slice(0,-1).join(", ")+" and "+vics[vics.length-1]:vics[0]}. The detective declined to state their nature.`});
+  if(!N[17].jailed&&!N[3].jailed&&!N[17].dead&&Math.random()<.3)paper.personal.push(rnd(["Mr. Laurence Whitcombe and Miss Wren Crane motored to Cedar Rapids Saturday evening to attend a concert of the Little Symphony.","Miss Wren Crane was the guest of Mr. Laurence Whitcombe at the Rialto on Friday evening.","Mr. Laurence Whitcombe called upon Mayor and Miss Crane at their home on Oak Street Sunday afternoon.","Mr. Laurence Whitcombe of the Cedar Valley Elevator Co. and Miss Wren Crane were seen walking out along the River Road."]));
   const pairs=[...FRIENDS.map(p=>["f",...p]),...RIVALS.map(p=>["r",...p])].filter(([k,a,b])=>!S.printed.has(`${k}${a}-${b}`)&&!N[a].jailed&&!N[b].jailed);
   const usedT=new Set();
   shuffle(pairs).slice(0,2).forEach(([k,a,b])=>{
@@ -959,17 +1273,64 @@ function buildPaper(prev,reports){
   paper.personal=shuffle(paper.personal);
   return paper;
 }
+/* ---- letters to the editor ----
+   Written by townsfolk who like or loathe you. Signed with initials and a street, so you can guess who wrote them. */
+const PEN=["A Taxpayer","Mother of Four","One Who Remembers '81","A Plain Farmer","Name Withheld","A Churchgoer","An Old Settler"];
+function streetOf(n){const a=n.addr||"";const m=a.match(/(Main Street|Oak Street|Elm Street|Front Street|River Road|Hill Road|Hill Cemetery|the fairgrounds|the river landing|south of the tracks|the river bottoms|St\. Brendan's)/);return m?m[1].replace(/^the /,""):"Hollow Creek"}
+function pickFresh(opts){const used=(S.letters||[]).map(l=>l.body);const f=opts.filter(o=>!used.includes(o));return rnd(f.length?f:opts)}
+function letterFor(d){
+  const prev=S.history[S.history.length-2]||S.history[S.history.length-1],outs=prev?prev.cases.map(r=>r.outcome):[];
+  const score=councilScore(),V=S.vig,H=S.heist;
+  const pro=Math.random()<(score>=72?.7:score>=55?.45:.25);
+  const pool=free().filter(n=>!n.dead&&n.id!==MAYOR);if(!pool.length)return null;
+  const sorted=[...pool].sort((a,b)=>b.rel-a.rel),w=pro?rnd(sorted.slice(0,4)):rnd(sorted.slice(-4));
+  let body;
+  if(pro){
+    const opts=[];
+    if(outs.includes("solved"))opts.push("For the first time since the autumn I have slept with my back door unbolted. I credit the new detective, who has shown more sense in a fortnight than the council has shown in a year.");
+    if(outs.includes("unexplained"))opts.push("Those who laugh at the detective's findings of \"no human hand\" have not walked the river bottoms after dark lately. I have. I would rather have an officer who admits what cannot be explained than one who hangs it on the nearest poor soul.");
+    if(V&&V.outcome==="stoodDown")opts.push("The detective stood alone in the station doorway and turned away a crowd with pick handles. That took more courage than I have seen from any man on the council.");
+    if(H&&H.news==="foiled")opts.push("The gang that meant to rob this town went away with nothing. I hope those who wrote to this paper complaining will have the grace to write again.");
+    opts.push("I write only to say that the detective has been civil to me, and fair, and has listened when others would not. In these times that is not nothing.","Much has been written in these columns against our new officer. Let me say plainly that I have found the detective honest, and patient, and willing to hear a poor man out. The council should count itself lucky.","I have lived in Hollow Creek forty years and seen three marshals come and go. None of them worked as hard as this one. Give the detective time.");
+    body=pickFresh(opts);
+  }else{
+    const opts=[];
+    if(outs.includes("wrong"))opts.push("A neighbor of mine, as innocent as you or I, was locked in the town cell on the detective's word and let out without so much as an apology. Is this what the council is paying for?");
+    if(outs.includes("unexplained"))opts.push("Are we now to be told by an officer of the county that our troubles are caused by ghosts? My grandmother believed in ghosts. She did not draw a salary for it.");
+    if(outs.includes("shelved"))opts.push("Complaint after complaint left open. My own was among them. I am told the matter is \"under consideration.\" So, I suppose, is the weather.");
+    if(V&&V.outcome==="appeased")opts.push("A woman was handed over to a crowd at the station door and held without charge. Whatever one thinks of her, that is not the law as I was taught it.");
+    if(V&&V.outcome==="frenzy")opts.push("A woman is dead who might have been kept safe in a cell for a night. The detective refused, and the town has paid for that pride.");
+    if(H&&H.news==="robbed")opts.push("The robbery was as good as announced in this newspaper, theft by theft. The detective did nothing to stop it. I have lost my savings. What has the detective lost?");
+    if(S.unrest>=50)opts.push("My wife is afraid to walk to church. My children are kept in after dark. We were promised an end to the troubles. We have been given more of them.");
+    opts.push("We were told the county would send us a capable officer. I leave your readers to judge whether it has.","The detective sits in the station while the town goes to pieces around it. I have yet to see the officer on Front Street after dark, where the trouble is.","I am told the detective is from the county seat. It shows. Nobody who knew this town would go about things this way.");
+    body=pickFresh(opts);
+  }
+  const sign=Math.random()<.3?rnd(PEN):`${initials(w)}, ${streetOf(w)}`;
+  return {day:d,pro,body,sign,by:w.id};
+}
+function lettersDoc(list,name){
+  if(!list||!list.length)return `<p class="deskmsg">No letters about ${esc(name)} were ever printed.</p>`;
+  return `<article class="paper news" aria-label="Letters to the editor"><div class="mast" style="font-size:34px">Letters to the Editor</div>
+    <div class="dateline"><span>The Hollow Creek Courier</span><span>Clippings concerning Detective ${esc(name)}</span></div>
+    ${list.map(l=>`<div class="story"><h3 class="hd">TO THE EDITOR</h3><div class="deck">${fullDate(l.day)}</div><p>Sir: ${esc(l.body)}</p><p style="text-align:right;font-style:italic">${esc(l.sign)}</p></div>`).join("")}</article>`;
+}
+function oldLettersDoc(id){
+  const rec=readSaves().find(x=>x.id===id);if(!rec)return `<p class="deskmsg">That detective has been struck out of the register.</p>`;
+  const list=rec.letters||(rec.blob&&rec.blob.S&&rec.blob.S.letters&&rec.blob.S.letters.$a?rec.blob.S.letters.$a.map(x=>({day:x.day,body:x.body,sign:x.sign})):[]);
+  return lettersDoc(list,rec.name);
+}
 function paperDoc(){
   const p=S.paper,d=S.day,x=dateOf(d);
   const story=(s,lead)=>`<div class="story ${lead?"lead":""}"><h3 class="hd">${s.head}</h3>${s.decks.map(k=>`<div class="deck">${k}</div>`).join("")}<p>${s.body}</p></div>`;
   return `<article class="paper news" aria-label="The Hollow Creek Courier">
-    <div class="ears"><div class="e">WEATHER<br>${p.weather}</div><div class="motto">Published Every Morning Except Sunday</div><div class="e">TWO CENTS<br>Vol. ${p.vol}, No. ${p.no}</div></div>
+    <div class="ears"><div class="e">WEATHER<br>${p.weather}</div><div class="motto">Published Every Morning</div><div class="e">TWO CENTS<br>Vol. ${p.vol}, No. ${p.no}</div></div>
     <div class="mast">The Hollow Creek Courier</div>
     <div class="dateline"><span>Hollow Creek, Iowa</span><span>${fullDate(d)}</span><span>Established 1874</span></div>
     ${story(p.lead,true)}
     <div class="cols">
       ${p.stories.map(s=>story(s)).join("")}
       ${p.strange.length?`<div class="story"><h3 class="hd">QUEER DOINGS REPORTED</h3><div class="deck">Residents Tell of Strange Sights</div>${p.strange.map(r=>`<p>${r}</p>`).join("")}</div>`:""}
+      ${p.letter?`<div class="story"><h3 class="hd">LETTERS TO THE EDITOR</h3><p>Sir: ${esc(p.letter.body)}</p><p style="text-align:right;font-style:italic">${esc(p.letter.sign)}</p></div>`:""}
       <div class="story personal"><div class="col-h">LOCAL AND PERSONAL</div>${p.personal.map(t=>`<p>${t}</p>`).join("")}</div>
       ${p.ads.map(([a,b])=>`<div class="ad"><b>${a}</b>${b}</div>`).join("")}
     </div>
@@ -998,11 +1359,13 @@ function trayDoc(){
     ${S.cases.every(c=>c.filed)?`<p class="deskmsg">The in-tray is empty. Put out the lamp when you're ready to finish for the day.</p>`:""}`;
 }
 function witnessQA(c){
-  const w=c.witness;
-  if(!w)return `<p class="muted">No witness has come forward.</p>`;
+  if(!c.witness)return `<p class="muted">No witness has come forward.</p>`;
+  return oneWitness(c.witness)+(c.witness2?`<div class="wit2"></div>`+oneWitness(c.witness2):"");
+}
+function oneWitness(w){
   let q="Q. Did you see anything that night?",a;
   if(w.n.rel<30)return `<p>${nm(w.n)}, ${esc(w.n.addr)}.</p><p class="muted">The witness declined to make a statement.</p>`;
-  if(w.kind==="vouch"){q=`Q. Where was ${first(w.about)} that night?`;a=`Home with me, all night. I'd swear to it.`}
+  if(w.kind==="vouch"){q=`Q. Where was ${first(w.about)} that night?`;a=famLabel(w.n,w.about)==="sweetheart"?(w.n.sex==="m"?`I took ${first(w.about)} to the picture show at the Rialto and saw ${him(w.about)} to the door at ten. Nobody goes out again in this town after ten.`:`${first(w.about)} took me to the picture show at the Rialto and saw me to my door at ten. ${He(w.about)} went straight on to the hotel. Ask the night clerk.`):`Home with me, all night. I'd swear to it.`}
   else if(w.kind==="accuse"){q="Q. Have you anything to add?";a=`Only that I'd look hard at ${w.about.name}, if I were you.`}
   else if(w.kind==="eerie")a=w.text;
   else{
@@ -1035,7 +1398,7 @@ function caseDoc(i){
     <p style="margin:6px 0">${c.crime.d(c.victim)}</p>
     <div class="sect">OBSERVATIONS AT THE SCENE</div>
     <ol class="obs">${c.clues.map(x=>`<li>${x.text}</li>`).join("")}</ol>
-    <div class="sect">STATEMENT OF WITNESS</div>
+    <div class="sect">${c.witness2?"STATEMENTS OF WITNESSES":"STATEMENT OF WITNESS"}</div>
     ${witnessQA(c)}
     <div class="sect">PERSONS NAMED IN CONNECTION</div>
     <ul class="persons">${c.suspects.map((s,k)=>`<li>${nm(s)} <span class="why">(${c.reasons[k].replace(/\.$/,"")})</span>${s.jailed&&!(c.filed&&c.who===s)?` <span class="muted">In custody.</span>`:""}</li>`).join("")}</ul>
@@ -1069,7 +1432,7 @@ function lockupDoc(){
   </article>`;
 }
 function fileDoc(id){
-  const n=N[id],kin=n.fam.map(f=>`${N[f.id].name}, ${f.label}`).join("; ")||"None recorded";
+  const n=N[id],kin=n.fam.map(f=>{const l=famLabel(N[f.id],n);return `${N[f.id].name}, ${l==="sweetheart"?"keeping company":l}`}).join("; ")||"None recorded";
   const rec=S.record[id]||[];
   const F=(l,v)=>`<div class="fld"><span class="l">${l}</span><span class="v">${v}</span></div>`;
   return `<article class="rfile" aria-label="File on ${esc(n.name)}"><div class="tab"><span>No. ${String(117+id*7).padStart(4,"0")}</span><span>${esc(surname(n).toUpperCase())}</span></div>
@@ -1148,8 +1511,9 @@ function fileCase(i){
   if(who){
     const sev=c.sev,k=(c.tier==="petty"?.5:1)*[.6,1,1.4][sev];
     free().forEach(y=>{if(y===who)return;const r=relOf(y,who);if(r==="family")adj(y,-25*k);else if(r==="friend")adj(y,-12*k);else if(r==="rival")adj(y,12*k)});
-    if(c.tier==="petty"){if(sev===2){who.jailed=true;who.jailUntil=S.day+3}adj(who,-6*(sev+1))}
-    else if(c.tier==="serious"){if(sev===0)adj(who,-10);else{who.jailed=true;who.jailUntil=S.day+(sev===1?5:10)}}
+    who.jailNight=false;
+    if(c.tier==="petty"){if(sev===2){who.jailed=true;who.jailUntil=S.day+1;who.jailNight=true}adj(who,-6*(sev+1))}
+    else if(c.tier==="serious"){if(sev===0)adj(who,-10);else if(sev===1){who.jailed=true;who.jailUntil=S.day+1;who.jailNight=true;adj(who,-12)}else{who.jailed=true;who.jailUntil=S.day+6}}
     else{who.jailed=true;who.jailUntil=sev===0?S.day+3:sev===1?S.day+8:0}
     who.jailFor=c.crime.n;who.jailFrom=S.day;
   }
@@ -1213,7 +1577,9 @@ function goHome(){
   if(S.day>=DAYS){finish("season");return}
   S.next=genDay(S.day+1);
   S.phase="evening";S.desk=[];S.nbLeft=null;S.say="";S.reportGiven=false;
-  S.queue=[{kind:"sergeant"}];if(S.eveVisit)S.queue.push(S.eveVisit);
+  S.queue=[{kind:"sergeant"}];
+  if(S.day===19&&S.pip&&!S.pip.found){const m=N[S.pip.by!=null?S.pip.by:4];S.queue.push({kind:"mystic",npc:m&&!m.jailed&&!m.dead?m:SERGEANT,when:"evening",step:"pipfound"})}
+  if(S.eveVisit)S.queue.push(S.eveVisit);
   const V=S.vig;if(V){if(S.day===V.formDay&&vigLeader())S.queue.push({kind:"committee"});
     if(S.next.some(c=>c.vig==="beating")&&!N[6].jailed&&N[6].rel>=65)S.queue.push({kind:"hugoTip"})}
   refresh();saveGame();
@@ -1271,7 +1637,7 @@ function phoneDoc(){
     <p class="muted" style="font-size:13px">Numbers pencilled on the card beside the telephone, under the heading "Strange doings." There is time for one such call a day.</p>
     <ul class="calls">${list.map(n=>`<li><span>${EXCHANGE[n.id][0]}</span><span class="d">${EXCHANGE[n.id][1]}</span><button class="nm" data-consult="${n.id}">Ask to be put through</button></li>`).join("")||"<li>Nobody on the card can be reached.</li>"}</ul></article>`;
 }
-function turnIn(){S.visit=null;S.day++;S.cases=S.next;S.next=[];numberCases(S.cases);morning()}
+function turnIn(){S.visit=null;if(S.day>=19&&N[5].away){N[5].away=false;if(S.pip)S.pip.found=true}S.day++;S.cases=S.next;S.next=[];numberCases(S.cases);morning()}
 
 function finish(kind){
   S.phase="over";
@@ -1291,7 +1657,7 @@ function finish(kind){
     <p>Yours truly,<br><span class="signed">Elias J. Crane</span><br>Mayor</p>
     <p class="muted" style="font-size:13px;margin-top:24px">Kept from you until now: the worst of the town were ${N.filter(n=>n.villain).map(n=>n.name).join(", ")}.</p></article>`;
   S.desk=[];S.say="";S.outcome=kind;S.endGiven=false;
-  S.queue=[{kind:"mayor"}];
+  S.queue=[...(kind==="season"?farewells():[]),{kind:"mayor"}];
   refresh();saveGame();
 }
 
@@ -1439,10 +1805,10 @@ function saveGame(){
   if(!S||!S.name||window.NOSAVE)return;
   clearTimeout(saveTimer);
   const copy=Object.assign({},S);delete copy.heard;
-  const blob={v:1,N:N.map(n=>({rel:n.rel,jailed:n.jailed,jailUntil:n.jailUntil||0,known:[...n.known],secretKnown:n.secretKnown,villain:n.villain,ht:n.ht,wt:n.wt})),S:enc(copy)};
+  const blob={v:1,N:N.map(n=>({rel:n.rel,jailed:n.jailed,jailUntil:n.jailUntil||0,jailNight:!!n.jailNight,known:[...n.known],secretKnown:n.secretKnown,villain:n.villain,ht:n.ht,wt:n.wt,away:!!n.away})),S:enc(copy)};
   const list=readSaves().filter(x=>x.id!==S.saveId);
   cloudPushSoon(S.saveId);
-  list.push({id:S.saveId,name:S.name,updated:Date.now(),day:S.day,phase:S.phase,outcome:S.outcome||null,rep:S.rep,unrest:S.unrest,stats:{...S.stats},spirit:S.rite?S.rite.stage>=4:false,heist:S.heist&&S.heist.news?S.heist.news:null,art:S.art&&S.art.news?S.art.news:null,pages:{...S.pages},blob});
+  list.push({id:S.saveId,name:S.name,updated:Date.now(),day:S.day,phase:S.phase,outcome:S.outcome||null,rep:S.rep,unrest:S.unrest,stats:{...S.stats},spirit:S.rite?S.rite.stage>=4:false,heist:S.heist&&S.heist.news?S.heist.news:null,art:S.art&&S.art.news?S.art.news:null,pages:{...S.pages},letters:(S.letters||[]).map(l=>({day:l.day,body:l.body,sign:l.sign})),blob});
   writeSaves(list);
 }
 function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(saveGame,900)}
@@ -1469,13 +1835,8 @@ function registerDoc(){
     <div class="sect">STANDING OF ALL DETECTIVES</div>
     ${list.length?`<div class="tablewrap"><table class="ledger"><thead><tr><th>Name</th><th>Status</th><th>Day</th><th>Success</th><th>Solved</th><th>Wrongful</th><th>Open</th><th>Unexplained</th><th>Standing</th><th>Spirit</th><th>Heist</th><th>Art</th><th></th></tr></thead><tbody>
     ${list.map(s=>`<tr${s.id===cur?' class="cur"':""}><td>${esc(s.name)}${s.id===cur?" (at the desk)":""}</td><td>${statusOf(s)}</td><td>${s.day}</td><td>${successRate(s.stats)}%</td><td>${s.stats.solved}</td><td>${s.stats.wrong}</td><td>${s.stats.shelved}</td><td>${s.stats.unexplained}</td><td>${council(councilScore(s.stats,s.rep))}</td><td>${s.spirit?"Laid to rest":"Unquiet"}</td><td>${s.heist==="foiled"?"Foiled":s.heist==="robbed"?"Robbed":"Not yet"}</td><td>${s.art==="recovered"?"Recovered":s.art==="lost"?"Lost":"Not yet"}</td>
-      <td style="white-space:nowrap">${s.outcome||s.id===cur?"":`<button class="nm" data-load="${s.id}">Continue</button> `}<button class="nm" data-oldnb="${s.id}">Notebook</button> <button class="nm" data-del="${s.id}">Strike out</button></td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">No one has served yet.</p>`}
-    <div class="sect">KEEP THE REGISTER SAFE</div>
-    <p class="muted" style="font-size:13px;margin:6px 0">Saves live in this browser only. To keep them, or move them to another computer, save the register to a file, or copy a save code and email it to yourself. Paste the code back here to restore.</p>
-    <div class="sign" style="margin-top:6px;gap:10px 16px"><button class="btn" id="expFile">Save register to a file</button><button class="btn" id="expCode">Copy save code</button><a class="btn" id="expMail" href="mailto:?subject=${encodeURIComponent("My Hollow Creek Casebook save")}&body=${encodeURIComponent("Paste your save code below this line, then send this to yourself.\n\n")}" target="_blank" rel="noopener">Email it to yourself</a></div>
-    <div class="sign" style="margin-top:10px;gap:10px 16px"><label class="btn" for="impFile" style="cursor:pointer">Restore from a file</label><input type="file" id="impFile" accept=".json,application/json,text/plain" style="position:absolute;opacity:0;width:1px;height:1px"></div>
-    <div class="addnote" style="margin-top:10px"><textarea id="impCode" placeholder="Paste a save code here" aria-label="Save code" style="font:inherit;font-size:12px;flex:1;min-height:46px;background:#FBF8F0;border:1px solid var(--rule);color:var(--ink);padding:8px"></textarea><button class="btn" id="impBtn">Restore</button></div>
-    <p class="muted" id="expMsg" style="font-size:13px;min-height:1em" aria-live="polite"></p>
+      <td style="white-space:nowrap">${s.outcome||s.id===cur?"":`<button class="nm" data-load="${s.id}">Continue</button> `}<button class="nm" data-oldnb="${s.id}">Notebook</button> ${s.letters&&s.letters.length?`<button class="nm" data-oldlet="${s.id}">Letters</button> `:""}<button class="nm" data-del="${s.id}">Strike out</button></td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">No one has served yet.</p>`}
+    
     <p class="muted" style="font-size:12px;margin-top:10px">Success is the share of complaints answered correctly, including those rightly closed with no human agency found.</p>
   </article>`;
 }
@@ -1487,6 +1848,11 @@ function partnerNpc(){
   return p;
 }
 function planVisit(){
+  const v=planVisit0();
+  if(v&&isSunday(S.day)&&v.npc&&v.npc.id===8&&v.when==="morning")return null;
+  return v;
+}
+function planVisit0(){
   const r=S.rite,p=r&&r.stage<4?partnerNpc():null,pr=r&&r.stage<4&&!N[8].jailed?N[8]:null;
   if(r&&r.stage<4){
     const anySuper=S.history.some(h=>h.cases.some(c=>c.ref&&c.ref.kind==="super"&&c.outcome!=="pending"));
@@ -1497,10 +1863,163 @@ function planVisit(){
     if(r.stage===1&&r.correct>=1){const a=[p,pr].filter(x=>x&&x.rel>=25);if(a.length)return {when:"morning",npc:rnd(a),kind:"mystic",step:"quiz"}}
     if((r.stage===2||r.stage===3)&&r.correct>=1){const a=p&&p.id!==8?p:pr;if(a)return {when:"evening",npc:a,kind:"mystic",step:r.stage===2?"rite1":"rite2"}}
   }
+  const fv=confessVisit();if(fv)return fv;
   const x=Math.random();if(x>=.6)return null;
   const pool=free().filter(n=>n.rel>=28&&(!p||n!==p));
   if(!pool.length)return null;
   return {when:x<.3?"morning":"evening",npc:wpick(pool,n=>Math.max(.2,(n.rel-25)/20)),kind:"tip"};
+}
+/* Father Dunn and the seal: he never tells what was said, only what he saw */
+const GRILLE={
+  "shoe:boots":["Under the curtain I could see their feet. Working boots, with nails in the soles."],"shoe:oxfords":["Under the curtain I could see good polished town shoes."],"shoe:heels":["Under the curtain I saw a small shoe with a narrow heel."],"shoe:plain":["Under the curtain I saw plain flat shoes, much mended."],"shoe:soft":["Under the curtain I saw no shoes to speak of. Slippers, or bare feet."],"shoe:big":["Under the curtain I saw boots far too big for the feet in them."],
+  slight:["The kneeler hardly creaked when they went down on it. A slip of a person, whoever it was.","Through the grille I could see a shoulder no wider than a boy's."],
+  heavy:["The kneeler groaned when they knelt, and the whole box shifted on the floor.","They filled the box. I could hear a big body labouring for breath on the kneeler."],
+  tall:["They had to stoop to come in under the curtain. I saw it lift high.","Their head was above the grille the whole time. I was talking to a coat collar."],
+  short:["I could barely see a shape through the grille. They would have had to stand to reach it.","The curtain hardly stirred when they came in. A small person."],
+  left:["When they blessed themself going out, it was with the left hand. I noticed. God forgive me for noticing.","They drew the curtain aside with the left hand, going in and coming out."],
+  pipe:["The box smelled of pipe tobacco for an hour afterwards.","I swept pipe ash off the kneeler after they had gone."],
+  "tag:keys":["When they knelt, something jingled. A great many keys, by the sound.","A heavy ring of keys knocked against the wood of the box when they went down."],
+  "tag:tools":["There was a smear of machine oil on the grille where they had leaned.","Their hands, what I saw of them, were a workman's hands. Cut, and black in the creases."],
+  "tag:poisons":["They smelled of something bitter, like the back shelves of a chemist's shop.","They held a little brown bottle the whole time. They never once let go of it."],
+  "tag:night":["They came at two in the morning and knocked at the rectory. Honest folk are abed at that hour.","It was long past midnight, and they had found their way to the church without a lantern."],
+  "tag:letters":["They had pushed a note under the rectory door first, asking me to hear them. A fine hand. Copperplate.","They had written it all out beforehand and read it from the paper. Beautiful penmanship. I saw it when they folded it away."],
+  "tag:occult":["There was candle wax down their cuff. Black wax. We don't burn black candles at St. Brendan's.","They would not cross themself. They made some other sign instead, one I didn't know."],
+  "tag:boat":["They left river mud on the floor of the box, and their sleeves were wet to the elbow.","They smelled of the river. Wet rope and weed."],
+  "tag:horses":["They smelled of the stable. Horse, and liniment.","There was straw caught in their coat, and horsehair."],
+  "tag:flour":["There was flour on the kneeler afterwards, white as chalk.","Their hands left pale marks on the grille. Flour, I think."]
+};
+function confessVisit(){
+  const fd=N[8];
+  if(!fd||fd.jailed||fd.dead||fd.rel<60||S.day<4||S.day>19||isSunday(S.day))return null;
+  const C=S.conf||(S.conf={n:0,last:-9,said:[]});
+  if(C.n>=4||S.day-C.last<3||Math.random()>=.6)return null;
+  const T={grave:3,serious:2,petty:1};
+  const cand=S.cases.filter(c=>c.kind==="human"&&c.culprit&&c.culprit.id!==8&&!c.culprit.dead&&relOf(fd,c.culprit)!=="family"
+    &&attrsOf(c.culprit,false).some(k=>GRILLE[k])&&Math.random()<(c.culprit.villain?.3:.75));
+  if(!cand.length)return null;
+  const c=wpick(cand,x=>T[x.tier]||1);
+  C.n++;C.last=S.day;
+  return {when:"morning",npc:fd,kind:"tip",step:"confess",case:c};
+}
+function grilleHints(c,close){
+  const cu=c.culprit,others=c.suspects.filter(x=>x!==cu);
+  const all=attrsOf(cu,false).filter(k=>GRILLE[k]);
+  const sharp=all.filter(k=>!others.some(o=>fits(o,k)));
+  const fresh=sharp.filter(k=>!c.keys.includes(k));
+  let picks;
+  if(close)picks=shuffle(fresh.length?fresh:sharp.length?sharp:all).slice(0,1).concat(shuffle(all).slice(0,2));
+  else picks=[rnd(all)];
+  picks=picks.filter((k,i)=>picks.indexOf(k)===i).slice(0,close?2:1);
+  return picks.map(k=>rnd(GRILLE[k]));
+}
+function pipScript(v){
+  const n=v.npc,mum=n.id===4,up=spiritUp();
+  const lines=[mum?`Greta Voss comes in without her coat, soaked to the skin, her hair coming down.`:`${n.name} comes in out of the storm and doesn't stop to shut the door.`,
+    mum?`"Pip never came home last night. He went out for lamp oil at six o'clock and he never came home."`:`"It's the Voss boy. Pip. He never came home last night, and Greta's out of her mind."`,
+    `"The river's over the bottoms road. ${mum?"Hugo's out with a lantern":"Half the lunchroom's out with lanterns"}, and nobody has seen him."`];
+  if(up)lines.push(mum?`"And the Tillery woman says the children have been hearing something call their names at night. Detective, please."`:`"Some of the children say they've heard something calling their names after dark. I don't know what to think any more."`);
+  const who=S.pip;
+  return {lines,choices:[
+    {label:"Send the sergeant out with every man he can find",fn:()=>{who.search=true;adj(n,6);if(!N[4].jailed)adj(N[4],6);S.rep=clamp(S.rep+2);endVisit(`Obermeyer goes out into the storm with a lantern and six men from the lunchroom.`)}},
+    {label:"Say boys run off, and he'll turn up",fn:()=>{who.search=false;adj(n,-8);if(!N[4].jailed)adj(N[4],-10);endVisit(`${n.name} stares at you, then goes back out into the storm without a word.`)}}]};
+}
+function pipFoundScript(v){
+  const n=v.npc,st=S.rite&&S.rite.story,up=spiritUp(),mum=n.id===4,srch=S.pip&&S.pip.search;
+  S.pip.found=true;N[5].away=false;
+  const finder=srch?"your sergeant's men":(!N[6].jailed?"Hugo Brandt":"Jonah Reed");
+  const wet=st&&/river|ferry|bottoms/.test(st.place),ri=st?RITES.indexOf(st):0;
+  const ghostDesc=["a girl in a wet dress","a man with a pack on his back","a lady who smelled of smoke"][ri]||"a lady";
+  const where=up?`at ${st?st.place:"the river"}, ${wet?"up to his knees in the water":"standing in the rain in the dark"}, as still as a post`:`in the hayloft at the livery, fast asleep. He'd been too frightened of the storm to come home`;
+  const lines=[n===SERGEANT?`Obermeyer comes in, wet through, and for once he's smiling.`:`${n.name} comes in, and there is a boy wrapped in a horse blanket beside ${him(n)}: Pip, white as paper.`,
+    `"${finder==="your sergeant's men"?"Your men":cap(finder)} found him ${where}."`];
+  if(up)lines.push(`"He says ${ghostDesc} told him to wait there. He says ${ri===1?"he":"she"} was very kind, and very cold, and is coming back for him."`,`Pip doesn't say anything at all. He's looking at the window.`);
+  else lines.push(`"He's frozen, and he'll get a hiding when he's warm, but he's alive."`);
+  lines.push(srch?(mum?`"Thank you, detective. I'll not forget you sent them out."`:`"Greta asked me to thank you for sending the men out."`):(mum?`"No thanks to you."`:`"Greta will remember who helped and who didn't, detective."`));
+  return {lines,done:()=>{if(srch){if(!N[4].jailed)adj(N[4],6)}}};
+}
+/* ---- the last evening: a handful of the town come to say what they think ---- */
+function verdictOn(n){
+  const st=S.stats,bad=st.wrong>=3||st.wrong>st.solved/2,good=st.solved>=st.wrong*3&&st.solved>=8;
+  const fj=N.find(f=>f!==n&&f.jailed&&!f.dead&&relOf(n,f)==="family");
+  const V=S.vig,H=S.heist,A=S.art,r=S.rite,out=[];
+  if(fj)out.push(attTier(n)==="warm"?`My ${famLabel(fj,n)} is in your cell, and I'll not pretend I'm glad of it. But I know what ${he(fj)} did.`:`You've got my ${famLabel(fj,n)} locked in that cell. I'll not forgive it, whatever the council says.`);
+  if(n.id===4&&S.pip)out.push(S.pip.search?`You sent men out for my boy when nobody else would. Whatever they say about you, I'll remember that.`:`When my boy was lost in the storm, you told me boys run off. I heard you.`);
+  if(V&&V.outcome==="frenzy")out.push(`A woman was dragged out of your doorway and killed. I don't know whose fault that was. I know it happened on your watch.`);
+  if(V&&V.outcome==="stoodDown")out.push(`You stood in that doorway and turned the committee away. Half the men I know were in that crowd. They were ashamed of themselves for a week, and so they ought to have been.`);
+  if(r&&r.stage>=4)out.push(`It's quiet at night now. I don't ask what you did. I just sleep.`);
+  else if(r)out.push(`It still walks, detective. I heard it last night, at my own window. You didn't stop it.`);
+  if(H&&H.news==="robbed")out.push(`They robbed ${H.target.name} under your nose. Half this town's savings.`);
+  if(H&&H.news==="foiled")out.push(`They say you broke up that gang before they got their big job. That's worth something.`);
+  if(A&&A.news==="recovered")out.push(`Mrs. Ashby's pictures came home. I never thought I'd see her smile. I still haven't, but she came close.`);
+  if(bad)out.push(`You put innocent people in that cell. Folk remember that in a town this size. They remember it for years.`);
+  if(good)out.push(`The town's quieter than it was. Not quiet. But quieter.`);
+  if(!out.length)out.push(`I don't know what to make of you, and I don't think the town does either.`);
+  return out;
+}
+function farewells(){
+  const pool=free().filter(n=>!n.dead&&n.id!==MAYOR),picked=[];
+  if(!pool.length)return [];
+  const byRel=[...pool].sort((a,b)=>b.rel-a.rel);
+  picked.push(byRel[0]);
+  const low=byRel[byRel.length-1];if(low&&!picked.includes(low))picked.push(low);
+  const stake=pool.find(n=>!picked.includes(n)&&(N.some(f=>f!==n&&f.jailed&&!f.dead&&relOf(n,f)==="family")||(n.id===4&&S.pip)))||rnd(pool.filter(n=>!picked.includes(n)));
+  if(stake)picked.splice(1,0,stake);
+  return [...picked.map(n=>({kind:"farewell",npc:n})),{kind:"farewell",npc:SERGEANT}];
+}
+function farewellScript(item){
+  const n=item.npc;
+  if(n===SERGEANT){const T=sgtTier();
+    return {lines:[{n:true,t:"Obermeyer comes through from the back, hat already on, and stands at the desk a moment."},
+      {t:{cheerful:"Twenty days, chief. Felt like twenty years, some of them. I wouldn't have missed it.",friendly:"Well. That's your twenty days, detective. For what it's worth, I've worked under worse.",weary:"Twenty days. I'm going home to sleep for a week.",curt:"That's the lot. I'll say goodnight."}[T]},
+      {t:{cheerful:"The Mayor's coming over himself. That's either very good or very bad. Good luck.",friendly:"The Mayor's on his way over. I'll leave you to it.",weary:"The Mayor's coming. I won't stay for it.",curt:"The Mayor's coming."}[T]}]}}
+  const at=attTier(n),says=verdictOn(n);
+  const lines=[{n:true,t:pk(at==="warm"?[`${n.name} knocks, which nobody in this town does, and comes in.`,`${n.name} comes in out of the dark and takes off ${his(n)} hat.`]:at==="cold"?[`${n.name} comes in without knocking and doesn't close the door.`,`${n.name} comes in and stays standing by the door.`]:[`${n.name} comes in as you're clearing the desk.`,`${n.name} looks in, and then decides to come in after all.`])}];
+  const wh=Math.random()<.5&&wearHint(n);if(wh)lines.push(wh);
+  lines.push({t:pk(at==="warm"?["I heard it's your last night on trial. I wanted to come myself.","I've come to say something, and I'll say it quick."]:at==="cold"?["I'll say my piece and go.","Somebody ought to tell you what the town thinks. It might as well be me."]:["They say the council's deciding about you tonight.","I thought I'd come by, before the Mayor does."])});
+  says.slice(0,2).forEach(t=>lines.push({t}));
+  lines.push({t:pk(at==="warm"?["Whatever they decide, you did right by me.","Goodnight, detective. And thank you."]:at==="cold"?["That's all. Goodnight.","I hope they send you back where you came from."]:["Well. Goodnight, detective.","That's all I wanted to say."])});
+  return {lines};
+}
+function sundayScript(v){
+  const n=v.npc;
+  return {lines:[`Father Dunn looks in on his way back from early Mass, his cassock showing under his overcoat.`,
+    `"Sunday, detective. You'll find it quiet today. You'll find most Sundays quiet, if this town runs true to form."`,
+    `"Whatever else Hollow Creek is, it goes to church. Methodists, Lutherans, Presbyterians, my own few. They sit in their pews and sing and look sideways at their neighbours."`,
+    `"And nobody wants to be the one who was out making mischief the night before. A town that has been to church keeps itself quiet for a day. It's the nearest thing to a miracle I've seen here."`],
+    choices:[
+      {label:"Say you'll enjoy the quiet",fn:()=>{adj(n,3);endVisit(`Father Dunn smiles and goes out into the sunshine.`)}},
+      {label:"Ask whether it works on everything",fn:()=>{adj(n,2);talkMore(`He is quiet a moment. "So far," he says. "They say even old things keep the Sabbath. I'd not rely on it for ever."`,[{label:"See him out",fn:()=>endVisit(`Father Dunn goes out, and does not look back at the station.`)}])}}]};
+}
+function sunday19Script(v){
+  const n=v.npc,r=S.rite,st=r.story,pr=n.id===8,ready=r.stage>=2;
+  const lines=pr?[`Father Dunn comes in out of the storm, soaked to the skin, his stole still round his neck.`,
+    `"I couldn't finish the Mass. Every candle in the church went out at once, at the Consecration. Every one."`,
+    `"Then the bell began to ring. Nobody in the tower. The rope never moved. And in the dark, the whole church heard a voice from the choir loft. It was ${st.who}. It wants ${st.want}."`,
+    `"They ran, detective. My whole congregation, out into the rain. I have never seen it. The Sabbath kept it quiet two weeks running. It isn't keeping it quiet now."`]
+   :[`${n.name} comes in without knocking, dripping, a shawl held tight at the throat.`,
+    `"You've heard the bell? It rang all through the Mass at St. Brendan's. The priest's people ran out into the street screaming."`,
+    `"It's ${st.who}. It's angry, and it's done waiting. Sundays kept it quiet. Nothing will now, but us."`];
+  lines.push(ready?(pr?`"Tonight. Whatever it costs, we try ${r.stage>=3?"once more":"the rite"} tonight. Be here."`:`"Tonight, we finish it or it finishes this town. Be here after dark."`):`"We aren't ready to lay it to rest, and it knows it. Lock your door tonight, detective. Keep the lamp lit."`);
+  return {lines,choices:[
+    {label:ready?"Say you'll be here tonight":"Promise to keep the lamp lit",fn:()=>{adj(n,4);endVisit(`${n.name} goes back out into the storm.`)}},
+    {label:"Ask what it wants",fn:()=>{adj(n,1);talkMore(`"${cap(st.want)}. It waits at ${st.place}. It always has."`,[{label:"See them out",fn:()=>endVisit(`${n.name} goes back out into the storm.`)}])}}]};
+}
+function confessScript(v){
+  const n=v.npc,c=v.case,C=S.conf||{n:1},close=n.rel>=78,vic=c.victim;
+  const first=C.n<=1&&!C.met;
+  const open=pk([`Father Dunn comes in before the first complaint is typed. He does not sit down.`,`Father Dunn is waiting on the step when you unlock the station, his hat in both hands.`,`Father Dunn comes in early and stands by the stove a long while before he speaks.`]);
+  const about=vic===n?pk([`"There will be a complaint on your desk today, detective, and it is mine. What was done at the church."`,`"You'll have my complaint today. The thing at St. Brendan's. And the one who did it came to me afterwards, on their knees. Can you imagine?"`]):pk([`"You'll have a complaint on your desk today. The trouble with ${vic.name}."`,`"There will be a complaint today, about ${vic.name}. I knew of it before you did."`]);
+  const ls=[open,about];
+  if(first)ls.push(`"Understand me. What is said to me in the box, I cannot repeat. Not to you, not to a judge, not to the Bishop himself."`,`"But I have eyes like any man. And what I see through the grille is not what I'm told."`);
+  else ls.push(pk([`"The same terms as before, detective. What I saw. Never what I heard."`,`"I'll say what I saw, and not a word of what was said."`]));
+  grilleHints(c,close).forEach(h=>ls.push(`"${h}"`));
+  if(close&&c.outsider)ls.push(`"And one thing more. Whatever names you find written on that complaint, I don't believe the soul I'm thinking of is among them."`);
+  ls.push(pk([`"That is all. I have said more than I ought to already."`,`"That is all I can give you. I'll be on my knees tonight for giving that much."`]));
+  const done=()=>{if(S.conf)S.conf.met=true};
+  return {lines:ls,choices:[
+    {label:"Ask him for the name",fn:()=>{done();adj(n,-4);talkMore(`"No." He says it gently, but it is the end of the matter. "I would go to prison before I broke the seal, detective, and to hell if I did. I've told you what I saw."`,[{label:"See him out",fn:()=>endVisit(`Father Dunn goes out without looking back.`)}])}},
+    {label:"Ask why he is telling you at all",fn:()=>{done();adj(n,2);talkMore(pk([`He turns his hat round in his hands. "Because I think they'll do it again. And because if you hang the wrong soul, I'll have known and kept quiet. I can't carry that as well."`,`"Because this town is going wrong, detective, and I have sat in that box and listened to it go." He looks at the floor. "Somebody has to do something, and I am not permitted to."`]),[{label:"Thank him",fn:()=>{adj(n,3);endVisit(`Father Dunn nods once and goes, crossing himself at the door.`)}}])}},
+    {label:"Promise him it goes no further",fn:()=>{done();adj(n,5);endVisit(`Father Dunn nods once and goes, crossing himself at the door.`)}}]};
 }
 function tipsFor(src,cases,morningVisit){
   const out=[],H=S.heist;
@@ -1538,6 +2057,11 @@ function greet(v){
 }
 function visitScript(v){
   const n=v.npc,r=S.rite;
+  if(v.kind==="tip"&&v.step==="confess"&&v.case)return confessScript(v);
+  if(v.step==="sunday")return sundayScript(v);
+  if(v.step==="pip")return pipScript(v);
+  if(v.step==="pipfound")return pipFoundScript(v);
+  if(v.step==="sunday19")return sunday19Script(v);
   if(v.kind==="tip"){
     v.tips=v.tips||tipsFor(n,v.when==="morning"?S.cases:S.next,v.when==="morning");
     const first=v.tips[0]||"Nothing much to tell. Only that folks are watching how you do.";
@@ -1594,12 +2118,14 @@ function docTitle(k){
   if(k.startsWith("case:")){const c=S.cases[+k.slice(5)];return c?`Complaint No. ${c.no}`:"Complaint"}
   if(k.startsWith("file:")){const n=N[+k.slice(5)];return `File: ${n.name}`}
   if(k.startsWith("oldnb:")){const r=readSaves().find(x=>x.id===k.slice(6));return `Notebook of ${r?r.name:"a former detective"}`}
+  if(k.startsWith("oldlet:")){const r=readSaves().find(x=>x.id===k.slice(7));return `Letters about ${r?r.name:"a former detective"}`}
   return DOC_NAMES[k]||k;
 }
 function docHtml(k){
   if(k.startsWith("case:"))return caseDoc(+k.slice(5));
   if(k.startsWith("file:"))return fileDoc(+k.slice(5));
   if(k.startsWith("oldnb:"))return oldNotebookDoc(k.slice(6));
+  if(k.startsWith("oldlet:"))return oldLettersDoc(k.slice(7));
   switch(k){case "lockup":return lockupDoc();case "paper":return paperDoc();case "ledger":return ledgerDoc();case "letter":return letterDoc();
     case "report":return reportDoc();case "notebook":return notebookDoc();case "end":return S.endLetter;case "register":return registerDoc()}
   return "";
@@ -1629,7 +2155,7 @@ function renderReading(){
 }
 function openReading(){picker=null;if(!reading){reading=true;lean(true)}refresh();$("reading").scrollTop=0}
 function closeReading(){if(!S.name)return;reading=false;S.say="";lean(false);refresh();maybeWatcher()}
-function maybeWatcher(){if(!G.renderer||!S||S.day<15||G.watcher||S.watchedDay===S.day||Math.random()>.18)return;S.watchedDay=S.day;setTimeout(()=>{if(reading||G.visitor)return;G.watcher=makeWatcher();G.watcherT=performance.now()},520)}
+function maybeWatcher(){if(!G.renderer||!S||S.day<15||quietSunday(S.day)||G.watcher||S.watchedDay===S.day||Math.random()>.18)return;S.watchedDay=S.day;setTimeout(()=>{if(reading||G.visitor)return;G.watcher=makeWatcher();G.watcherT=performance.now()},520)}
 function renderPicker(){
   const p=$("picker");p.classList.toggle("show",!!picker);
   if(!picker){p.innerHTML="";return}
@@ -1669,9 +2195,10 @@ function wireDocs(root){
   if(nx)nx.onclick=()=>{S.nbOff=Math.max(0,(S.nbOff||0)-4);Sound.rustle();refresh()};
   root.querySelectorAll("[data-load]").forEach(b=>b.onclick=()=>loadGame(b.dataset.load));
   root.querySelectorAll("[data-oldnb]").forEach(b=>b.onclick=()=>{Sound.rustle();place("oldnb:"+b.dataset.oldnb)});
+  root.querySelectorAll("[data-oldlet]").forEach(b=>b.onclick=()=>{Sound.rustle();place("oldlet:"+b.dataset.oldlet)});
   root.querySelectorAll("[data-oldprev]").forEach(b=>b.onclick=()=>{S.oldNb[b.dataset.oldprev]--;Sound.rustle();refresh()});
   root.querySelectorAll("[data-oldnext]").forEach(b=>b.onclick=()=>{S.oldNb[b.dataset.oldnext]++;Sound.rustle();refresh()});
-  if(root.querySelector("#expFile"))wireRegister(root);
+  if(root.querySelector("#newBtn")||root.querySelector("#expFile"))wireRegister(root);
   root.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{if(b.dataset.armed){deleteSave(b.dataset.del)}else{b.dataset.armed=1;b.textContent="Strike out for good?"}});
   const nb=root.querySelector("#newBtn"),ni=root.querySelector("#newName");
   if(nb){const go=()=>{const n=ni.value.trim().replace(/\s+/g," ");if(!n){ni.focus();return}startGame(n)};nb.onclick=go;ni.onkeydown=e=>{if(e.key==="Enter")go()}}
@@ -1831,7 +2358,8 @@ Object.assign(Sound,{
         setTimeout(wob,30+Math.random()*40)};wob();}
     this._penUntil=Math.max(this._penUntil||0,t+ms/1000);
   },
-  sip(){if(!this.ok())return;this.burst(700,1.2,.12,.35);this.tone("sine",180,120,.12,.12,.35);this.tone("sine",160,110,.1,.1,.55);this.thump()},
+  sip(){if(!this.ok())return;this.hush(1600,1.4,.035,.12,.45);this.hush(2400,2,.02,.08,.3,.5);this.tone("sine",2300,2250,.25,.008,.95)},
+  hush(freq,q,peak,att,dur,delay=0){const c=this.ctx,t=c.currentTime+delay,src=c.createBufferSource();src.buffer=this.buf;const f=c.createBiquadFilter();f.type="bandpass";f.frequency.value=freq;f.Q.value=q;const hp=c.createBiquadFilter();hp.type="highpass";hp.frequency.value=700;const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+att);g.gain.linearRampToValueAtTime(0,t+dur);src.connect(hp).connect(f).connect(g).connect(this.master);src.start(t,Math.random()*2,dur+.05)},
   rattle(){if(!this.ok())return;for(let i=0;i<5;i++){this.burst(200,.9,.5,.08,i*.09,.55);this.burst(1400,4,.12,.04,i*.09+.02,.55)}},
   blackout(){if(!this.ok())return;const c=this.ctx,t=c.currentTime,L=this.loud();
     const o=c.createOscillator(),g=c.createGain();o.type="sawtooth";o.frequency.setValueAtTime(60,t);o.frequency.exponentialRampToValueAtTime(25,t+.5);g.gain.setValueAtTime(.6,t);g.gain.exponentialRampToValueAtTime(.001,t+.6);o.connect(g).connect(L);o.start(t);o.stop(t+.7);
@@ -1850,8 +2378,8 @@ Object.assign(Sound,{
   pencil(){if(!this.ok())return;const n=performance.now();if(n-(this._pl||0)<55)return;this._pl=n;this.burst(3800+Math.random()*2200,3,.035+Math.random()*.03,.03+Math.random()*.03,0,.1)},
   sign(){if(!this.ok())return;for(let i=0;i<16;i++)this.burst(3200+Math.random()*3000,2.5,.06+Math.random()*.05,.04+Math.random()*.06,i*.075+Math.random()*.03,.05)},
   stamp(){if(!this.ok())return;this.burst(220,.9,.5,.12);this.burst(1200,1,.12,.06)},
-  match(){if(!this.ok())return;this.burst(3000,.7,.25,.12);for(let i=0;i<6;i++)this.burst(1500+Math.random()*2500,5,.08,.02,.08+i*.05+Math.random()*.04);this.puff(.9)},
-  puff(delay=0){if(!this.ok())return;this.burst(500,.6,.12,.7,delay);this.burst(260,.7,.08,.9,delay+.1)},
+  match(){if(!this.ok())return;this.hush(3800,1.2,.05,.03,.22);this.hush(2200,.9,.03,.08,.6,.2);this.puff(1.1)},
+  puff(delay=0){if(!this.ok())return;this.hush(1300,.8,.025,.25,.8,delay);this.hush(900,.9,.015,.35,1,delay+.15)},
   step(pan=0){if(!this.ok())return;this.burst(180,.9,.22,.09,0,pan);if(Math.random()<.35)this.burst(700+Math.random()*300,9,.05,.18,.02,pan)},
   door(){if(!this.ok())return;this.tone("sawtooth",140,95,.55,.06,0,this.bp(900,6));this.burst(260,.8,.2,.12,.5)},
   bp(f,q){const b=this.ctx.createBiquadFilter();b.type="bandpass";b.frequency.value=f;b.Q.value=q;b.connect(this.master);return b},
@@ -2368,12 +2896,12 @@ function loop(){
   G.door.rotation.y+=((G.doorOpen?-1.2:0)-G.door.rotation.y)*Math.min(1,dt*5);if(!G.doorOpen&&Math.abs(G.door.rotation.y)<.002&&!(G.doorShake&&now-G.doorShake<(G.doorShakeLen||1100)))G.door.rotation.y=0;
   stepVisitor(dt,now);
   if(G.watcher){const k=now-G.watcherT;if(k>1900){G.watcher.position.x+=dt*3.5;const op=Math.max(0,1-(k-1900)/350);G.watcher.material.opacity=op;G.watcher.children.forEach(ch=>ch.material.opacity=op)}if(k>2300){G.scene.remove(G.watcher);G.watcher.material.map.dispose();G.watcher=null}}
-  if(now<G.smokeUntil&&Math.random()<dt*.35)Sound.puff();
   if(G.sip){const m=G.objs.coffee,k=(now-G.sip.t0)/1500;if(k>=1){m.position.set(4.5,0,-.9);m.rotation.set(0,0,0);G.sip=null}else{const e=Math.sin(Math.min(1,k)*Math.PI);m.position.set(4.5-e*1.6,e*2.2,-.9+e*3.4);m.rotation.set(0,0,e*.9)}}
   if(G.blackoutUntil){if(now<G.blackoutUntil){G.spot.intensity=0;G.hang.intensity=0;G.stoveLight.intensity=0;G.fill.intensity=0;G.amb.intensity=.012;G.stoveGlow.material.color.setRGB(.05,.02,.01);G.bulb.material.color.set(0x111111);G.outside.material.color.setScalar(.08)}else{G.blackoutUntil=0;G.outside.material.color.setScalar(1);sync3D();Sound.lightsBack();say("The lights come back. Everything is just as it was. The door opens easily now.")}}
-  if(S&&S.name&&S.phase==="evening"&&S.rite&&S.rite.stage<4&&!G.visitor&&!TALK&&(S.creeps||0)<2){
+  const d19=S&&S.day===19&&spiritUp();
+  if(S&&S.name&&!quietSunday(S.day)&&(S.phase==="evening"||(d19&&S.phase==="day"))&&S.rite&&S.rite.stage<4&&!G.visitor&&!TALK&&!reading&&(S.creeps||0)<(d19?(S.phase==="day"?2:5):2)){
     G.creepT=(G.creepT||0)+dt;
-    if(G.creepT>12){G.creepT=0;if(S.rite.angry||Math.random()<.04+.02*S.day){S.rite.angry=false;creep(now)}}
+    if(G.creepT>(d19?8:12)){G.creepT=0;if(S.rite.angry||Math.random()<(d19?.5:.04+.02*S.day)){S.rite.angry=false;creep(now,d19&&!S.d19knock?"knock":null);if(d19)S.d19knock=true}}
   }
   if(G.doorShake&&now-G.doorShake<(G.doorShakeLen||1100))G.door.rotation.y+=Math.sin(now/22)*.035;
   G.rain.forEach(r=>{r.t.offset.y+=dt*r.speed;r.t.offset.x+=dt*.05});
@@ -2427,6 +2955,7 @@ function makeWatcher(){
 function sync3DLights(){if(!G.renderer||!S)return;const eve=S.phase!=="day",wi=WEATHERS.indexOf(weatherOf(S.day));G.fill.intensity=eve?.05:[.62,.3,.2,.22,.16][wi]}
 function gameMinutes(){
   if(!S)return 8*60;
+  if(S.day===19&&spiritUp())return 3*60+10;
   if(S.phase==="day"){const c=Math.max(S.cases.length,1);return 8*60+20+S.idx*(8*60+10)/c}
   if(S.phase==="evening")return 19*60+10+(S.visit&&S.visit.done?35:0);
   return 21*60;
@@ -2449,7 +2978,8 @@ const LOOK={
  13:{skin:"#c09876",top:"#4a3e30",low:"#3a3228",hat:"wide",hatc:"#2a241e",coat:1,patch:"#5e5040"},
  14:{skin:"#e2c6ae",top:"#161414",low:"#161414",skirt:1,hat:"veil",hatc:"#161414"},
  15:{skin:"#c6a080",top:"#4a3e34",low:"#4a3e34",shawl:"#5a4a3a",skirt:1,pipe:1},
- 16:{skin:"#be926e",top:"#7a6a3a",low:"#3a3228",hat:"cap",hatc:"#2a2a2a",coat:1,beard:1}
+ 16:{skin:"#be926e",top:"#7a6a3a",low:"#3a3228",hat:"cap",hatc:"#2a2a2a",coat:1,beard:1},
+ 17:{skin:"#dcb898",top:"#5c5d64",low:"#5c5d64",shirt:"#ece6da",hat:"wide",hatc:"#2e2e32"}
 };
 function drawSprite(n,frame,blink){
   const c=document.createElement("canvas");c.width=24;c.height=48;const x=c.getContext("2d");
@@ -2543,6 +3073,7 @@ const VOICE={
  14:{cls:"rich",pitch:.9,rate:.78,pre:["Detective.","I shan't take up much of your time.","I trust you are sober at this hour."],post:["I expect it to be dealt with.","I do not care to repeat myself.","Good day."]},
  15:{cls:"poor",pitch:.95,rate:.84,pre:["Mornin', child.","Well now, detective.","Let old Maud sit a minute."],post:["Mark what old Maud says.","The river knows, even if you don't.","Mind yourself after dark."]},
  16:{cls:"poor",pitch:.85,rate:.84,pre:["Detective.","Mm. Morning.","Come to tell you something."],post:["That's it.","River's rising. I'd best get back.","Mm."]},
+ 17:{cls:"rich",pitch:1.02,rate:.9,pre:["Good morning, Detective. I trust I find you well.","Detective. I shall not detain you longer than is strictly necessary.","If I might have a moment of your time, Detective."],post:["I am obliged to you.","Good day to you, Detective.","I shall leave the particulars with your sergeant, if that is agreeable."]},
  sheriff:{cls:"middle",pitch:.8,rate:.9},sergeant:{cls:"middle",pitch:.9,rate:1.05}
 };
 function townMood(){return (S.rep-50)-(S.unrest-25)}
@@ -2566,7 +3097,8 @@ const INTRO={0:"I've baked this town's bread twenty-eight years. My boy Tom work
  13:"Crow Finch. Scrap, rags, what have you. If it's been lost in this town, chances are I bought it.",
  14:"My late husband ran the bank. I hold the mortgages now. You will find most of this town owes me something.",
  15:"I've lived on the bottoms since before there was a town. Herbs, remedies. Folk come to me when the doctor won't do.",
- 16:"I run the ferry. Have since I was a boy. The river's a living thing, detective. Treat it right."};
+ 16:"I run the ferry. Have since I was a boy. The river's a living thing, detective. Treat it right.",
+ 17:"Laurence Whitcombe. I buy grain for the Cedar Valley Elevator Company and keep its accounts. I came out from Evanston in '29, which I am reliably informed was an unfortunate year to arrive anywhere."};
 function introFor(n,lines){if(typeof n.id!=="number"||!INTRO[n.id])return;S.met=S.met||[];if(S.met.includes(n.id))return;S.met.push(n.id);lines.push({t:INTRO[n.id]})}
 const PLEASANT={fair:["Fine morning, isn't it? Makes a change.","Sun's out, anyway. That's something."],rain:["Wet one again.","You'd think it would run out of rain."],fog:["Can't see your hand in front of you out there.","This fog gets into your bones."],heavy:["Wet enough for you?","I near swam here."],storm:["Filthy night it was.","Did you hear the wind last night?"]};
 const WARM_HELLO=["How are you keeping, detective?","Morning, detective. You look tired. Are they working you hard?","Good to see you. Folks are saying good things."];
@@ -2601,11 +3133,13 @@ function scriptFor(item){
     const ARR={cheerful:["Obermeyer comes in whistling, a sheet of typing in his hand.","The sergeant comes through the back with a grin and a page of typing."],friendly:["Sergeant Obermeyer comes in from the back with the day's report.","Obermeyer comes through, pulling on his coat."],weary:["Obermeyer comes in slowly, rubbing his eyes.","The sergeant comes through, collar undone, looking every one of his years."],curt:["The sergeant comes in and drops a sheet on the desk without looking at you.","Obermeyer comes through. He doesn't take his hat off."]};
     const HI={cheerful:["Evening, chief! Another day done and dusted.","There we are, detective. Home time, near enough!"],friendly:["Evening, detective. That's the lot for today.","Right, detective. Day's done."],weary:["That's the day, detective. Such as it was.","Another one over."],curt:["Report.","Here."]};
     const HOW=good&&!bad?{cheerful:"Went a treat today, if you ask me. The lunchroom was full of it.",friendly:"Went about as well as a day can go, I'd say.",weary:"Better than most, I suppose.",curt:"Went all right."}:bad?{cheerful:"Some of it you won't like. Chin up, though.",friendly:"Some of it you won't like, I'm afraid.",weary:"There's grumbling. There's always grumbling.",curt:"You won't like it."}:{cheerful:"Quiet enough, and quiet's lovely.",friendly:"Quiet enough, all told.",weary:"Nothing much. Could be worse.",curt:"Nothing much."};
-    const WX={fair:{cheerful:"Lovely evening out there. My tomatoes'll think it's May.",friendly:"Nice evening, for once.",weary:"Mild out. Won't last.",curt:""},rain:{cheerful:"Good for the gardens, all this rain.",friendly:"Still raining. Mind how you go.",weary:"Rain again.",curt:""},fog:{cheerful:"Fog's so thick I walked straight into the pump. Laughed myself silly.",friendly:"Fog's thick. Mind how you go on the way home.",weary:"Can't see a thing in this fog. Gives me the creeps.",curt:""},heavy:{cheerful:"Wet enough for ducks, eh?",friendly:"It's coming down hard. Take the long way round the creek.",weary:"The cellar's flooded again at home.",curt:""},storm:{cheerful:"Hear that wind? Roof'll be off by Friday! Ha!",friendly:"Listen to that wind. Stay in if you've any sense.",weary:"This storm. I haven't slept in three nights.",curt:""}}[ww][T];
+    const WX={fair:{cheerful:"Lovely evening out there. My tomatoes'll think it's May.",friendly:"Nice evening, for once.",weary:"Mild out. Won't last.",curt:""},rain:{cheerful:"Good for the gardens, all this rain.",friendly:"Raining again. Mind how you go.",weary:"Rain again.",curt:""},fog:{cheerful:"Fog's so thick I walked straight into the pump. Laughed myself silly.",friendly:"Fog's thick. Mind how you go on the way home.",weary:"Can't see a thing in this fog. Gives me the creeps.",curt:""},heavy:{cheerful:"Wet enough for ducks, eh?",friendly:"It's coming down hard. Take the long way round the creek.",weary:"The cellar's flooded again at home.",curt:""},storm:{cheerful:"Hear that wind? Roof'll be off by Friday! Ha!",friendly:"Listen to that wind. Stay in if you've any sense.",weary:"This storm. I haven't slept in three nights.",curt:""}}[ww][T];
     const PERSONAL=["Mrs. Obermeyer's made a pie. Rhubarb. I'll bring you a slice tomorrow.","My boy wrote from Des Moines. He's got work at the Register. Printing, not writing, but still.","Kaiser, that's my dog, had pups last night. Six of them. You want one?","My knee says the weather's turning. My knee's never wrong.","Twenty-two years I've been at this desk. Never seen a spell like this."];
     const BYE={cheerful:["Night, chief! Don't let the bedbugs bite.","I'm off. Sleep well, detective."],friendly:["I'll see you in the morning. Mind the lamp.","It's on your desk. I'll be off home."],weary:["I'm going home.","Night."],curt:["Night.","That's all."]};
     const lines=[{n:true,t:pk(ARR[T])},{t:pk(HI[T])},{t:HOW[T]}];
     if(WX)lines.push({t:WX});
+    if(quietSunday(S.day))lines.push({t:{cheerful:pk(["Quiet one! Sundays always are.","Not a peep all day. That's a Sunday for you."]),friendly:"Quiet day. Sundays usually are.",weary:"Sunday. Thank God for it.",curt:"Quiet."}[T]});
+    if(S.day===19)lines.push({t:{cheerful:"I won't pretend, chief. That was the worst day I've seen.",friendly:"Twenty-two years, and I've never known a Sunday like it.",weary:"I don't know what this town's coming to. I truly don't.",curt:"Worst day yet."}[T]});
     if((T==="cheerful"||T==="friendly")&&Math.random()<.5)lines.push({t:pk(PERSONAL)});
     if(T==="cheerful"&&Math.random()<.45&&S.next&&S.next.length){const h=tipsFor(SERGEANT,S.next,false)[0];if(h)lines.push({t:"One more thing. Heard this at the lunchroom: "+h.replace(/^You didn't hear it from me, but /,"")})}
     lines.push({t:pk(BYE[T])});
@@ -2667,6 +3201,7 @@ function scriptFor(item){
         }}]};
   }
   if(item.kind==="hugoTip"){return {lines:[{n:true,t:"Hugo Brandt comes in after dark and stands at the desk a long time without speaking."},{t:"There'll be trouble tomorrow. On Front Street. Some of the committee have gone bad."},{t:"It'll be Karl leading it. My own brother. God help me, I've said it now."},{t:"I'll not say it twice, and I'll not say it in court."}],done:()=>{adj(N[6],4)}}}
+  if(item.kind==="farewell")return farewellScript(item);
   if(item.kind==="mayor")return {lines:[{n:true,t:`${n.name} comes in with his hat in his hands.`},
       {t:"The council met this afternoon."},{t:"It's all written down. I thought I ought to bring it myself."}],
     done:()=>{S.endGiven=true;S.say="A letter lies on the desk."}};
@@ -2682,6 +3217,7 @@ function scriptFor(item){
     const arrive2=at==="warm"?`${v.name} comes in and manages a smile, all things considered.`:at==="cold"?`${v.name} comes in and doesn't bother to close the door.`:at==="curt"?`${v.name} comes in and doesn't say good morning.`:arrive;
     const lines=[{n:true,t:arrive2},{t:hello}];
     introFor(v,lines);
+    if(Math.random()<.4){const wh=wearHint(v);if(wh)lines.splice(1,0,wh)}
     if(at==="warm"){lines.push({t:pk(Math.random()<.5?PLEASANT[ww]:WARM_HELLO)})}
     if(Math.random()<.6)lines.push({t:pk(CONNECT[cls])});
     lines.push({t:firstPersonCrime(c.crime.d(v),v)});
@@ -2696,8 +3232,8 @@ function scriptFor(item){
   }
   const sc=visitScript(item);
   const ls=sc.lines.map((t,i)=>i===0?{n:true,t}:{t:t.replace(/^"|"$/g,"")});
-  if(item.kind==="tip"||item.kind==="mystic"){const intro=[];introFor(n,intro);if(intro.length)ls.splice(1,0,...intro)}
-  if(item.kind==="tip"){const at=attTier(n);
+  if(item.kind==="tip"||item.kind==="mystic"){const intro=[];introFor(n,intro);if(intro.length)ls.splice(1,0,...intro);if(Math.random()<.4){const wh=wearHint(n);if(wh)ls.splice(1,0,wh)}}
+  if(item.kind==="tip"&&item.step!=="confess"){const at=attTier(n);
     if(at==="warm")ls.splice(1,0,{t:pk([...(V.pre||[]),...PLEASANT[weatherOf(S.day)],...WARM_HELLO])});
     else if(at==="curt"||at==="cold")ls.splice(1,0,{t:pk(["I'll not stay. Just thought you ought to know something.","Don't make a fuss. I'm only here a minute.","I'm not here to chat."])});
     else if(V.pre&&V.pre.length&&Math.random()<.6)ls.splice(1,0,{t:pk(V.pre)})}
