@@ -357,18 +357,18 @@ const CAST=[
   build:"slight",height:"short",hand:"right",pipe:false,pub:[],hid:["keys"],shady:1.8,
   habits:"Does not smoke. Chews licorice.",remarks:"Runs errands for most of the businesses on Front Street.",extra:"Absent from school eleven times this term.",
   secret:"copies keys for anyone who pays"},
- {name:"Hugo Brandt",called:"Hugo",press:"Hugo Brandt",full:"Hugo Wilhelm Brandt",sex:"m",age:38,role:"Blacksmith and farrier",place:"smithy",addr:"Brandt's Smithy, River Road",born:"Hollow Creek, Iowa",eyes:"Brown",hair:"Black",church:"Zion Lutheran",
+ {name:"Hugo Brandt",called:"Hugo",press:"Hugo Brandt",full:"Hugo Wilhelm Brandt",sex:"m",age:38,role:"Blacksmith and farrier",place:"smithy",addr:"Brandt's Smithy, River Road",born:"Bremen, Germany",eyes:"Brown",hair:"Black",church:"Zion Lutheran",
   build:"heavy",height:"tall",hand:"right",pipe:false,pub:["tools"],hid:[],shady:1,
-  habits:"Does not smoke. A temperance man.",remarks:"Keeps a full shop of smith's tools.",extra:"Served with the 168th Infantry, 1917 to 1919.",
+  habits:"Does not smoke. A temperance man.",remarks:"Keeps a full shop of smith's tools.",extra:"Came over from Bremen with his brother in 1921.",
   secret:"lost his life savings at cards to Silas Grey"},
- {name:"Karl Brandt",called:"Karl",press:"Karl Brandt",full:"Karl Otto Brandt",sex:"m",age:35,role:"Woodcutter",place:"timber shed",addr:"Rear of Brandt's Smithy, River Road",born:"Hollow Creek, Iowa",eyes:"Brown",hair:"Black",church:"Zion Lutheran (irregular)",
+ {name:"Karl Brandt",called:"Karl",press:"Karl Brandt",full:"Karl Otto Brandt",sex:"m",age:35,role:"Woodcutter",place:"timber shed",addr:"Rear of Brandt's Smithy, River Road",born:"Bremen, Germany",eyes:"Brown",hair:"Black",church:"Zion Lutheran (irregular)",
   build:"heavy",height:"tall",hand:"left",pipe:true,pub:["tools"],hid:["night"],shady:1.8,
   habits:"Smokes a pipe.",remarks:"Cuts and sells cordwood; owns saws, wedges and a tool chest.",extra:"Bachelor. Keeps two hounds.",
   secret:"poaches deer from the mayor's woods by moonlight"},
  {name:"Father Osric Dunn",called:"Father Dunn",press:"the Rev. Osric Dunn",full:"Rev. Osric Dunn",sex:"m",age:49,role:"Pastor, St. Brendan's Church",place:"church",addr:"The rectory, St. Brendan's",born:"Dubuque, Iowa",eyes:"Blue",hair:"Brown",church:"St. Brendan's (Catholic)",
-  build:"average",height:"average",hand:"right",pipe:false,pub:["keys"],hid:["occult"],shady:.8,
+  build:"average",height:"average",hand:"right",pipe:false,pub:["keys"],hid:["night"],shady:.8,
   habits:"Does not smoke.",remarks:"Keeps the keys of the church, rectory and parish hall.",extra:"Came to the parish in 1926.",
-  secret:"keeps books of forbidden rites locked in the crypt"},
+  secret:"takes a drop more of the altar wine than he ought, and keeps a bottle of whiskey behind the hymnals in the rectory"},
  {name:"Dr. Leopold Amsel",called:"Doc",press:"Dr. Leopold Amsel",full:"Leopold Amsel, M.D.",sex:"m",age:61,role:"Physician",place:"office",addr:"Office and residence, Elm Street",born:"Vienna, Austria",eyes:"Hazel",hair:"White",church:"None given",
   build:"slight",height:"tall",hand:"right",pipe:true,pub:["poisons"],hid:["night"],shady:1,
   habits:"Smokes a pipe.",remarks:"Practicing physician; dispenses his own medicines.",extra:"Licensed to practice in Iowa, 1898.",
@@ -412,7 +412,7 @@ const RIVALS=[[0,4],[0,14],[2,14],[2,7],[3,7],[4,10],[5,13],[6,11],[6,13],[8,12]
 const MAYOR=2, DAYS=20;
 const TAG={keys:"Has keys to buildings",tools:"Owns proper tools",poisons:"Knows poisons and remedies",horses:"Handles horses",night:"Out and about at night",letters:"Writes a practised hand",occult:"Dabbles in old rites",flour:"Works with flour",boat:"Has a boat"};
 const TAGQ={keys:"can get into half the buildings in town",night:"is out wandering most nights",poisons:"knows more about poisons than any honest soul should",tools:"keeps a full set of tools under a tarp",letters:"writes a better hand than the schoolteacher",occult:"reads from strange old books by candlelight",boat:"keeps a little boat tied up below the mill",horses:"has a way with horses",flour:"always has flour on their hands"};
-const TV={petty:4,serious:8,grave:14};
+const TV={petty:4,moderate:6,serious:8,grave:14};
 
 /* ================= evidence ================= */
 const CLUES={
@@ -433,7 +433,7 @@ const CLUES={
  "tag:boat":["Wet footprints come up from the river, and there is river weed on the step.","A smell of river water in the room, and a coil of damp rope left behind."]
 };
 const NOISE=["The victim's dog was found shut in the woodshed, unharmed.","A single glove lies in the lane. Nobody will admit it's theirs.","The church clock was heard striking one not long before.","Two sets of footprints in the mud, but the rain has ruined both.","A neighbour's cat has sat on the doorstep ever since and won't be moved.","Someone left a half-eaten apple on the wall outside.","A shutter along the lane was banging all night. Nobody got up to see why."];
-const SPEECH={"shoe:boots":"I heard nailed boots on the stones, a working man's walk","shoe:oxfords":"their shoes caught the lamplight, polished like a deacon's","shoe:heels":"I heard quick little steps, click, click, going away","shoe:plain":"flat shoes, quiet, a sensible sort of walk","shoe:soft":"they made no sound walking, none at all","shoe:big":"they walked like a boy in his father's boots",slight:"they were narrow, like a shadow turned sideways",heavy:"they moved like a cart, all weight and no hurry",tall:"they had to duck under the eaves",short:"the hedge hid most of them",left:"they held the lamp the wrong way round, if you follow me",pipe:"I caught a whiff of something as they passed, sour and warm",
+const SPEECH={"shoe:boots":"I heard nailed boots on the stones, a working man's walk","shoe:oxfords":"their shoes caught the lamplight, polished like a deacon's","shoe:heels":"I heard quick little steps, click, click, going away","shoe:plain":"flat shoes, quiet, a sensible sort of walk","shoe:soft":"they made no sound walking, none at all","shoe:big":"it was an uneven sort of walk, scuffing",slight:"they were narrow, like a shadow turned sideways",heavy:"they moved like a cart, all weight and no hurry",tall:"they had to duck under the eaves",short:"the hedge hid most of them",left:"they held the lamp the wrong way round, if you follow me",pipe:"I caught a whiff of something as they passed, sour and warm",
  "tag:keys":"they didn't fumble at the door, not for a second","tag:night":"they didn't carry a light, and didn't seem to need one","tag:horses":"a horse nickered when they passed, like it knew them","tag:tools":"something clinked in their bag, metal on metal","tag:boat":"they went off toward the water, not the road","tag:letters":"they stopped under the lamp to read something","tag:occult":"they paused at the door and made a sign over it","tag:flour":"there was something pale on their sleeves","tag:poisons":"they had a little bottle they kept checking"};
 const EERIE=["There were no footprints in the mud, not even the victim's.","Every dog on the lane howled at once, then fell silent.","The iron horseshoe over the door was found bent double.","The room was bitterly cold, though the fire was lit.","Every candle in the house guttered out at the same moment.","Strange lights drifted over the river bottoms at the hour it happened.","A smell of wet earth and river weed, far from any water.","Every clock in the house stopped at ten past three."];
 const STRANGE=["A drover swears he saw a woman in white walking on the millpond.","Children say a voice calls their names from the old well.","The lights on the river bottoms were seen again, nearer town than before.","The goats on the east farm refuse to cross the bridge.","A black dog with no master was seen at three crossroads at once.","Frost formed on the windows of St. Brendan's on a mild night.","Hoofbeats rode down the high street at midnight, but nobody saw a horse.","The graveyard yews were found hung with knotted red thread."];
@@ -520,7 +520,7 @@ function newGame(){
   FAMILY.forEach(([a,b,la,lb])=>{N[a].fam.push({id:b,label:la});N[b].fam.push({id:a,label:lb})});
   FRIENDS.forEach(([a,b])=>{N[a].friends.push(b);N[b].friends.push(a)});
   RIVALS.forEach(([a,b])=>{N[a].rivals.push(b);N[b].rivals.push(a)});
-  const vs=[];while(vs.length<3){const v=wpick(N.filter(n=>!vs.includes(n)&&n.id!==8),n=>n.shady);vs.push(v)}
+  const vs=[];while(vs.length<3){const v=wpick(N.filter(n=>!vs.includes(n)&&n.id!==8&&n.id!==5&&n.shady>=1),n=>Math.sqrt(n.shady));vs.push(v)}
   vs.forEach(v=>v.villain=true);
   S={day:1,rep:50,unrest:14,cases:[],next:[],idx:0,verdicts:[],history:[],notes:[],noteSeq:0,heard:{},heardSeq:0,snap:[],phase:"morning",
      stats:{solved:0,wrong:0,shelved:0,unexplained:0}};
@@ -553,20 +553,21 @@ const titleOf=(c)=>typeof c.crime.t==="function"?c.crime.t(c.victim):c.crime.t;
 function tierFor(d){
   const r=Math.random();
   if(quietSunday(d))return "petty";
-  if(d===19)return r<.85?"grave":"serious";
-  if(d<=4)return "petty";
-  if(d<=6)return r<.5?"petty":"serious";
-  if(d<=12)return r<.15?"petty":r<.85?"serious":"grave";
-  if(d<=15)return r<.5?"grave":"serious";
-  return r<.78?"grave":"serious";
+  if(d===19)return r<.7?"grave":"serious";
+  if(d<=4)return r<.7?"petty":"moderate";
+  if(d<=6)return r<.4?"petty":r<.85?"moderate":"serious";
+  if(d<=10)return r<.2?"petty":r<.65?"moderate":"serious";
+  if(d<=14)return r<.1?"petty":r<.45?"moderate":r<.97?"serious":"grave";
+  if(d<=18)return r<.15?"moderate":r<.6?"serious":"grave";
+  return r<.1?"moderate":r<.5?"serious":"grave";
 }
 const isSunday=d=>dateOf(d).getDay()===0;
 const quietSunday=d=>isSunday(d)&&d<19;
 const spiritUp=()=>!!(S&&S.rite&&S.rite.stage<4);
 const casesFor=d=>d===1?1:quietSunday(d)?((S&&S.sunN&&S.sunN[d])||1):d===19?5:d<=12?2:3;
 function riteF(){return !S||!S.rite?1:S.rite.stage>=4?0:1}
-const superChance=d=>quietSunday(d)?0:(d<=4?0:d<=6?((S&&S.superCount)?0:.12):Math.min(.36,.05+.018*d))*riteF();
-const reportsFor=d=>quietSunday(d)?0:d===19?3*riteF():Math.floor((d<12?1:2)*riteF());
+const superChance=d=>quietSunday(d)||d<=((S&&S.firstSuperDay)||6)||d<=6?0:(d<=4?0:d<=6?((S&&S.superCount)?0:.12):Math.min(.36,.05+.018*d))*riteF();
+const reportsFor=d=>d<=3||quietSunday(d)?0:d===19?3*riteF():Math.floor((d<12?1:2)*riteF());
 
 /* ================= case generation ================= */
 function genCase(day){
@@ -588,15 +589,15 @@ function genHuman(day,tier,opt={}){
     const gang=[S.heist&&S.heist.boss,S.heist&&S.heist.mate,S.art&&S.art.thief,S.art&&S.art.fence];
     const vil=pool.filter(n=>n.villain&&n.id!==8);
     let cand=tier==="grave"&&vil.length?vil:pool;
-    if(tier==="serious")cand=cand.filter(n=>n.id!==8);
-    const w=n=>tier==="petty"?Math.sqrt(n.shady)*((n.villain||gang.includes(n))?.45:1):n.shady*(n.villain?2:1)*(n.id===8?.35:1);
+    cand=cand.filter(n=>n.id!==8);
+    const w=n=>tier==="petty"||tier==="moderate"?Math.sqrt(n.shady)*((n.villain||gang.includes(n))?(tier==="petty"?.45:.7):1):n.shady*(n.villain?2:1)*(n.id===8?.35:1);
     const culprit=opt.culprit||wpick(cand,w);
     const others=pool.filter(n=>n!==culprit);
     const riv=others.filter(n=>culprit.rivals.includes(n.id));
     const victim=opt.victim&&others.includes(opt.victim)?opt.victim:riv.length&&Math.random()<.5?rnd(riv):rnd(others);
     const attrs=attrsOf(culprit,day<=4);
     if(attrs.length<2)continue;
-    const n=Math.min(attrs.length,tier==="petty"?2:tier==="serious"?(Math.random()<.5?2:3):3);
+    const n=Math.min(attrs.length,tier==="petty"||tier==="moderate"?2:tier==="serious"?(Math.random()<.5?2:3):3);
     const hiddenK=attrs.filter(k=>k.startsWith("tag:")&&culprit.hid.includes(k.slice(4)));
     const keys=[...shuffle(attrs.filter(k=>!hiddenK.includes(k))).slice(0,n-(hiddenK.length&&Math.random()<.5?1:0))];
     if(keys.length<n&&hiddenK.length)keys.push(rnd(hiddenK));
@@ -616,9 +617,9 @@ function genHuman(day,tier,opt={}){
       const spare=innPool.filter(x=>!inns.includes(x));
       if(spare.length){named=[wpick(spare,x=>1+keys.filter(k=>fits(x,k)).length),...inns];outsider=true}
     }
-    const crPool=CRIMES[tier].filter(k=>!k.late||day>=13),crLate=crPool.filter(k=>k.late);
-    let crimeP=opt.crime||(crLate.length&&Math.random()<Math.min(.8,(day-12)*.12)?pickCrime(crLate):pickCrime(crPool.filter(k=>!k.late)));
-    if(!opt.crime&&culprit.id===8&&tier!=="petty"){const am=CRIMES.grave.filter(k=>k.n==="Attempted murder"&&(!k.late||day>=13));if(tier!=="grave"||!am.length)continue;crimeP=rnd(am)}
+    const crPool=CRIMES[tier].filter(k=>!k.late||day>=15),crLate=crPool.filter(k=>k.late);
+    let crimeP=opt.crime||(crLate.length&&Math.random()<Math.min(.8,(day-14)*.15)?pickCrime(crLate):pickCrime(crPool.filter(k=>!k.late)));
+    if(!opt.crime&&culprit.id===8&&tier!=="petty"){const am=CRIMES.grave.filter(k=>k.n==="Attempted murder"&&(!k.late||day>=15));if(tier!=="grave"||!am.length)continue;crimeP=rnd(am)}
     const srcOf=k=>fits(culprit,k)?culprit:(inns.find(x=>fits(x,k))||culprit);
     const clueTexts=keys.map(k=>({text:clueFor(k,crimeP,srcOf(k)),eerie:false}));
     if(day>=10&&!quietSunday(day)&&Math.random()<.15)clueTexts.push({text:rnd(EERIE),eerie:true});
@@ -626,7 +627,7 @@ function genHuman(day,tier,opt={}){
     if(tier!=="petty"&&day>=3&&Math.random()<.22){const cc=clothClue(culprit,crimeP);if(cc)clueTexts.push({text:cc,eerie:false})}
     const c={kind:"human",tier,culprit,victim,suspects:shuffle(named),keys,clues:shuffle(clueTexts),crime:crimeP,misleading,outsider};
     c.witness=genWitness(c);c.reasons=pickReasons(c);
-    if(tier!=="petty"&&c.witness){const w2=genWitness(c,c.witness.n);if(w2&&!(w2.kind===c.witness.kind&&w2.about===c.witness.about&&w2.kind!=="hint"))c.witness2=w2}
+    if(tier!=="petty"&&(tier!=="moderate"||Math.random()<.5)&&c.witness){const w2=genWitness(c,c.witness.n);if(w2&&!(w2.kind===c.witness.kind&&w2.about===c.witness.about&&w2.kind!=="hint"))c.witness2=w2}
     if(!opt.crime&&day>=5&&!outsider&&Math.random()<.09){c.murky=true;const shared=attrsOf(culprit,true).filter(k=>c.suspects.every(x=>fits(x,k)));
       c.clues=shuffle([...shuffle(noiseFor(day)).slice(0,2).map(t=>({text:t,eerie:false})),...(shared.length?[{text:clueFor(rnd(shared),c.crime,culprit,true),eerie:false}]:[])]);
       c.witness=Math.random()<.5?null:c.witness&&c.witness.kind==="hint"?null:c.witness;c.witness2=null}
@@ -724,7 +725,7 @@ function gossip(src,cases,{allowOwn=false}={}){
 function adj(n,d){if(n.id===MAYOR&&d<0)d*=.5;n.rel=clamp(n.rel+d)}
 function revealSecret(t){t.secretKnown=true;t.hid.forEach(h=>t.known.add(h))}
 function firstPerson(s){
-  return s.replace(/^has lost /,"have lost ").replace(/, and is borrowing/,", and am borrowing").replace(/^owes /,"owe ").replace(/^slips /,"slip ").replace(/^took /,"took ").replace(/^meets /,"meet ").replace(/^sells /,"sell ")
+  return s.replace(/^takes a drop more /,"take a drop more ").replace(/ than he ought/," than I ought").replace(/, and keeps a bottle/,", and keep a bottle").replace(/^has lost /,"have lost ").replace(/, and is borrowing/,", and am borrowing").replace(/^owes /,"owe ").replace(/^slips /,"slip ").replace(/^took /,"took ").replace(/^meets /,"meet ").replace(/^sells /,"sell ")
    .replace(/^copies /,"copy ").replace(/^lost his /,"lost my ").replace(/^poaches /,"poach ").replace(/^keeps /,"keep ").replace(/^takes /,"take ")
    .replace(/^writes /,"write ").replace(/^isn't /,"am not ").replace(/^fences /,"fence ").replace(/^holds /,"hold ").replace(/^leaves /,"leave ").replace(/^ferries /,"ferry ")
    .replace(/her father would disown her/,"my father would disown me").replace(/his hands shake/,"my hands shake").replace(/\band wants\b/,"and want").replace(/\band is wanted\b/,"and am wanted").replace(/\bshe calls\b/,"I call").replace(/who she says she is/,"who I say I am").replace(/in his cart/,"in my cart").replace(/\band sells\b/,"and sell");
@@ -752,8 +753,10 @@ const HEIST_TARGETS=[
 ];
 const HEIST_CRIMES=HEIST_TARGETS.map(h=>({t:`The ${h.head.toLowerCase()} robbery`,n:"Robbery",heist:true,d:v=>`In the small hours, ${h.name} was broken open and ${h.loot} taken. ${v.name} raised the alarm at daybreak. It was planned, and planned well.`}));
 let CRIME_ALL=(()=>{const all=[...CRIMES.petty,...CRIMES.serious,...CRIMES.grave,...SUPER,...PREPS,...HEIST_CRIMES];return [...all.filter(c=>!c.v2),...all.filter(c=>c.v2)]})();
+function lastLeads(){try{return JSON.parse(localStorage.getItem("hollowcreek.leads")||"{}")}catch(e){return {}}}
 function setupHeist(){
-  const boss=wpick(N.filter(n=>n.villain),n=>n.shady);
+  const LL=lastLeads(),bp=N.filter(n=>n.villain&&n.id!==LL.boss);
+  const boss=wpick(bp.length?bp:N.filter(n=>n.villain),n=>Math.sqrt(n.shady));
   const pals=N.filter(n=>n!==boss&&n.id!==8&&(boss.friends.includes(n.id)||n.shady>=1.8));
   const mate=pals.length?wpick(pals,n=>n.shady+(boss.friends.includes(n.id)?2:0)):rnd(N.filter(n=>n!==boss&&n.id!==8));
   const ti=Math.floor(Math.random()*HEIST_TARGETS.length);
@@ -792,8 +795,29 @@ const V3_CRIMES={
 };
 Object.keys(V3_CRIMES).forEach(k=>CRIMES[k].push(...V3_CRIMES[k]));
 CRIME_ALL=[...CRIME_ALL,...V3_CRIMES.petty,...V3_CRIMES.serious,...V3_CRIMES.grave];
+
+/* ---- re-sorting crimes into four tiers. CRIME_ALL keeps its old order (saves index into it); only the tier lists change ---- */
+const V4_CRIMES=[
+  {v4:1,ctx:"yard",t:"The slashed tires",n:"Malicious destruction of property",d:v=>`All four tires on ${v.name}'s motorcar were slashed in the night, and the horn wire cut for good measure.`},
+  {v4:1,ctx:"yard",t:"The stolen bicycle",n:"Larceny",d:v=>`${v.name}'s bicycle was taken from against the fence behind the ${v.place} sometime after dark.`},
+  {v4:1,ctx:"entry",t:"The short cash box",n:"Larceny",d:v=>`Somebody has been taking a dollar or two at a time from the cash box at ${v.name}'s ${v.place}, and has been at it for weeks.`},
+  {v4:1,ctx:"animal",t:"The emptied coop",n:"Larceny of fowl",d:v=>`Eleven of ${v.name}'s laying hens were taken from the coop in the night, and the door left hanging by one hinge.`},
+  {v4:1,ctx:"paper",t:"The poison-pen postcard",n:"Criminal libel",d:v=>`A postcard saying vile things about ${v.name} has been passed round town. Half of Main Street has read it.`},
+  {v4:1,ctx:"blow",t:"The fight outside the pool hall",n:"Assault and battery",d:v=>`${v.name} was knocked down outside the pool hall on Front Street and given a black eye. Whoever did it ran off before anyone got a good look.`},
+  {v4:1,ctx:"entry",t:"The drained cider barrel",n:"Larceny",d:v=>`A barrel of hard cider was drained from ${v.name}'s cellar through a hole bored in the side. ${v.name} would rather the county didn't ask what was in it.`},
+  {v4:1,ctx:"sabotage",t:"The cut telephone wire",n:"Malicious destruction of property",d:v=>`The telephone wire to ${v.name}'s ${v.place} was cut clean through at the pole.`},
+  {v4:1,ctx:"sabotage",t:"The loosened wheel",n:"Malicious mischief",d:v=>`The nuts on one wheel of ${v.name}'s wagon were loosened. It came off on the hill road, and ${v.name} was lucky to walk away with bruises.`}];
+CRIME_ALL=[...CRIME_ALL,...V4_CRIMES];
+{
+  const byT={};[...CRIMES.petty,...CRIMES.serious,...CRIMES.grave].forEach(k=>{if(typeof k.t==="string")byT[k.t]=k});
+  const toMod=["The stolen pig","The chimney stuffed with sacking","The fired rubbish heap","The burned scarecrow","The rifled mailbox","The stolen harness","The smashed windows","The woodpile fire","The nailed letter","The rigged scales"];
+  const toSer=["The lost savings","The robbed grave","The extortion letters","The stolen team","The church plate"];
+  const take=t=>{const k=byT[t];["petty","serious","grave"].forEach(tr=>{const i=CRIMES[tr].indexOf(k);if(i>=0)CRIMES[tr].splice(i,1)});return k};
+  CRIMES.moderate=[...toMod.map(take).filter(Boolean),...V4_CRIMES];
+  toSer.map(take).filter(Boolean).forEach(k=>CRIMES.serious.push(k));
+}
 const FIRE_GRAVE=CRIMES.grave.filter(k=>/arson/i.test(k.n)&&!k.late);
-function pickCrime(list){return wpick(list,k=>/arson/i.test(k.n)?1.25:/murder/i.test(k.n)?.4:1)}
+function pickCrime(list){return wpick(list,k=>/arson/i.test(k.n)?1.25:/murder/i.test(k.n)?.25:1)}
 
 const CTX_T={"The missing pies":"yard","The daubed door":"yard","The stripped apple tree":"yard","The rotten eggs":"yard","The cut clothesline":"yard","The scattered hens":"animal","The stolen milk bottles":"yard","The tipped outhouse":"yard","The pilfered coal":"yard","The soaped windows":"yard","The loosed cow":"animal","The stolen pig":"animal","The painted horse":"animal","The chimney stuffed with sacking":"sabotage",
  "The emptied strongbox":"entry","The woodpile fire":"yard","The nailed letter":"paper","The stolen horse":"animal","The vanished silver":"entry","The smashed windows":"yard","The forged check":"forgery","The stolen Ford":"yard","The slaughtered hog":"animal","The rifled mailbox":"yard","The poisoned dog":"poison","The rigged scales":"sabotage","The stolen harness":"entry","The flooded cellar":"sabotage",
@@ -982,8 +1006,8 @@ const WEAR={
  1:{shoe:"boots",cloth:"denim",hint:["~Tom's overalls are faded near white at the knees.","Sorry about your floor. The stable yard's ankle-deep, and there's no getting it out from round the nails."]},
  2:{shoe:"oxfords",cloth:"worsted",hint:["~The Mayor stops in the doorway to flick a speck of mud from his toecap.","I had these made in Des Moines. Look at them, after one walk down your street.","~The Mayor brushes at the sleeve of his good dark suit."]},
  3:{shoe:"heels",cloth:"serge",hint:["~Wren's steps tap sharply across the boards.","I walked here from the schoolhouse, and I shan't do it again in these. Not in this mud.","~She is in her schoolroom navy, with chalk on one cuff."]},
- 4:{shoe:"plain",cloth:"gingham",hint:["~Greta is still in her red check from the lunchroom, apron and all.","On my feet since five. Flat soles, detective. It's the only way to stand behind a counter all day."]},
- 5:{shoe:"big",cloth:"homespun",hint:["~Pip clumps in, his feet sliding about in whatever he has on.","Mama says I'll grow into them. They were Papa's."]},
+ 4:{shoe:"plain",cloth:"gingham",hint:["~Greta is still in her red check from the lunchroom, apron and all.","On my feet since five. Flat soles, detective. It's the only way to stand behind a counter all day.","I stuff newspaper in the toes of his father's old boots for Pip. He will grow into them, God willing, before they fall apart."]},
+ 5:{shoe:"big",cloth:"homespun",hint:["~Pip scuffs in, one foot dragging a little.","~Pip's homespun shirt is buttoned up wrong."]},
  6:{shoe:"boots",cloth:"leather",hint:["~Hugo's feet ring on the boards like a horse being led in.","Don't mind the scorch marks on me. I've come straight from the forge, apron and all."]},
  7:{shoe:"boots",cloth:"flannel",hint:["~Karl brings sawdust and wet bark in on his soles and doesn't wipe them.","~Karl's red check shirt is torn at the elbow."]},
  8:{shoe:"oxfords",cloth:"broadcloth",hint:["~Father Dunn's shoes are polished as if for the altar, though the street has done its best to them.","My housekeeper blacks my shoes every night, whether I ask or not."]},
@@ -1006,11 +1030,11 @@ const SHOE_PRINT={
  heels:["Small prints with a separate little mark behind each, punched deep.","A neat pointed toe, and behind it a narrow heel sunk into the ground."],
  plain:["A plain flat shoe, laced, worn down on the outside edge.","Sensible flat soles, patched at the ball of the foot."],
  soft:["Hardly a print at all: soft soles with no heel, like slippers or moccasins.","The marks are soft and rounded with no heel at all. Whoever it was might almost have been barefoot."],
- big:["Big boot prints, but shallow, and the toes drag as if the boots were too large for the feet inside them.","The prints of a man's boots, but the stride is a child's."]};
+ big:["Worn working boots, with uneven tracks. One heel drags.","Old working boots, the tracks uneven, as if one foot were not quite placed."]};
 const SHOE_CTX={
- blow:{boots:["The victim heard nailed soles ring on the stones as the attacker ran."],oxfords:["The victim remembers, of all things, a shine of polished shoes in the lamplight."],heels:["The victim heard quick steps clicking away down the boardwalk."],plain:["The victim remembers the scuff of flat soles, nothing heavy."],soft:["The victim never heard them come. Not one footstep."],big:["The victim heard boots flapping as they ran, clumsy, as if they didn't fit."]},
- forgery:{boots:["The clerk noticed mud-caked working boots under the counter, and thought it odd."],oxfords:["The clerk remembers good polished shoes. A person of means, he thought."],heels:["The clerk heard sharp little steps on the bank's marble floor."],plain:["The clerk remembers plain, flat, scuffed shoes."],soft:["The clerk never heard the customer cross the floor."],big:["The clerk noticed boots far too big for the one wearing them."]},
- paper:{boots:["The porch boards are scored with nail marks where someone stood to deliver it."],oxfords:["There's a clean, narrow shoe print on the porch step. A good shoe."],heels:["There are little round dents in the porch boards, pressed deep."],plain:["A plain flat shoe print on the porch step, worn at the edge."],soft:["Nothing on the porch at all. Not a mark."],big:["Big boot prints on the step, the toes dragging."]}};
+ blow:{boots:["The victim heard nailed soles ring on the stones as the attacker ran."],oxfords:["The victim remembers, of all things, a shine of polished shoes in the lamplight."],heels:["The victim heard quick steps clicking away down the boardwalk."],plain:["The victim remembers the scuff of flat soles, nothing heavy."],soft:["The victim never heard them come. Not one footstep."],big:["The victim heard an uneven, scuffing step as they ran off."]},
+ forgery:{boots:["The clerk noticed mud-caked working boots under the counter, and thought it odd."],oxfords:["The clerk remembers good polished shoes. A person of means, he thought."],heels:["The clerk heard sharp little steps on the bank's marble floor."],plain:["The clerk remembers plain, flat, scuffed shoes."],soft:["The clerk never heard the customer cross the floor."],big:["The clerk noticed old, cracked working boots, laced very tight."]},
+ paper:{boots:["The porch boards are scored with nail marks where someone stood to deliver it."],oxfords:["There's a clean, narrow shoe print on the porch step. A good shoe."],heels:["There are little round dents in the porch boards, pressed deep."],plain:["A plain flat shoe print on the porch step, worn at the edge."],soft:["Nothing on the porch at all. Not a mark."],big:["Uneven boot prints on the step, one of them scuffed."]}};
 function shoeClue(k,cr){const t=k.slice(5),cx=ctxOf(cr);const o=SHOE_CTX[cx]&&SHOE_CTX[cx][t];return rnd(o||SHOE_PRINT[t]||["Prints nobody can make sense of."])}
 function wearHint(n){const w=typeof n.id==="number"&&WEAR[n.id];if(!w)return null;const h=rnd(w.hint);return h[0]==="~"?{n:true,t:h.slice(1)}:{t:h}}
 const PHYS=["entry","yard","animal","fire","gun","blow","sabotage","grave"];
@@ -1034,16 +1058,17 @@ const NOISE2=["A wheelbarrow was found upended in the lane, nowhere near where i
 const noiseFor=day=>[...NOISE,...NOISE2].filter(t=>weatherOf(day)!=="fair"||!/rain/.test(t));
 function setupArt(){
   const H=S.heist,avoid=[H.boss,H.mate];
-  const pool=N.filter(n=>!avoid.includes(n)&&n.id!==8&&n.shady>=1.4);
-  const thief=wpick(pool.length?pool:N.filter(n=>!avoid.includes(n)),n=>n.shady);
+  const LL=lastLeads(),pool=N.filter(n=>!avoid.includes(n)&&n.id!==8&&n.id!==5&&n.id!==LL.thief&&n.shady>=1.2);
+  const thief=wpick(pool.length?pool:N.filter(n=>!avoid.includes(n)&&n.id!==8),n=>Math.sqrt(n.shady));
+  try{localStorage.setItem("hollowcreek.leads",JSON.stringify({boss:H.boss.id,thief:thief.id}))}catch(e){}
   const fp=N.filter(n=>n!==thief&&n.id!==8&&!avoid.includes(n)&&(thief.friends.includes(n.id)||n.shady>=1.8));
   const fence=fp.length?rnd(fp):rnd(N.filter(n=>n!==thief&&n.id!==8&&!avoid.includes(n)));
-  S.art={thief,fence,stages:[{crime:ART_CRIMES[0],day:10,by:thief,tier:"grave"},{crime:ART_CRIMES[1],day:13,by:fence,tier:"serious"},{crime:ART_CRIMES[2],day:16,by:thief,tier:"grave"}].map(x=>({...x,solved:false,done:false})),day:19,resolved:false,news:null};
+  S.art={thief,fence,stages:[{crime:ART_CRIMES[0],day:10,by:thief,tier:"serious"},{crime:ART_CRIMES[1],day:13,by:fence,tier:"serious"},{crime:ART_CRIMES[2],day:16,by:thief,tier:"grave"}].map(x=>({...x,solved:false,done:false})),day:19,resolved:false,news:null};
 }
 function vigLeader(){const h=N[6],k=N[7];return !h.jailed?h:!k.jailed?k:null}
 function thirdSunday(){
   if(S.d19done)return;S.d19done=true;
-  const up=spiritUp(),bump=up?20:10;
+  const up=spiritUp(),bump=up?12:6;
   S.unrest=clamp(Math.max(S.unrest,Math.min(97,S.unrest+bump)));
   if(up){const r=S.rite;if(r.stage>=2)r.correct=Math.max(1,r.correct);r.angry=true}
 }
@@ -1074,6 +1099,7 @@ function genDay(d){
     const by=!prep.by.jailed?prep.by:[H.boss,H.mate].find(x=>!x.jailed);
     if(by){const c=genHuman(d,"serious",{culprit:by,crime:prep.crime,victim:N[prep.crime.vict]});if(c){c.prep=prep;prep.by=by;prep.done=true;list.push(c)}}
   }
+  if(d===((S.firstSuperDay)||6)&&riteF()&&!S.firstSuper){S.firstSuper=true;const sc=genSuper(d,"serious");if(sc)list.push(sc)}
   if(d===19&&!S.pip&&!N[5].jailed&&!N[5].dead){N[5].away=true;S.pip={search:null,found:false}}
   if(d===19){
     // a night of fires, whatever else walks
@@ -1104,7 +1130,7 @@ const nm=n=>`<button class="nm" data-file="${n.id}">${esc(n.name)}</button>`;
 function councilScore(st=S.stats,rep=S.rep){const t=st.solved+st.wrong+st.shelved+st.unexplained;return t<2?rep:Math.round(successRate(st)*.8+rep*.2)}
 const council=r=>r>=88?"High":r>=72?"Good":r>=55?"Fair":r>=38?"Poor":"In question";
 const temper=u=>u<16?"Settled":u<32?"Uneasy":u<50?"Worried":u<68?"Restless":u<85?"Frightened":"Panicking";
-const unrestFloor=d=>d<=6?0:Math.round((d-6)*2.1);
+const unrestFloor=d=>d<=6?0:Math.round((d-6)*1.5);
 
 /* ================= game setup ================= */
 function startGame(name){
@@ -1112,7 +1138,7 @@ function startGame(name){
   newGame();
   N.forEach(n=>{
     const f=n.sex==="f",kid=n.age===14;
-    const H={f:{short:[59,62],average:[63,66],tall:[68,70]},m:{short:[62,65],average:[67,70],tall:[72,75]}}[n.sex][n.height];
+    const H={f:{short:[59,62],average:[63,66],tall:[67,69]},m:{short:[62,65],average:[67,70],tall:[71,74]}}[n.sex][n.height];
     const W={f:{slight:[98,118],average:[126,150],heavy:[172,205]},m:{slight:[118,138],average:[150,176],heavy:[198,238]}}[n.sex][n.build];
     const r=([a,b])=>a+Math.floor(Math.random()*(b-a+1));
     n.ht=kid?59:r(H);n.wt=kid?84:r(W);
@@ -1120,7 +1146,7 @@ function startGame(name){
   Object.assign(S,{name:name||null,saveId:name?("s"+Date.now().toString(36)):null,visit:null,desk:[],say:"",slips:[],call:null,memo:[],pages:{},printed:new Set(),record:{},caseNo:30,nbLeft:null,paper:null});
   S.sgt=55;
   S.wind=Array.from({length:DAYS},(_,i)=>{const b=i>=17?.92+i*.004:Math.pow(i/17,1.5)*.85;return Math.min(1,b+(Math.random()<.3&&i<17?.18+Math.random()*.22:0))});
-  S.blackoutDay=13+Math.floor(Math.random()*6);S.coffee=4;S.sunN={5:Math.random()<.5?1:2,12:Math.random()<.5?1:2};[5,12].forEach(d=>{if(S.wind[d-1]!=null)S.wind[d-1]=Math.min(S.wind[d-1],.12)});S.wind[18]=1;
+  S.blackoutDay=16+Math.floor(Math.random()*3);S.firstSuperDay=Math.random()<.5?4:6;S.flashDay=Math.random()<.5?18:19;S.mugDay=Math.random()<.5?17:18;S.coffee=4;S.sunN={5:Math.random()<.5?1:2,12:Math.random()<.5?1:2};[5,12].forEach(d=>{if(S.wind[d-1]!=null)S.wind[d-1]=Math.min(S.wind[d-1],.12)});S.wind[18]=1;
   setupHeist();setupArt();
   S.vig={formDay:11,mobDay:13,beating:Math.random()<.5,beatDay:16,target:null,outcome:null,deadName:null};
   S.rite={stage:0,story:rnd(RITES),partner:Math.random()<.5?15:12,correct:0,justDone:false,v2:true};
@@ -1138,18 +1164,22 @@ function morning(firstDay){
   const back=[],night=[];N.forEach(n=>{if(n.jailUntil&&S.day>=n.jailUntil){n.jailed=false;n.jailUntil=0;if(n.jailNight){n.jailNight=false;adj(n,-3);night.push(n)}else{adj(n,-10);back.push(n)}}});
   const prev=S.history[S.history.length-1];
   const reports=shuffle(STRANGE).slice(0,reportsFor(S.day));
-  if(!firstDay)S.unrest=clamp(Math.max(S.unrest+2+2*reports.length,unrestFloor(S.day)));
+  if(!firstDay)S.unrest=clamp(Math.max(S.unrest+1+Math.round(1.5*reports.length),unrestFloor(S.day)));
   const H=S.heist;
   const A=S.art;if(A&&A.news&&!A.applied){A.applied=true;if(A.news==="recovered"){S.rep=clamp(S.rep+14);S.unrest=clamp(S.unrest-10)}else{S.rep=clamp(S.rep-12);S.unrest=clamp(S.unrest+14)}}
   if(H&&H.news&&!H.applied){H.applied=true;if(H.news==="foiled"){S.rep=clamp(S.rep+15);S.unrest=clamp(S.unrest-15)}else{S.rep=clamp(S.rep-15);S.unrest=clamp(S.unrest+20)}}
   S.history.push({day:S.day,cases:[],visited:null,reports});
   if(S.day===19&&!firstDay)thirdSunday();
+  S.phone=null;
   S.paper=buildPaper(prev,reports);
   S.visit=S.name?planVisit():null;S.eveVisit=null;S.coffee=sgtMood()>=38?4:1;S.weakCoffee=sgtMood()<38;S.letterGiven=S.letterGiven||false;S.reportGiven=false;S.creeps=0;
   S.queue=[];
   if(S.name){
     if(firstDay){S.queue.push({kind:"superior"});S.queue.push({kind:"tutorial"})}
-    const V=S.vig;if(V&&S.day===V.mobDay&&V.formed&&vigLeader()){let t=[12,15].map(i=>N[i]).filter(x=>!x.jailed);if(!t.length)t=[13,11].map(i=>N[i]).filter(x=>!x.jailed);if(t.length){const tg=t.length>1?(t[0].id===12&&Math.random()<.6?t[0]:rnd(t)):t[0];V.target=tg.id;S.queue.push({kind:"mob",target:tg.id})}}
+    const V=S.vig;if(V&&S.day===V.mobDay&&V.formed&&vigLeader()){let t=[12,15].map(i=>N[i]).filter(x=>!x.jailed);if(!t.length)t=[13,11].map(i=>N[i]).filter(x=>!x.jailed);if(t.length){const tg=t.length>1?(t[0].id===12&&Math.random()<.6?t[0]:rnd(t)):t[0];V.target=tg.id;const L=vigLeader(),crowd=[];if(L&&L.id===6&&!N[7].jailed&&!N[7].dead)crowd.push(7);crowd.push(tg.id);
+      const pool=free().filter(x=>x.sex==="m"&&![2,5,8,9,17].includes(x.id)&&x!==L&&!crowd.includes(x.id)&&!x.dead);
+      shuffle(pool).sort((a,b)=>(b.rivals.includes(tg.id)?1:0)-(a.rivals.includes(tg.id)?1:0)).slice(0,4).forEach(x=>crowd.push(x.id));
+      S.queue.push({kind:"mob",target:tg.id,with:crowd})}}
     if(S.day===5&&!N[8].jailed&&!N[8].dead)S.queue.unshift({kind:"mystic",npc:N[8],when:"morning",step:"sunday"});
     if(S.day===19&&S.pip){const m=[N[4],N[6],N[0]].find(x=>!x.jailed&&!x.dead);if(m){S.pip.by=m.id;S.queue.unshift({kind:"mystic",npc:m,when:"morning",step:"pip"})}}
     if(S.day===19&&spiritUp()){const w=[N[8],N[15],N[12]].find(x=>!x.jailed&&!x.dead);if(w)S.queue.unshift({kind:"mystic",npc:w,when:"morning",step:"sunday19"})}
@@ -1191,21 +1221,24 @@ const LATE_BRIEFS=[
 ];
 const FILLER=["The Ladies' Aid Society will meet Thursday afternoon in the Methodist church parlors.","Bostwick's Hardware reports the arrival of a car of garden seed and fencing.","Roads west of town are nearly impassable owing to the rain, and the mail carrier was two hours late Monday.","The high school basketball five lost a close game at Anamosa Friday evening, 18 to 16.","Hog prices at the Cedar Rapids yards were steady yesterday at $7.10.","The Odd Fellows will hold a card party and oyster supper Saturday evening.","The council has again deferred the question of a new town pump.","The creamery reports that milk deliveries have been late all week owing to the state of the roads.","The Rialto announces a picture of the supernatural sort for Friday and Saturday evenings. Admission 25 cents.","Relief committee members ask that donations of flour and coal be left at the town hall."];
 const ADS=[["BOSTWICK'S HARDWARE","Garden seed, poultry netting, lamp chimneys. Front Street."],["KESSLER'S LIVER TONIC","For that tired feeling. At all druggists, 50c."],["RIALTO THEATRE","Friday and Saturday. Doors open 7 p.m."],["HALE'S BAKERY","Fresh bread daily. Pies to order for church suppers."],["CRANE LIVERY & FEED","Horses boarded. Teams for hire by the day."],["VOSS LUNCHROOM","Plate lunch 25c. Open late."]];
-const SENT={petty:["let off with a warning","fined $2 and costs","fined $10 and given a night in the lockup"],
-  serious:["fined $25 and costs","fined $50 and given a night in the lockup","held for the county court, the prosecutor pressing for a term in jail"],
-  grave:["held for the county court, with bail set","held without bail","held without bail, the prosecutor asking the maximum penalty"]};
-const SENT_OPT={petty:["Let off with a warning","Fine of $2 and costs","Fine of $10 and a night in the lockup"],
-  serious:["Fine of $25 and costs","Fine of $50 and a night in the lockup","Hold for the county court; press for a jail term"],
-  grave:["Hold for the county court; allow bail","Hold without bail","Hold without bail; ask the maximum penalty"]};
+const SENT={petty:["let off with a warning","fined $2 and costs","fined $10 and costs"],
+  moderate:["fined $5 and costs","fined $15 and costs","fined $30 and costs"],
+  serious:["fined $25 and costs","fined $50 and costs","fined $100 and given a night in the lockup"],
+  grave:["given a day in the town cells","given three days in the town cells","given five days in the town cells and bound over to the county court"]};
+const SENT_OPT={petty:["Let off with a warning","Fine of $2 and costs","Fine of $10 and costs"],
+  moderate:["Fine of $5 and costs","Fine of $15 and costs","Fine of $30 and costs"],
+  serious:["Fine of $25 and costs","Fine of $50 and costs","Fine of $100 and a night in the lockup"],
+  grave:["A day in the cells","Three days in the cells","Five days in the cells; bind over to the county court"]};
 function storyFor(c){
   const v=c.victim,w=c.who,tiny=c.tier==="petty",nat=c.crime.n.toLowerCase(),T=titleCase(low(titleOf(c)).replace(/^the /,""));
   const vp=v.press,sev=c.sev==null?1:c.sev,SUR=w?surname(w).toUpperCase():"";
   const dl=`<span class="dl">Hollow Creek, ${shortD(S.day-1)}.</span>`;
   switch(c.outcome){
     case "guilty":{
-      const head=tiny?[`${SUR} LET OFF WITH WARNING`,`${SUR} FINED`,`${SUR} FINED; NIGHT IN LOCKUP`][sev]
-        :c.tier==="serious"?[`${SUR} FINED $25`,`${SUR} FINED $50; NIGHT IN LOCKUP`,`${SUR} HELD FOR COUNTY COURT`][sev]
-        :[`${SUR} HELD; BAIL SET`,`${SUR} HELD ON ${c.crime.n.toUpperCase()} CHARGE`,`STATE TO ASK MAXIMUM FOR ${SUR}`][sev];
+      const head=tiny?[`${SUR} LET OFF WITH WARNING`,`${SUR} FINED`,`${SUR} FINED $10`][sev]
+        :c.tier==="moderate"?[`${SUR} FINED $5`,`${SUR} FINED $15`,`${SUR} FINED $30`][sev]
+        :c.tier==="serious"?[`${SUR} FINED $25`,`${SUR} FINED $50`,`${SUR} FINED $100; NIGHT IN LOCKUP`][sev]
+        :[`${SUR} GIVEN A DAY IN THE CELLS`,`${SUR} GIVEN THREE DAYS`,`${SUR} GIVEN FIVE DAYS; BOUND OVER`][sev];
       const decks=[`Admits Guilt in ${T} Case`];
       if(c.outsider)decks.push("Detective Looked Beyond Those First Named");
       if(!tiny&&sev===0)decks.push("Leniency Questioned on Main Street");
@@ -1251,6 +1284,7 @@ function buildPaper(prev,reports){
     lead={head:up?"NIGHT OF TERROR IN HOLLOW CREEK":"STORM AND FIRE LASH TOWN",decks:up?["Fires, Flood and Stranger Things","Families Barricade Doors; Church Bell Rings at Three"]:["Worst Storm of the Season","Fire Bell Rings Three Times Before Dawn"],
       body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> The worst storm of the season broke over Hollow Creek last night. The river is over the bottoms road, the ferry is not running, and the fire company was called out three times before dawn. `+(up?`Residents along Front Street say the bell of St. Brendan's rang at three o'clock with the church locked and dark, and more than one person swears to having seen a figure standing at ${st?st.place:"the river"} while the lightning lasted. Several families spent the night together in the Odd Fellows hall and would not go home.`+(S.pip?` Philip Voss, fourteen, son of Mrs. Greta Voss of the lunchroom, did not come home last night.`:""):`No lives were lost, though several families on the low ground were taken off by wagon. The council asks all able-bodied men to report to the town hall with shovels.`+(S.pip?` Philip Voss, fourteen, son of Mrs. Greta Voss of the lunchroom, did not come home last night.`:""))};
   }
+  if(d===15)paper.personal.unshift(`Lightning brought down the telephone wires along the county road ${DOWN_WD(14)} night. The exchange at Anamosa says the line cannot be restrung until the weather breaks.`);
   if(d>=6&&d%3===0&&S.name){S.letters=S.letters||[];const L=letterFor(d);if(L){S.letters.push(L);paper.letter=L}}
   paper.lead=lead;
   paper.stories.push(rnd(BRIEFS.filter(b=>!b.wet||["rain","heavy","storm"].includes(weatherOf(S.day)))));
@@ -1376,7 +1410,7 @@ function oneWitness(w){
   return `<p>${nm(w.n)}, ${esc(w.n.addr)}.</p><div class="qa"><p>${q}</p><p>A. ${a}</p></div>`;
 }
 function caseDoc(i){
-  const c=S.cases[i],felony=c.tier!=="petty";
+  const c=S.cases[i],felony=c.tier==="serious"||c.tier==="grave";
   const chosen=c.filed?(c.choice==="arrest"?(c.suspects.includes(c.who)?"a"+c.who.id:"o"):c.choice==="unexplained"?"u":"s"):c.sel;
   const charging=chosen&&(chosen[0]==="a"||chosen==="o");
   const others=N.filter(n=>!c.suspects.includes(n)&&n!==c.victim).sort((a,b)=>surname(a).localeCompare(surname(b)));
@@ -1393,13 +1427,14 @@ function caseDoc(i){
     <div class="frow"><div class="fld"><span class="l">Complainant</span><span class="v">${nm(c.victim)}</span></div></div>
     <div class="frow"><div class="fld"><span class="l">Address</span><span class="v">${esc(c.victim.addr)}</span></div></div>
     <div class="frow"><div class="fld"><span class="l">Nature of complaint</span><span class="v">${c.crime.n}</span></div></div>
-    <div class="frow"><div class="fld"><span class="l">Class</span><span class="v">${felony?"Felony":"Misdemeanor"}</span></div></div>
+    <div class="frow"><div class="fld"><span class="l">Class</span><span class="v">${felony?"Felony":c.tier==="moderate"?"Indictable misdemeanor":"Misdemeanor"}</span></div></div>
     <div class="sect">PARTICULARS</div>
     <p style="margin:6px 0">${c.crime.d(c.victim)}</p>
     <div class="sect">OBSERVATIONS AT THE SCENE</div>
     <ol class="obs">${c.clues.map(x=>`<li>${x.text}</li>`).join("")}</ol>
     <div class="sect">${c.witness2?"STATEMENTS OF WITNESSES":"STATEMENT OF WITNESS"}</div>
     ${witnessQA(c)}
+    ${c.calls&&c.calls.length?`<div class="sect">TELEPHONE INQUIRIES</div>${c.calls.map(x=>`<p>${esc(x.text)}</p>`).join("")}`:""}
     <div class="sect">PERSONS NAMED IN CONNECTION</div>
     <ul class="persons">${c.suspects.map((s,k)=>`<li>${nm(s)} <span class="why">(${c.reasons[k].replace(/\.$/,"")})</span>${s.jailed&&!(c.filed&&c.who===s)?` <span class="muted">In custody.</span>`:""}</li>`).join("")}</ul>
     <div class="sect">DISPOSITION</div>
@@ -1509,12 +1544,13 @@ function fileCase(i){
   if(sel==="u")choice="unexplained";else if(sel==="s")choice="shelve";
   else{choice="arrest";who=sel==="o"?N[+c.other]:N[+sel.slice(1)];if(!who||c.sev==null)return}
   if(who){
-    const sev=c.sev,k=(c.tier==="petty"?.5:1)*[.6,1,1.4][sev];
+    const sev=c.sev,k=(c.tier==="petty"?.5:c.tier==="moderate"?.75:1)*[.6,1,1.4][sev];
     free().forEach(y=>{if(y===who)return;const r=relOf(y,who);if(r==="family")adj(y,-25*k);else if(r==="friend")adj(y,-12*k);else if(r==="rival")adj(y,12*k)});
     who.jailNight=false;
-    if(c.tier==="petty"){if(sev===2){who.jailed=true;who.jailUntil=S.day+1;who.jailNight=true}adj(who,-6*(sev+1))}
-    else if(c.tier==="serious"){if(sev===0)adj(who,-10);else if(sev===1){who.jailed=true;who.jailUntil=S.day+1;who.jailNight=true;adj(who,-12)}else{who.jailed=true;who.jailUntil=S.day+6}}
-    else{who.jailed=true;who.jailUntil=sev===0?S.day+3:sev===1?S.day+8:0}
+    if(c.tier==="petty")adj(who,-5*(sev+1));
+    else if(c.tier==="moderate")adj(who,-7-3*sev);
+    else if(c.tier==="serious"){if(sev<2)adj(who,-10-4*sev);else{who.jailed=true;who.jailUntil=S.day+1;who.jailNight=true;adj(who,-14)}}
+    else{who.jailed=true;who.jailUntil=S.day+[1,3,5][sev]}
     who.jailFor=c.crime.n;who.jailFrom=S.day;
   }
   c.filed=true;c.choice=choice;c.who=who;S.idx++;
@@ -1523,7 +1559,7 @@ function fileCase(i){
   refresh();saveGame();
 }
 function addRecord(n,t){(S.record[n.id]=S.record[n.id]||[]).push(`${shortD(S.day)}, 1931. ${t}`)}
-const GM={petty:[.7,1,1.2],serious:[.5,1,1.3],grave:[.35,1,1.45]},WM=[.5,1,2.1];
+const GM={petty:[.7,1,1.2],moderate:[.6,1,1.25],serious:[.5,1,1.3],grave:[.35,1,1.45]},WM=[.5,1,2.1];
 function goHome(){
   const today=S.history[S.history.length-1];S.memo=[];
   S.verdicts.forEach(({c,choice,who},i)=>{
@@ -1540,7 +1576,7 @@ function goHome(){
         let line=`${no} ${who.name} admitted the offense and was ${SENT[c.tier][sev]}.`;
         if(c.outsider)line+=` Nobody had named ${him(who)}, but the evidence did. Nicely done.`;
         if(c.tier!=="petty"&&sev===0)line+=` I'll be honest, folks are saying you let ${him(who)} off lightly.`;
-        if(c.tier==="petty"&&sev===2){who.fam.forEach(f=>adj(N[f.id],-4))}
+        if((c.tier==="petty"||c.tier==="moderate")&&sev===2){who.fam.forEach(f=>adj(N[f.id],-4))}
         if(c.tier==="grave"&&sev===2)line+=" The town approves.";
         if(c.prep)line+=` ${He(who)} would not say what ${he(who)} wanted with it, and grinned when I asked.`;
         if(c.heist)line+=" Part of the money has been recovered from under the floor of a shed.";
@@ -1551,27 +1587,27 @@ function goHome(){
         S.memo.push(line);
       }else if(choice==="arrest"){
         out="wrong";S.stats.wrong++;wrongful(who,c,tv*1.5*WM[sev],sev);addRecord(who,`Charged with ${nat} in error. Released.`);
-        S.memo.push(`${no} The charge against ${who.name} could not be sustained. ${He(who)} has been ${c.tier==="petty"&&sev<2?"refunded the fine":"released"} and is not pleased.${sev===2?` That you asked the heaviest penalty for an innocent party will not soon be forgotten.`:""} ${c.outsider?"None of the people named had anything to do with it.":"Whoever did it is still at large."}`);
+        S.memo.push(`${no} The charge against ${who.name} could not be sustained. ${He(who)} has been ${c.tier==="petty"||c.tier==="moderate"||(c.tier==="serious"&&sev<2)?"refunded the fine":"released"} and is not pleased.${sev===2?` That you asked the heaviest penalty for an innocent party will not soon be forgotten.`:""} ${c.outsider?"None of the people named had anything to do with it.":"Whoever did it is still at large."}`);
       }else if(choice==="unexplained"){
-        out="spirits";S.stats.shelved++;S.rite.correct=Math.max(0,S.rite.correct-1);S.rep=clamp(S.rep-tv);S.unrest=clamp(S.unrest+tv);adj(c.victim,-15);
+        out="spirits";S.stats.shelved++;S.rite.correct=Math.max(0,S.rite.correct-1);S.rep=clamp(S.rep-tv);S.unrest=clamp(S.unrest+Math.round(tv*.7));adj(c.victim,-15);
         S.memo.push(`${no} Your finding of no human agency has not gone down well. ${c.victim.name} says a person did it and everyone knows it.`);
       }else{
         out="shelved";S.stats.shelved++;
-        if(c.murky){S.rep=clamp(S.rep-Math.round(tv/5));S.unrest=clamp(S.unrest+Math.round(tv/3));adj(c.victim,-4);
+        if(c.murky){S.rep=clamp(S.rep-Math.round(tv/5));S.unrest=clamp(S.unrest+Math.round(tv/4));adj(c.victim,-4);
           S.memo.push(`${no} Left open. Nobody could have made much of that one. For what it's worth, the town doesn't hold it against you, much.`)}
-        else if(c.outsider){S.rep=clamp(S.rep-Math.round(tv/4));S.unrest=clamp(S.unrest+Math.round(tv/2));adj(c.victim,-6);
+        else if(c.outsider){S.rep=clamp(S.rep-Math.round(tv/4));S.unrest=clamp(S.unrest+Math.round(tv*.35));adj(c.victim,-6);
           S.memo.push(`${no} Left open. For what it's worth, word is none of the people named were mixed up in it. Whoever was is still free.`)}
-        else{S.rep=clamp(S.rep-Math.round(tv/2));S.unrest=clamp(S.unrest+tv);adj(c.victim,-12);if(c.vig){S.rep=clamp(S.rep-8);S.memo.push(`${no} Left open. The council knows who did it, detective, and it knows you let it go.`)}else S.memo.push(`${no} Left open. ${c.victim.name} came in asking what is being done.`)}
+        else{S.rep=clamp(S.rep-Math.round(tv/2));S.unrest=clamp(S.unrest+Math.round(tv*.7));adj(c.victim,-12);if(c.vig){S.rep=clamp(S.rep-8);S.memo.push(`${no} Left open. The council knows who did it, detective, and it knows you let it go.`)}else S.memo.push(`${no} Left open. ${c.victim.name} came in asking what is being done.`)}
       }
     }else{
-      if(choice==="unexplained"){out="unexplained";S.stats.unexplained++;S.rite.correct++;S.rep=clamp(S.rep+6);S.unrest=clamp(S.unrest+6);S.memo.push(`${no} Closed as you directed. The council thinks you were right not to hang it on anybody. The town, though, is more frightened than ever. If it wasn't a person, what was it?`)}
-      else if(choice==="shelve"){out="shelved";S.stats.shelved++;S.unrest=clamp(S.unrest+4);S.memo.push(`${no} Left open. Folks keep asking about it.`)}
+      if(choice==="unexplained"){out="unexplained";S.stats.unexplained++;S.rite.correct++;S.rep=clamp(S.rep+6);S.unrest=clamp(S.unrest+3);S.memo.push(`${no} Closed as you directed. The council thinks you were right not to hang it on anybody. The town, though, is more frightened than ever. If it wasn't a person, what was it?`)}
+      else if(choice==="shelve"){out="shelved";S.stats.shelved++;S.unrest=clamp(S.unrest+3);S.memo.push(`${no} Left open. Folks keep asking about it.`)}
       else{out="wrong";S.stats.wrong++;wrongful(who,c,8*WM[sev],sev);addRecord(who,`Charged with ${nat} in error. Released.`);S.memo.push(`${no} There was nothing to hold ${who.name} on. ${He(who)} has been released and is telling anyone who'll listen.`)}
     }
     rec.outcome=out;c.outcome=out;
   });
   const m=N[MAYOR];
-  S.mayorNote=m.jailed?"":m.rel<25?"The Mayor telephoned twice this afternoon. He did not sound pleased.":m.rel>=75?"The Mayor stopped by and asked me to tell you he's satisfied so far.":"";
+  S.mayorNote=m.jailed?"":m.rel<25?(S.day>=15?"The Mayor sent a boy round twice this afternoon. He did not sound pleased.":"The Mayor telephoned twice this afternoon. He did not sound pleased."):m.rel>=75?"The Mayor stopped by and asked me to tell you he's satisfied so far.":"";
   const end=checkEnd();
   if(end){finish(end);return}
   if(S.day>=DAYS){finish("season");return}
@@ -1580,12 +1616,12 @@ function goHome(){
   S.queue=[{kind:"sergeant"}];
   if(S.day===19&&S.pip&&!S.pip.found){const m=N[S.pip.by!=null?S.pip.by:4];S.queue.push({kind:"mystic",npc:m&&!m.jailed&&!m.dead?m:SERGEANT,when:"evening",step:"pipfound"})}
   if(S.eveVisit)S.queue.push(S.eveVisit);
-  const V=S.vig;if(V){if(S.day===V.formDay&&vigLeader())S.queue.push({kind:"committee"});
+  const V=S.vig;if(V){if(S.day===V.formDay&&vigLeader()){const L=vigLeader();S.queue.push({kind:"committee",with:L.id===6&&!N[7].jailed&&!N[7].dead?7:null})}
     if(S.next.some(c=>c.vig==="beating")&&!N[6].jailed&&N[6].rel>=65)S.queue.push({kind:"hugoTip"})}
   refresh();saveGame();
 }
 function wrongful(who,c,pen,sev=1){
-  S.rep=clamp(S.rep-pen);S.unrest=clamp(S.unrest+5*WM[sev]);
+  S.rep=clamp(S.rep-pen);S.unrest=clamp(S.unrest+Math.round(3.5*WM[sev]));
   who.jailed=false;who.jailUntil=0;
   adj(who,-30*WM[sev]);
   free().forEach(y=>{if(y===who)return;const r=relOf(y,who);adj(y,-(r==="family"?12:r==="friend"?6:3)*WM[sev])});
@@ -1606,8 +1642,9 @@ const RITES=[
  {pro:"He",second:"his name said aloud where he lies. Someone in this town still knows it",who:"a peddler who was robbed and killed on the river bottoms in '69 and buried where he fell",place:"the river bottoms",want:"a blessing on the ground where he lies, since he never got a Christian burial"},
  {second:"the names of all her pupils read aloud from the old register, so she knows they were saved",who:"Miss Abigail Thorne, the teacher who died when the first schoolhouse burned in '74",place:"the old schoolhouse lot on Oak Street",want:"the school bell rung for her at midnight and the words said, for no one came to her funeral"}
 ];
+function phoneReady(){return !S.phone&&S.day<15&&S.day>=(S.phoneNext||0)}
 function consult(p){
-  if(S.phone)return;
+  if(!phoneReady())return;
   const r=S.rite,st=r.story,before=p.rel,got=[];adj(p,5);
   const seer=p.id===12||p.id===15;
   const dunnFree=!N[8].jailed;
@@ -1615,29 +1652,47 @@ function consult(p){
   else if(seer&&before<50)got.push("I don't talk about such things with the law. Not yet.");
   else if(seer&&r.stage===0){r.stage=1;got.push(`You want to know what's walking? It's ${st.who}. It's been quiet for years. Something woke it.`,"Watch for it yourself. When you've seen it plain, at least twice, and not blamed a living soul for it, come back to me.")}
   else if(seer&&r.stage===1&&S.stats.unexplained<2)got.push("You don't believe it yet. I can see that in your face. Come back when you've seen it with your own eyes, and closed the matter honestly.");
-  else if(seer&&r.stage===1){r.stage=2;got.push(`${p.id===12?"She lays out the cards and is quiet a long while.":"She rocks by the stove and stares into it."} "It wants ${st.want}. It waits at ${st.place}."`,dunnFree?`"It needs a priest's words, and the old ones. Father Dunn has the books. He'll tell you he doesn't."`:`"It needs the old words. With the priest locked up, I suppose it'll have to be me. Come back and ask me proper."`)}
+  else if(seer&&r.stage===1){r.stage=2;got.push(`${p.id===12?"She lays out the cards and is quiet a long while.":"She rocks by the stove and stares into it."} "It wants ${st.want}. It waits at ${st.place}."`,dunnFree?`"It needs a priest's words over it. Proper ones, Latin and holy water and all. Father Dunn will do it, if he trusts you. He's a good man, for a churchman."`:`"It needs the old words. With the priest locked up, I suppose it'll have to be me. Come back and ask me proper."`)}
   else if(seer&&r.stage===2&&!dunnFree&&p.id===15){r.stage=3;r.justDone=true;S.unrest=clamp(S.unrest-20);S.rep=clamp(S.rep+6);got.push(`She takes down a bundle of dried herbs and a lantern. "My own way, then. Stay home tonight, and don't look out the window."`)}
   else if(seer&&r.stage===2)got.push("I've told you what it wants. Go and see the priest.");
   else if(p.id===8&&r.stage<2)got.push(before>=60?`He hesitates. "If you ever learn what it wants, come back to me. Not before."`:`"Superstition, detective. I'd pay it no mind."`);
-  else if(p.id===8&&before<60)got.push(`He hears you out, then stands. "I'm sorry. I can't help you." You get the feeling he could.`);
-  else if(p.id===8){r.stage=3;r.justDone=true;S.unrest=clamp(S.unrest-25);S.rep=clamp(S.rep+8);got.push(`He is quiet a long while. Then he takes a key from his desk drawer, the one to the crypt. "${cap(st.place)}. Tonight. Don't come with me."`)}
+  else if(p.id===8&&before<60)got.push(`He hears you out, and he is plainly troubled. "I'll pray on it, detective. Come to me again when we know each other better, and I'll do what I can."`);
+  else if(p.id===8){r.stage=3;r.justDone=true;S.unrest=clamp(S.unrest-25);S.rep=clamp(S.rep+8);got.push(`He is quiet a while. Then he takes down his stole and a little bottle of holy water. "${cap(st.place)}. I'll say the prayers for the dead there tonight, and a Mass for the repose of the soul in the morning. Whoever it was, they're owed that much."`)}
   const reaction=before<30?`${He(p)} sounds none too pleased to hear from you.`:before<60?`${He(p)} goes quiet on the line when you raise the subject.`:`${He(p)} lowers ${p.sex==="f"?"her":"his"} voice, as if someone might be listening on the party line.`;
-  S.phone={p,got,reaction};refresh();saveGame();saveGame();
+  S.phone={p,got,reaction};S.phoneNext=S.day+2;refresh();saveGame();
 }
 const EXCHANGE={8:["The rectory, St. Brendan's","Hollow Creek 12","The housekeeper fetches Father Dunn to the telephone."],
   12:["Voss Lunchroom, for Madame Ysolde","Hollow Creek 31","Greta Voss shouts across the lunchroom, and after a while Madame Ysolde comes to the telephone."],
   15:["Pruitt's store on the bottoms, for Maud Tillery","Hollow Creek 7-R","A boy is sent running down the path to fetch her. You wait a long time on the line."]};
+const CALLED=[["the night clerk at the Commercial Hotel","playing cards in the hotel lobby"],["the station agent at the depot","waiting on the late freight at the depot"],["Mrs. Pruitt at the store on the bottoms","at the store on the bottoms, arguing about credit"],["the secretary of the Odd Fellows","at the Odd Fellows' card evening"],["the manager of the Rialto","in the back row at the Rialto"],["the Grange hall","at the Grange meeting, and stayed on to stack the chairs"],["the operator herself, who hears most things on the party line","on the telephone to a cousin in Anamosa half the night"]];
+function alibiCall(ci,nid){
+  if(!phoneReady())return;
+  const c=S.cases[ci],t=N[nid];if(!c||!t)return;
+  const [who,where]=CALLED[(nid*7+(c.no||0))%CALLED.length],guilty=t===c.culprit,r=Math.random();
+  let text;
+  if(!guilty&&r<.65)text=`You are put through to ${who}. ${t.name} was ${where} that night, from supper until past eleven. "Couldn't have been anywhere else, detective. I'd swear to it."`;
+  else if(guilty&&r<.75)text=`You are put through to ${who}. "${first(t)}? No. We were expecting ${him(t)} that night, as it happens, and ${he(t)} never came."`;
+  else text=`You are put through to ${who}. "${first(t)}? Might have been in, might not. It was a busy night. I couldn't swear to it either way."`;
+  c.calls=(c.calls||[]).concat([{n:t.id,text}]);
+  S.phone={alibi:true,text,no:c.no};S.phoneNext=S.day+2;Sound.rustle&&Sound.rustle();refresh();saveGame();
+}
+const DOWN_WD=d=>["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dateOf(d).getDay()];
 function phoneDoc(){
+  if(S.phone&&S.phone.alibi)return `<article class="paper convo"><div class="lh">TELEPHONE CALL</div><p>Regarding complaint No. ${S.phone.no}.</p><p class="said">${esc(S.phone.text)}</p><p class="muted">The line hisses and fades. The dry cells under the desk are spent, and Obermeyer reckons it will be the day after tomorrow before there's enough in them for another call. The answer has been written into the complaint report.</p></article>`;
+  if(!S.phone&&S.day>=15)return `<article class="paper"><div class="lh">TELEPHONE</div><p>You crank the handle and lift the receiver. Nothing. Not even the hum of the line.</p><p class="muted">Lightning brought the wires down along the county road on ${DOWN_WD(14)} night. Nobody will be out to string them again until the storms pass.</p></article>`;
+  if(!S.phone&&S.day<(S.phoneNext||0))return `<article class="paper"><div class="lh">TELEPHONE</div><p>You crank the handle. A faint click, and nothing more.</p><p class="muted">The dry cells are still too weak to carry a call. ${S.phoneNext-S.day<=1?"Tomorrow, perhaps.":"The day after tomorrow, perhaps."}</p></article>`;
   if(S.phone){const {p,got,reaction}=S.phone;
     return `<article class="paper convo"><div class="lh">TELEPHONE CALL</div><p>${EXCHANGE[p.id][2]} ${reaction}</p>
-      ${got.map(t=>`<p class="said">${esc(t)}</p>`).join("")}<p class="muted">The line clicks dead. One call like that is enough for a day.</p></article>`}
-  const list=MYSTICS.map(id=>N[id]).filter(n=>!n.jailed);
+      ${got.map(t=>`<p class="said">${esc(t)}</p>`).join("")}<p class="muted">The line hisses and fades. The dry cells under the desk are spent, and Obermeyer reckons it will be the day after tomorrow before there's enough in them for another call.</p></article>`}
   return `<article class="paper"><div class="lh">TELEPHONE</div>
     <p>You lift the receiver. The operator comes on the line: "Number, please?"</p>
-    <p class="muted" style="font-size:13px">Numbers pencilled on the card beside the telephone, under the heading "Strange doings." There is time for one such call a day.</p>
-    <ul class="calls">${list.map(n=>`<li><span>${EXCHANGE[n.id][0]}</span><span class="d">${EXCHANGE[n.id][1]}</span><button class="nm" data-consult="${n.id}">Ask to be put through</button></li>`).join("")||"<li>Nobody on the card can be reached.</li>"}</ul></article>`;
+    <p class="muted" style="font-size:13px">The station telephone runs off a box of dry cells under the desk, and they are nearly done. One call will flatten them for the rest of today and all of tomorrow.</p>
+    <div class="sect">CHECKING A STORY</div>
+    ${(()=>{const open=S.cases.map((c,i)=>[c,i]).filter(([c])=>c.kind==="human"&&c.reported&&!c.filed);
+      return open.length?open.map(([c,i])=>`<p style="margin:8px 0 2px"><b>No. ${c.no}</b>, ${esc(titleOf(c))}</p><ul class="calls">${c.suspects.map(t=>`<li><span>Where was ${esc(t.name)} that night?</span>${(c.calls||[]).some(x=>x.n===t.id)?`<span class="d">asked</span>`:`<button class="nm" data-alibi="${i}:${t.id}">Ask the operator</button>`}</li>`).join("")}</ul>`).join(""):`<p class="muted">No complaint on the desk names anyone yet.</p>`})()}
+    </article>`;
 }
-function turnIn(){S.visit=null;if(S.day>=19&&N[5].away){N[5].away=false;if(S.pip)S.pip.found=true}S.day++;S.cases=S.next;S.next=[];numberCases(S.cases);morning()}
+function turnIn(){S.visit=null;if(S.mugFallen){S.mugFallen=false;G.mugFall=0;if(G.objs&&G.objs.coffee){G.objs.coffee.position.set(4.5,0,-.9);G.objs.coffee.rotation.set(0,0,0)}}if(S.day>=19&&N[5].away){N[5].away=false;if(S.pip)S.pip.found=true}S.day++;S.cases=S.next;S.next=[];numberCases(S.cases);morning()}
 
 function finish(kind){
   S.phase="over";
@@ -1822,7 +1877,7 @@ function loadGame(id){
   refresh();
   setTimeout(processQueue,1200);
 }
-function clearVisitor(){if(typeof G!=="undefined"){if(G.visitor){G.scene.remove(G.visitor.sp);G.visitor=null;G.doorOpen=false}G.talkItem=null}if(typeof TALK!=="undefined"&&TALK){clearInterval(TALK.timer)}const t=document.getElementById("talk");if(t)t.classList.remove("show")}
+function clearVisitor(){if(typeof G!=="undefined"){if(G.visitor){(G.visitor.comps||[]).forEach(C=>G.scene.remove(C.sp));G.scene.remove(G.visitor.sp);G.visitor=null;G.doorOpen=false}G.talkItem=null}if(typeof TALK!=="undefined"&&TALK){clearInterval(TALK.timer)}const t=document.getElementById("talk");if(t)t.classList.remove("show")}
 function deleteSave(id){writeSaves(readSaves().filter(x=>x.id!==id));cloudDelete(id);refresh()}
 function registerDoc(){
   const list=readSaves().sort((a,b)=>successRate(b.stats)-successRate(a.stats)||b.rep-a.rep);
@@ -1844,7 +1899,8 @@ function registerDoc(){
 /* ================= visitors ================= */
 function partnerNpc(){
   const r=S.rite;let p=N[r.partner];
-  if(p.jailed){const alt=[15,12,8].map(i=>N[i]).find(x=>!x.jailed);if(!alt)return null;r.partner=alt.id;p=alt}
+  if(p.dead&&p.id!==8){r.ladyLost=true;r.lostName=r.lostName||p.name}
+  if(p.jailed){const alt=(r.ladyLost?[8]:[15,12,8]).map(i=>N[i]).find(x=>!x.jailed&&!x.dead);if(!alt)return null;r.partner=alt.id;p=alt}
   return p;
 }
 function planVisit(){
@@ -1857,11 +1913,11 @@ function planVisit0(){
   if(r&&r.stage<4){
     const anySuper=S.history.some(h=>h.cases.some(c=>c.ref&&c.ref.kind==="super"&&c.outcome!=="pending"));
     if(r.stage===0){
-      if(!r.ladyMet&&p&&p.id!==8&&p.rel>=25&&((anySuper&&S.day>=5)||S.day>=7))return {when:"evening",npc:p,kind:"mystic",step:"lady0"};
-      if((r.ladyMet||!p||p.id===8)&&!r.priestMet&&pr&&pr.rel>=25&&S.day>=5)return {when:"morning",npc:pr,kind:"mystic",step:"priest0"};
+      if(!r.ladyMet&&p&&p.id!==8&&p.rel>=25&&anySuper&&S.day>(S.firstSuperDay||6))return {when:"evening",npc:p,kind:"mystic",step:"lady0"};
+      if((r.ladyMet||!p||p.id===8)&&!r.priestMet&&pr&&pr.rel>=25&&anySuper&&S.day>(S.firstSuperDay||6))return {when:"morning",npc:pr,kind:"mystic",step:"priest0"};
     }
     if(r.stage===1&&r.correct>=1){const a=[p,pr].filter(x=>x&&x.rel>=25);if(a.length)return {when:"morning",npc:rnd(a),kind:"mystic",step:"quiz"}}
-    if((r.stage===2||r.stage===3)&&r.correct>=1){const a=p&&p.id!==8?p:pr;if(a)return {when:"evening",npc:a,kind:"mystic",step:r.stage===2?"rite1":"rite2"}}
+    if((r.stage===2||(r.stage===3&&S.day>=17))&&r.correct>=1){const a=p&&p.id!==8?p:pr;if(a)return {when:"evening",npc:a,kind:"mystic",step:r.stage===2?"rite1":"rite2"}}
   }
   const fv=confessVisit();if(fv)return fv;
   const x=Math.random();if(x>=.6)return null;
@@ -1871,7 +1927,7 @@ function planVisit0(){
 }
 /* Father Dunn and the seal: he never tells what was said, only what he saw */
 const GRILLE={
-  "shoe:boots":["Under the curtain I could see their feet. Working boots, with nails in the soles."],"shoe:oxfords":["Under the curtain I could see good polished town shoes."],"shoe:heels":["Under the curtain I saw a small shoe with a narrow heel."],"shoe:plain":["Under the curtain I saw plain flat shoes, much mended."],"shoe:soft":["Under the curtain I saw no shoes to speak of. Slippers, or bare feet."],"shoe:big":["Under the curtain I saw boots far too big for the feet in them."],
+  "shoe:boots":["Under the curtain I could see their feet. Working boots, with nails in the soles."],"shoe:oxfords":["Under the curtain I could see good polished town shoes."],"shoe:heels":["Under the curtain I saw a small shoe with a narrow heel."],"shoe:plain":["Under the curtain I saw plain flat shoes, much mended."],"shoe:soft":["Under the curtain I saw no shoes to speak of. Slippers, or bare feet."],"shoe:big":["Under the curtain I saw old working boots, laced very tight."],
   slight:["The kneeler hardly creaked when they went down on it. A slip of a person, whoever it was.","Through the grille I could see a shoulder no wider than a boy's."],
   heavy:["The kneeler groaned when they knelt, and the whole box shifted on the floor.","They filled the box. I could hear a big body labouring for breath on the kneeler."],
   tall:["They had to stoop to come in under the curtain. I saw it lift high.","Their head was above the grille the whole time. I was talking to a coat collar."],
@@ -1893,7 +1949,7 @@ function confessVisit(){
   if(!fd||fd.jailed||fd.dead||fd.rel<60||S.day<4||S.day>19||isSunday(S.day))return null;
   const C=S.conf||(S.conf={n:0,last:-9,said:[]});
   if(C.n>=4||S.day-C.last<3||Math.random()>=.6)return null;
-  const T={grave:3,serious:2,petty:1};
+  const T={grave:3,serious:2,moderate:1.5,petty:1};
   const cand=S.cases.filter(c=>c.kind==="human"&&c.culprit&&c.culprit.id!==8&&!c.culprit.dead&&relOf(fd,c.culprit)!=="family"
     &&attrsOf(c.culprit,false).some(k=>GRILLE[k])&&Math.random()<(c.culprit.villain?.3:.75));
   if(!cand.length)return null;
@@ -2076,8 +2132,8 @@ function visitScript(v){
     choices:[{label:"Say you'll watch for it",fn:()=>{r.ladyMet=true;adj(n,5);bump();endVisit()}},{label:"Say it's nonsense",fn:()=>{r.ladyMet=true;adj(n,-5);bump();endVisit(`${n.name} shrugs. "You'll see," ${he(n)} says, and goes.`)}}]};
   if(v.step==="priest0"){
     const known=r.ladyMet&&ladyOk;
-    return {lines:[{n:true,t:`Father Dunn comes in early and shuts the door carefully behind him.`}.t,`"I'll speak plainly, detective, and I'd thank you not to repeat it."`,known?`"I know ${lady.name} has been to see you. I don't hold with her methods. But I don't say she's wrong about what's out there."`:`"There is something in this town that should not be. I think you've begun to see it."`,known?`"The Church has its own rite for the restless dead. I have the book. If it comes to it, I'll stand with you. So will she, I expect. Neither of us can promise it will work."`:`"It's ${st.who}. I've found the name in the parish register. The Church has its own rite for the restless dead, and I have the book."`,`"Close its cases honestly. When you've seen enough, we'll talk again."`],
-      choices:[{label:"Thank him",fn:()=>{r.priestMet=true;if(!known)r.ladyMet=true;adj(n,6);bump();endVisit()}},{label:"Ask why a priest keeps such a book",fn:()=>{adj(n,-2);talkMore(`He is quiet for a moment. "Because the men who kept this parish before me found they needed it. Twice. I pray I won't."`,[{label:"See him out",fn:()=>{r.priestMet=true;if(!known)r.ladyMet=true;bump();endVisit()}}])}}]};
+    return {lines:[{n:true,t:`Father Dunn comes in early and shuts the door carefully behind him.`}.t,`"I'll speak plainly, detective, and I'd thank you not to repeat it."`,known?`"I know ${lady.name} has been to see you. I don't hold with herbs and cards. But she's right that something is out there."`:`"There is a soul in this town that can't rest. I think you've begun to see it."`,known?`"The Church prays for the dead, detective. Every soul, however it died. When the time comes I'll say the prayers over it, and a Mass for its repose. That's the Church's way, and the only one I hold with. I can't promise it will be enough."`:`"It's ${st.who}. I've found the name in the parish register. Nobody ever prayed for that soul properly. When the time comes, I will."`,`"Close its cases honestly. When you've seen enough, we'll talk again."`],
+      choices:[{label:"Thank him",fn:()=>{r.priestMet=true;if(!known)r.ladyMet=true;adj(n,6);bump();endVisit()}},{label:"Ask whether the Church really believes in ghosts",fn:()=>{adj(n,2);talkMore(`He smiles a little. "The Church believes in souls, detective, and in the mercy of God. A soul nobody has prayed for is a lonely thing. I'd rather pray for one that isn't there than leave one that is."`,[{label:"See him out",fn:()=>{r.priestMet=true;if(!known)r.ladyMet=true;bump();endVisit()}}])}}]};
   }
   if(v.step==="quiz"){
     const recent=S.history.slice(-8).flatMap(h=>h.cases).filter(c=>c.ref&&c.outcome&&c.outcome!=="pending");
@@ -2093,15 +2149,15 @@ function visitScript(v){
   // the rites: two ways of doing it, and each is a coin toss
   const first=v.step==="rite1",wish=first?st.want:st.second;
   const who=ladyOk?lady:null,both=who&&pr;
-  const open=both?`"It's ready to listen tonight. But the Father and I don't agree how. He wants it by his book. I say the old way. Father Dunn is waiting outside. You choose."`:who?`"It's ready tonight. The priest can't be with us, so it'll be my way or nothing."`:`"It's ready tonight. I'll read the rite. Pray it takes."`;
+  const open=both?`"It's ready to listen tonight. But the Father and I don't agree how. He wants to pray over it, the Church's way. I say it needs the old ways. Father Dunn is waiting outside. You choose."`:who?`"It's ready tonight. The priest can't be with us, so it'll be my way or nothing."`:r.ladyLost?`"It's ready tonight. ${r.lostName||"She"} is gone, God rest her, so it will be the Church's way or none at all. Pray it takes."`:`"It's ready tonight. I'll read the rite. Pray it takes."`;
   const tryIt=(method)=>{
     const ok=Math.random()<.5,m=method==="old"?who:pr;
-    const scene=method==="old"?`You stand in the ${weatherOf(S.day)==="fog"?"fog":"rain"} at ${st.place} while ${who.name} burns herbs in a tin and speaks words you don't know. You do what she tells you: ${wish}.`:`Father Dunn reads by the light of your lamp at ${st.place}, his voice steady, the stole round his neck soaked through. You do as he asks: ${wish}.`;
+    const scene=method==="old"?`You stand in the ${weatherOf(S.day)==="fog"?"fog":"rain"} at ${st.place} while ${who.name} burns herbs in a tin and speaks words you don't know. You do what she tells you: ${wish}.`:`Father Dunn kneels at ${st.place} and reads the prayers for the dead by the light of your lamp, his voice steady, the stole round his neck soaked through. He blesses the ground with holy water. You do as he asks: ${wish}.`;
     if(ok){
       if(first){r.stage=3;r.correct=0;adj(m,10);talkMore(`${scene} Near midnight the lamp flame bends sideways, though there is no wind, and something sighs out of the dark. It is quieter afterwards. Not silent. ${m.name} says, "Half of it's let go. The rest wants ${st.second}. When it's ready, we'll try again."`,[{label:"Walk back to the station",fn:()=>endVisit()}])}
       else{r.stage=4;r.justDone=true;S.unrest=clamp(S.unrest-25);S.rep=clamp(S.rep+8);adj(m,14);talkMore(`${scene} At midnight the rain stops, all at once, for the space of a breath. Something passes you, cold and light, going away. When the rain starts again it sounds like ordinary rain. ${m.name} says nothing for a long time, and then only, "There. ${st.pro||"She"}'s gone home."`,[{label:"Walk back to the station",fn:()=>endVisit()}])}
     }else{
-      r.correct=0;r.angry=true;S.unrest=clamp(S.unrest+6);adj(m,-3);
+      r.correct=0;r.angry=true;S.unrest=clamp(S.unrest+4);adj(m,-3);
       talkMore(`${scene} Nothing happens. Then the lamp goes out, and in the dark something laughs, close enough to feel. ${m.name} is white as paper on the walk back. "It didn't take. It's angrier now. We'll need to wait for it to show itself again."`,[{label:"Walk back to the station",fn:()=>endVisit()}]);
     }
   };
@@ -2147,7 +2203,7 @@ function renderReading(){
   if(!reading){$("rdocs").innerHTML="";return}
   const keep=document.activeElement&&document.activeElement.id==="nbText";
   $("rdocs").className="rdocs n"+S.desk.length;
-  $("rdocs").innerHTML=S.desk.map(k=>`<section class="slot" data-key="${k}" aria-label="${esc(docTitle(k))}"><div class="slotbar"><span>${esc(docTitle(k))}</span>${S.name?`<button data-away="${k}">Put away</button>`:""}</div>${docHtml(k)}</section>`).join("");
+  $("rdocs").innerHTML=S.desk.map(k=>`<section class="slot" data-key="${k}" aria-label="${esc(docTitle(k))}"><div class="slotbar"><span>${esc(docTitle(k))}</span>${S.name||k!=="register"?`<button data-away="${k}">Put away</button>`:""}</div>${docHtml(k)}</section>`).join("");
   $("rmsg").textContent=S.say||"";
   $("sitBack").style.visibility=S.name?"visible":"hidden";
   wireDocs($("rdocs"));
@@ -2155,7 +2211,7 @@ function renderReading(){
 }
 function openReading(){picker=null;if(!reading){reading=true;lean(true)}refresh();$("reading").scrollTop=0}
 function closeReading(){if(!S.name)return;reading=false;S.say="";lean(false);refresh();maybeWatcher()}
-function maybeWatcher(){if(!G.renderer||!S||S.day<15||quietSunday(S.day)||G.watcher||S.watchedDay===S.day||Math.random()>.18)return;S.watchedDay=S.day;setTimeout(()=>{if(reading||G.visitor)return;G.watcher=makeWatcher();G.watcherT=performance.now()},520)}
+function maybeWatcher(){if(G.watcher&&G.watcherKind==="far"){G.watchGone=true}}
 function renderPicker(){
   const p=$("picker");p.classList.toggle("show",!!picker);
   if(!picker){p.innerHTML="";return}
@@ -2184,7 +2240,7 @@ function wireDocs(root){
   root.querySelectorAll("[data-away]").forEach(b=>b.onclick=()=>{Sound.rustle();putAway(b.dataset.away)});
   root.querySelectorAll("[data-file]").forEach(b=>b.onclick=()=>{Sound.rustle();place("file:"+b.dataset.file)});
   root.querySelectorAll("[data-call]").forEach(b=>b.onclick=()=>visit(N[+b.dataset.call]));
-  root.querySelectorAll("[data-consult]").forEach(b=>b.onclick=()=>consult(N[+b.dataset.consult]));
+  root.querySelectorAll("[data-alibi]").forEach(b=>b.onclick=()=>{const [ci,nid]=b.dataset.alibi.split(":").map(Number);alibiCall(ci,nid)});
   root.querySelectorAll('input[name="disp"]').forEach(r=>r.onchange=()=>{const c=slotCase(r);c.sel=r.value;refresh()});
   root.querySelectorAll('input[name="sev"]').forEach(r=>r.onchange=()=>{const c=slotCase(r);c.sev=+r.value;refresh()});
   root.querySelectorAll("select.other").forEach(s=>s.onchange=()=>{const c=slotCase(s);c.other=s.value===""?null:+s.value;refresh()});
@@ -2286,7 +2342,7 @@ const Sound={ctx:null,master:null,on:true,started:false,gains:{},
     const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
     try{this.ctx=new AC()}catch(e){return}
     const c=this.ctx;this.started=true;this.buf=this.noise(3);
-    this.master=c.createGain();this.master.gain.value=0;this.master.connect(c.destination);
+    this.master=c.createGain();this.master.gain.value=0;this.master.connect(c.destination);this._realM=this.master;
     const loop=(rate,filters,name)=>{const src=c.createBufferSource();src.buffer=this.buf;src.loop=true;src.playbackRate.value=rate;let n=src;filters.forEach(f=>{n.connect(f);n=f});const g=c.createGain();g.gain.value=0;n.connect(g).connect(this.master);src.start(0,Math.random()*2);this.gains[name]=g};
     const bq=(t,f,q=.7)=>{const b=c.createBiquadFilter();b.type=t;b.frequency.value=f;b.Q.value=q;return b};
     loop(1,[bq("highpass",500),bq("lowpass",4200)],"rain");
@@ -2312,11 +2368,16 @@ const Sound={ctx:null,master:null,on:true,started:false,gains:{},
   },
   setWeather(w){
     this.w=w;if(!this.ctx)return;
-    const L={fair:[0,0],rain:[.4,.24],fog:[.03,.02],heavy:[.6,.42],storm:[.85,.6]}[w],t=this.ctx.currentTime;
+    const L={fair:[0,0],rain:[.4,.24],fog:[.03,.02],heavy:[.45,.3],storm:[.55,.38]}[w],t=this.ctx.currentTime;
     this.level=[0,.2,.03,.3,.4][WEATHERS.indexOf(w)];
-    this.gains.rain.gain.setTargetAtTime(L[0]*.6,t,1.5);this.gains.rumble.gain.setTargetAtTime(L[1]*.6,t,1.5);
+    this._amb=[L[0]*.6,L[1]*.6];this.gains.rain.gain.setTargetAtTime(L[0]*.6,t,1.5);this.gains.rumble.gain.setTargetAtTime(L[1]*.6,t,1.5);
     this.windBase=S&&S.wind?S.wind[S.day-1]||0:0;
   },
+  fx(){if(!this._fx||this._fxM!==this._realM){const g=this.ctx.createGain();g.gain.value=4.8;g.connect(this._realM||this.master);this._fx=g;this._fxM=this._realM}return this._fx},
+  withFx(f){const m0=this.master;this.master=this.fx();try{f()}finally{this.master=m0}},
+  duck(sec){if(!this.ctx||!this.gains||!this._amb)return;const t=this.ctx.currentTime,A=this._amb;
+    this.gains.rain.gain.setTargetAtTime(A[0]*.4,t,.12);this.gains.rumble.gain.setTargetAtTime(A[1]*.4,t,.12);
+    clearTimeout(this._dk);this._dk=setTimeout(()=>{if(!this.ctx||!this._amb)return;const t2=this.ctx.currentTime;this.gains.rain.gain.setTargetAtTime(this._amb[0],t2,.8);this.gains.rumble.gain.setTargetAtTime(this._amb[1],t2,.8)},sec*1000)},
   boom(){if(!this._boom){const c=this.ctx,g=c.createGain();g.gain.value=this.on?5:0;const lim=c.createDynamicsCompressor();lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.001;lim.release.value=.3;g.connect(lim).connect(c.destination);this._boom=g}return this._boom},
   bigThunder(){
     if(!this.ctx||!this.on)return;const c=this.ctx,t=c.currentTime;
@@ -2331,7 +2392,7 @@ const Sound={ctx:null,master:null,on:true,started:false,gains:{},
   thunder(delay,big=0){if(!this.ctx||!this.on)return;
     if(big===2){const B=this.boom(),m0=this.master;this.master=B;this.burst(3500,.4,1.2,.22,delay);this.burst(1400,.5,1.1,.5,delay+.02);this.burst(150,.6,1.5,2.6,delay+.04);this.burst(85,.7,1.7,4.2,delay+.12);this.burst(55,.8,1.5,5.5,delay+.35);
       this.tone("sine",46,26,4.5,1.1,delay+.04,B);for(let i=0;i<14;i++)this.burst(2200+Math.random()*3500,5,.28,.04,delay+.08+i*.06+Math.random()*.04,Math.random()*1.4-.7);this.burst(260,1,.6,.25,delay+.1,.6);this.master=m0;
-      m0.gain.setTargetAtTime(.1,this.ctx.currentTime+delay,.02);m0.gain.setTargetAtTime(.34,this.ctx.currentTime+delay+1.6,1.2);return}
+      m0.gain.setTargetAtTime(.2,this.ctx.currentTime+delay,.02);m0.gain.setTargetAtTime(.34,this.ctx.currentTime+delay+1.2,.8);return}
     const m0=this.master;this.master=this.loud();if(big===1){this.burst(1800,.5,.7,.3,delay);for(let i=0;i<6;i++)this.burst(2600+Math.random()*2500,5,.18,.04,delay+.1+i*.07,Math.random()-.5)}this.burst(2400,.5,.5,.2,delay);this.burst(90,.8,1.3,3.4,delay,Math.random()*.6-.3);this.burst(160,.9,.9,1.8,delay+.05);this.burst(60,.7,1.1,4.6,delay+.3);this.tone("sine",45,30,3.5,.6,delay+.05,this.master);this.master=m0},
   toggle(){
     this.on=!this.on;try{localStorage.setItem("hollowcreek.sound",this.on?"on":"off")}catch(e){}
@@ -2358,7 +2419,8 @@ Object.assign(Sound,{
         setTimeout(wob,30+Math.random()*40)};wob();}
     this._penUntil=Math.max(this._penUntil||0,t+ms/1000);
   },
-  sip(){if(!this.ok())return;this.hush(1600,1.4,.035,.12,.45);this.hush(2400,2,.02,.08,.3,.5);this.tone("sine",2300,2250,.25,.008,.95)},
+  sip(){if(!this.ok())return;this.duck(1.4);this.withFx(()=>{this.hush(1500,1.2,.14,.1,.45);this.hush(2400,1.8,.08,.06,.3,.5);this.hush(1900,5,.12,.003,.07,.95);this.hush(650,2,.09,.004,.1,.96)})},
+  mugFall(){if(!this.ok())return;this.hush(1800,4,.14,.002,.09);this.hush(700,2,.12,.003,.14,.02);this.hush(2200,5,.06,.002,.06,.35);this.hush(2000,5,.04,.002,.05,.55);this.hush(900,.8,.05,.06,.6,.08)},
   hush(freq,q,peak,att,dur,delay=0){const c=this.ctx,t=c.currentTime+delay,src=c.createBufferSource();src.buffer=this.buf;const f=c.createBiquadFilter();f.type="bandpass";f.frequency.value=freq;f.Q.value=q;const hp=c.createBiquadFilter();hp.type="highpass";hp.frequency.value=700;const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+att);g.gain.linearRampToValueAtTime(0,t+dur);src.connect(hp).connect(f).connect(g).connect(this.master);src.start(t,Math.random()*2,dur+.05)},
   rattle(){if(!this.ok())return;for(let i=0;i<5;i++){this.burst(200,.9,.5,.08,i*.09,.55);this.burst(1400,4,.12,.04,i*.09+.02,.55)}},
   blackout(){if(!this.ok())return;const c=this.ctx,t=c.currentTime,L=this.loud();
@@ -2374,12 +2436,12 @@ Object.assign(Sound,{
     let n=o.connect(g);if(c.createStereoPanner&&pan){const p=c.createStereoPanner();p.pan.value=pan;n=n.connect(p)}n.connect(dest||this.master);o.start(t);o.stop(t+dur+.05);return o},
   click(){if(!this.ok())return;this.burst(2600,4,.25,.02);this.tone("square",1400,900,.03,.05)},
   thump(){if(!this.ok())return;this.burst(160,.8,.35,.18);this.burst(900,1,.08,.08,.03)},
-  rustle(){if(!this.ok())return;for(let i=0;i<4;i++)this.burst(2200+Math.random()*2600,1.2,.05+Math.random()*.06,.05+Math.random()*.05,i*.05+Math.random()*.03,Math.random()*.4-.2)},
+  rustle(){if(!this.ok())return;this.duck(.7);this.withFx(()=>{this.hush(750,.8,.08,.02,.22);for(let i=0;i<5;i++)this.burst(2200+Math.random()*2600,1.2,.13+Math.random()*.1,.05+Math.random()*.05,i*.05+Math.random()*.03,Math.random()*.4-.2)})},
   pencil(){if(!this.ok())return;const n=performance.now();if(n-(this._pl||0)<55)return;this._pl=n;this.burst(3800+Math.random()*2200,3,.035+Math.random()*.03,.03+Math.random()*.03,0,.1)},
   sign(){if(!this.ok())return;for(let i=0;i<16;i++)this.burst(3200+Math.random()*3000,2.5,.06+Math.random()*.05,.04+Math.random()*.06,i*.075+Math.random()*.03,.05)},
   stamp(){if(!this.ok())return;this.burst(220,.9,.5,.12);this.burst(1200,1,.12,.06)},
-  match(){if(!this.ok())return;this.hush(3800,1.2,.05,.03,.22);this.hush(2200,.9,.03,.08,.6,.2);this.puff(1.1)},
-  puff(delay=0){if(!this.ok())return;this.hush(1300,.8,.025,.25,.8,delay);this.hush(900,.9,.015,.35,1,delay+.15)},
+  match(){if(!this.ok())return;this.duck(2.4);this.withFx(()=>{this.hush(3800,1.2,.18,.02,.22);this.hush(2200,.9,.1,.08,.6,.2)});this.puff(1.1)},
+  puff(delay=0){if(!this.ok())return;this.withFx(()=>{this.hush(1300,.8,.09,.22,.8,delay);this.hush(900,.9,.06,.32,1,delay+.15)})},
   step(pan=0){if(!this.ok())return;this.burst(180,.9,.22,.09,0,pan);if(Math.random()<.35)this.burst(700+Math.random()*300,9,.05,.18,.02,pan)},
   door(){if(!this.ok())return;this.tone("sawtooth",140,95,.55,.06,0,this.bp(900,6));this.burst(260,.8,.2,.12,.5)},
   bp(f,q){const b=this.ctx.createBiquadFilter();b.type="bandpass";b.frequency.value=f;b.Q.value=q;b.connect(this.master);return b},
@@ -2390,7 +2452,7 @@ Object.assign(Sound,{
     const c=this.ctx,t0=c.currentTime;
     const f1=c.createBiquadFilter();f1.type="bandpass";f1.frequency.value=560+fo;f1.Q.value=3;
     const f2=c.createBiquadFilter();f2.type="bandpass";f2.frequency.value=1050+fo*1.3;f2.Q.value=4;
-    const g=c.createGain();g.gain.value=.5;f1.connect(g);f2.connect(g);g.connect(this.master);
+    const g=c.createGain();g.gain.value=Vv.cls==="rich"?2.3:.8;f1.connect(g);f2.connect(g);g.connect(this.fx());this.duck(syll*gap+.6);
     for(let i=0;i<syll;i++){
       const t=t0+i*gap+Math.random()*.03,o=c.createOscillator(),e=c.createGain();o.type=Vv.cls==="rich"?"triangle":"sawtooth";
       const f=base*(.85+Math.random()*.35)*(i===syll-1?.8:1);o.frequency.setValueAtTime(f,t);o.frequency.linearRampToValueAtTime(f*(.9+Math.random()*.15),t+.07);
@@ -2402,6 +2464,11 @@ Object.assign(Sound,{
   /* ---- things that go bump in the night ---- */
   creepy(kind){
     if(!this.ok())return;
+    if(kind==="creak"){this.tone("sawtooth",92,70,.8,.035,0,this.bp(620,5),.5);this.tone("sawtooth",118,96,.55,.025,1.1,this.bp(700,6),.5);return}
+    const nail=(t,pan,pk)=>{this.burst(4300,3,pk,.018,t,pan);this.burst(2600,9,pk*.35,.025,t+.004,pan);this.tone("sine",2870,2850,.22,pk*.035,t+.01,this.master,pan);this.tone("sine",4130,4100,.14,pk*.02,t+.01,this.master,pan)};
+    if(kind==="tap"){[0,.09,.17,.27].forEach((d,i)=>nail(d,.3,.13-i*.01));nail(1.9,.3,.1);return}
+    if(kind==="tapwalk"){let t=0;for(let i=0;i<9;i++){nail(t,-.85+i*.21,.12);t+=.3+Math.random()*.16}return}
+    if(kind==="draft"){this.hush(380,.7,.09,.7,2.6);this.hush(900,1.2,.03,.9,2.2,.3);return}
     const c=this.ctx,v=this.verb(),L=this.loud(),m0=this.master;this.master=L;
     if(kind==="knock"){const B=this.boom();[0,.62,1.02,1.9,2.25].forEach((d,i)=>{const pk=i===4?1.9:1.5;this.master=B;this.burst(120,.8,pk,.28,d,.55);this.burst(420,1.2,pk*.5,.12,d,.55);this.tone("sine",62,40,.3,pk*.7,d,B,.55);this.burst(2600,3,.25,.04,d+.01,.55);this.master=L})}
     if(kind==="steps"){for(let i=0;i<7;i++){const pan=-.9+i*.3;this.burst(150,.9,.35,.12,i*.78,pan);this.tone("sawtooth",110,85,.3,.03,i*.78+.05,this.bp(750,7),pan)}}
@@ -2422,7 +2489,9 @@ Object.assign(Sound,{
       const g2=c.createGain();g2.gain.value=.15;o.connect(f1);o2.connect(g2).connect(f1);o.connect(f2);f1.connect(e);f2.connect(e);
       const pan=c.createStereoPanner?c.createStereoPanner():null;if(pan){pan.pan.value=.7;e.connect(pan);pan.connect(v);pan.connect(L)}else{e.connect(v);e.connect(L)}
       [o,o2,vib].forEach(x=>{x.start(t0);x.stop(t0+2.2)});this.burst(3000,1,.2,1.6,.1,.7)}
-    if(kind==="scratch"){for(let i=0;i<9;i++)this.burst(2400+Math.random()*1800,6,.2,.16,i*.19+Math.random()*.05,.7)}
+    const stroke=(t,len,pan,pk)=>{this.hush(1050,1.3,pk,len-.05,len,t);const n=Math.floor(len/.055);for(let i=0;i<n;i++)this.burst(1500+Math.random()*900,4,pk*(.25+.75*i/n),.03,t+i*.055,pan);this.burst(2600,5,pk*1.4,.02,t+len-.02,pan)};
+    if(kind==="scratch"){let t=0;[1.1,.8,1.3].forEach((len,i)=>{stroke(t,len,-.5+i*.1,.07);t+=len+1.1+Math.random()*.6})}
+    if(kind==="scratch3"){let t=0;for(let r=0;r<2;r++){for(let i=0;i<3;i++){stroke(t,.55,-.45,.085);t+=.72}t+=1.3}}
     if(kind==="chains"){for(let i=0;i<14;i++){const d=Math.random()*1.3;this.tone("triangle",1800+Math.random()*2400,null,.25,.12,d,v,-.8);this.burst(3000,3,.14,.05,d,-.8)}}
     this.master=m0;
   }
@@ -2432,6 +2501,45 @@ Sound.init();
 
 /* ================= 3D desk ================= */
 const G={};
+
+/* ---- the station itself: the door chips, the walls split ---- */
+function seeded(seed){let a=seed>>>0;return ()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function wearCanvas(w,h){const c=document.createElement("canvas");c.width=w;c.height=h;const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return {c,x:c.getContext("2d"),t}}
+function drawDoorWear(W,lv){
+  const {c,x}=W,w=c.width,h=c.height;x.clearRect(0,0,w,h);const R=seeded(7),chips=[];
+  for(let i=0;i<16;i++)chips.push({x:w*(.06+R()*.88),y:h*(.38+R()*.58),r:3+R()*7,k:5+Math.floor(R()*4),s:R()});
+  const n=[0,3,6,10,16][lv];
+  chips.slice(0,n).forEach(p=>{x.beginPath();for(let j=0;j<p.k;j++){const a=j/p.k*Math.PI*2,rr=p.r*(.55+R()*.6);x.lineTo(p.x+Math.cos(a)*rr,p.y+Math.sin(a)*rr*.8)}x.closePath();
+    x.fillStyle="rgba(196,160,112,.92)";x.fill();x.strokeStyle="rgba(28,16,8,.75)";x.lineWidth=1.2;x.stroke();
+    x.fillStyle="rgba(28,16,8,.35)";x.fillRect(p.x-p.r*.3,p.y+p.r*.2,p.r*.7,1.5)});
+  const scratch=(sx,sy,len,ang)=>{for(let k=0;k<4;k++){const ox=k*7;x.beginPath();x.moveTo(sx+ox,sy);x.quadraticCurveTo(sx+ox+len*.3*Math.sin(ang),sy+len*.5,sx+ox+len*.15,sy+len);
+    x.strokeStyle="rgba(24,14,6,.8)";x.lineWidth=2.4;x.stroke();x.strokeStyle="rgba(205,170,120,.7)";x.lineWidth=1;x.stroke()}};
+  if(lv>=3)scratch(w*.62,h*.55,h*.14,.3);
+  if(lv>=4){scratch(w*.2,h*.7,h*.12,-.2);scratch(w*.7,h*.78,h*.1,.1);
+    x.beginPath();let px=w*.48,py=h*.34;x.moveTo(px,py);const Rs=seeded(21);for(let i=0;i<14;i++){px+=(Rs()-.5)*10;py+=h*.03;x.lineTo(px,py)}x.strokeStyle="rgba(15,8,4,.9)";x.lineWidth=2.2;x.stroke()}
+  W.t.needsUpdate=true;
+}
+function drawCrack(W,lv,seed,grow){
+  const {c,x}=W,w=c.width,h=c.height;x.clearRect(0,0,w,h);if(!lv)return (W.t.needsUpdate=true);
+  const R=seeded(seed),frac=[0,.4,.72,1][lv]*grow;
+  const walk=(sx,sy,steps,dir,width)=>{const pts=[[sx,sy]];let px=sx,py=sy;for(let i=0;i<steps;i++){px+=(R()-.5)*w*.07+dir*w*.012;py+=h/steps*(.7+R()*.5);pts.push([px,py])}return pts};
+  const main=walk(w*(.35+R()*.3),h*.02,26,R()<.5?-1:1),branches=[];
+  for(let b=0;b<4;b++){const at=6+Math.floor(R()*16),[bx,by]=main[at];branches.push({at,pts:walk(bx,by,8+Math.floor(R()*6),R()<.5?-2:2)})}
+  const path=(pts,m,dx)=>{x.beginPath();pts.slice(0,m).forEach(([a,b],i)=>i?x.lineTo(a+dx,b):x.moveTo(a+dx,b))};
+  const stroke=(pts,upto,wd)=>{const m=Math.max(1,Math.floor(pts.length*upto));
+    path(pts,m,-wd*.7);x.strokeStyle="rgba(214,178,128,.8)";x.lineWidth=1.8;x.stroke();
+    path(pts,m,wd*.7);x.strokeStyle="rgba(214,178,128,.55)";x.lineWidth=1.4;x.stroke();
+    path(pts,m,0);x.strokeStyle="rgba(6,3,1,.95)";x.lineWidth=wd;x.stroke()};
+  stroke(main,frac,lv>=3?5:3.6);
+  if(lv>=2)branches.forEach(br=>{if(br.at<main.length*frac)stroke(br.pts,lv>=3?1:.6,2.4)});
+  W.t.needsUpdate=true;
+}
+function stationWear(){
+  if(!G.doorWear||!S||!S.name)return;const d=S.day;
+  const dl=d>=18?4:d>=15?3:d>=11?2:d>=7?1:0,wl=d>=19?3:d>=16?2:d>=13?1:0;
+  if(G.wearD!==dl){G.wearD=dl;drawDoorWear(G.doorWear,dl)}
+  if(G.wearW!==wl){G.wearW=wl;G.wallWear.forEach((W,i)=>drawCrack(W,Math.max(0,wl-i),31+i*17,1))}
+}
 function canvasTex(w,h,draw){
   const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");draw(x,w,h);
   const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;if(G.renderer)t.anisotropy=G.renderer.capabilities.getMaxAnisotropy();return t;
@@ -2605,6 +2713,10 @@ function init3D(){
   const pane=new THREE.Mesh(new THREE.PlaneGeometry(1.3,1.1),new THREE.MeshStandardMaterial({map:canvasTex(256,220,(x,w,h)=>{x.fillStyle="#b9b6ad";x.fillRect(0,0,w,h);x.fillStyle="rgba(255,255,255,.25)";for(let i=0;i<60;i++)x.fillRect(Math.random()*w,Math.random()*h,3,3);x.fillStyle="#1e1a16";x.textAlign="center";x.font='bold 30px "Old Standard TT", serif';x.fillText("TOWN",w/2,90);x.fillText("MARSHAL",w/2,130)}),roughness:.3}));
   pane.position.set(1.25,1.7,.06);pane.scale.set(1.3,1.3,1);G.door.add(pane);
   const knob=new THREE.Mesh(new THREE.SphereGeometry(.07,12,10),brass);knob.position.set(2.3,-.1,.1);G.door.add(knob);
+  {const W=wearCanvas(256,666);G.doorWear=W;const m=new THREE.Mesh(new THREE.PlaneGeometry(2.5,6.5),new THREE.MeshStandardMaterial({map:W.t,transparent:true,depthWrite:false,roughness:.8}));m.position.set(1.25,0,.056);G.door.add(m)}
+  G.wallWear=[[-5.4,3.4,2.6,3.6],[5.0,3.1,1.3,3.2],[7.05,4.55,2.2,1.1]].map(([cx,cy,cw,ch])=>{const W=wearCanvas(Math.round(cw*100),Math.round(ch*100));const m=new THREE.Mesh(new THREE.PlaneGeometry(cw,ch),new THREE.MeshStandardMaterial({map:W.t,transparent:true,depthWrite:false,roughness:.9}));m.position.set(cx,cy,WZ+.012);scene.add(m);return W});G.wearD=G.wearW=-1;
+  G.spill=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1),new THREE.MeshStandardMaterial({map:canvasTex(192,128,(x,w,h)=>{x.fillStyle="rgba(46,26,12,.82)";x.beginPath();x.ellipse(96,64,70,38,.2,0,7);x.fill();x.beginPath();x.ellipse(150,40,20,10,.5,0,7);x.fill();x.beginPath();x.ellipse(40,90,16,8,-.3,0,7);x.fill()}),transparent:true,depthWrite:false,roughness:.2}));
+  G.spill.rotation.x=-Math.PI/2;G.spill.position.set(4.25,.02,-.55);G.spill.visible=false;scene.add(G.spill);
   G.door.position.set(5.8,.65,WZ+.07);scene.add(G.door);const doorHole=new THREE.Mesh(new THREE.PlaneGeometry(2.55,6.5),mat(0x0a0806,1));doorHole.position.set(7.05,.65,WZ+.012);scene.add(doorHole);
   const df=mat(0x1e140d,.6);[[5.72,.7,.16,6.7],[8.38,.7,.16,6.7],[7.05,3.98,2.84,.18]].forEach(([x,y,w,h])=>{const f=box(w,h,.2,df);f.position.set(x,y,WZ+.1);scene.add(f)});
   // wanted posters on a board
@@ -2810,6 +2922,7 @@ function hover(o){
 }
 function clickObj(o){const k=o.userData.key;if(k==="slot"){openReading();return}act(k)}
 function drink(){
+  if(S.mugFallen){say("The mug lies on its side in a brown stain. You leave it where it is.");return}
   if(S.coffee==null)S.coffee=4;
   if(S.coffee<=0){say(rnd(["The cup is empty.","Nothing left but the grounds.","Empty. The sergeant makes a fresh pot in the morning."]));return}
   if(G.sip)return;
@@ -2886,22 +2999,27 @@ function loop(){
   const wiT=WEATHERS.indexOf(G.weather||"fair");
   const canT=S&&S.name&&wiT>=3&&!G.blackoutUntil&&(S.firstThunder?(wiT===4||S.phase==="evening"):(S.phase==="evening"&&!G.visitor&&!TALK));
   if(canT){if(!G.nextFlash)G.nextFlash=now+(S.firstThunder?5000+Math.random()*9000:7000+Math.random()*10000);
-    if(now>G.nextFlash){G.flash=now;G.nextFlash=now+(S.day>=19?3500:S.day>=17?5500:wiT===4?7000:15000)+Math.random()*(S.day>=17?7000:13000);
+    if(now>G.nextFlash){G.flash=now;G.nextFlash=now+(S.day>=19?12000:S.day>=17?16000:wiT===4?20000:32000)+Math.random()*(S.day>=17?14000:22000);
       if(!S.firstThunder){S.firstThunder=true;G.bigFlash=now;Sound.bigThunder();setTimeout(()=>{S.say="Thunder, right on top of the station. The windows rattle in their frames.";renderHud()},1400);saveSoon()}
       else{const dl=.5+Math.random()*1.6,late=S.day>=17,mid=S.day>=13;Sound.thunder(dl,late?2:mid?1:0);if(mid)G.quake={t:now+dl*1000+60,amp:late?.75+Math.random()*.5:.22+Math.random()*.15,dur:late?2200:1300,said:false}}}}
   else G.nextFlash=0;
   const big=G.bigFlash&&now-G.bigFlash<1500,fa=G.flash?Math.max(0,1-(now-G.flash)/(big?600:260))*(big?2.2:1):0,fb=G.flash&&now-G.flash>320&&now-G.flash<420?.6:0;
   G.lightning=Math.max(fa,fb);if(!G.blackoutUntil)G.outside.material.color.setScalar(1+G.lightning*2.2);
   if(G.lightning>0)G.fill.intensity=(S.phase!=="day"?.05:.16)+G.lightning*1.4;else if(G.flash&&now-G.flash<600)sync3DLights();
+  stationWear();
   G.door.rotation.y+=((G.doorOpen?-1.2:0)-G.door.rotation.y)*Math.min(1,dt*5);if(!G.doorOpen&&Math.abs(G.door.rotation.y)<.002&&!(G.doorShake&&now-G.doorShake<(G.doorShakeLen||1100)))G.door.rotation.y=0;
   stepVisitor(dt,now);
-  if(G.watcher){const k=now-G.watcherT;if(k>1900){G.watcher.position.x+=dt*3.5;const op=Math.max(0,1-(k-1900)/350);G.watcher.material.opacity=op;G.watcher.children.forEach(ch=>ch.material.opacity=op)}if(k>2300){G.scene.remove(G.watcher);G.watcher.material.map.dispose();G.watcher=null}}
+  watcherTick(now,dt);
+  if(G.objs.coffee&&S&&S.name){const m=G.objs.coffee;
+    if(!S.mugFallen&&!S.mugFell&&spiritUp()&&S.phase==="evening"&&S.day===(S.mugDay||18)&&!G.visitor&&!TALK&&!reading){G.mugT=(G.mugT||0)+dt;if(G.mugT>18){S.mugFell=S.mugFallen=true;G.mugFall=now;S.coffee=0;Sound.mugFall();setTimeout(()=>{S.say="Your mug tips over on its own and rolls to the edge of the desk. Nobody touched it. The coffee soaks slowly into the blotter.";renderHud()},500)}}
+    if(S.mugFallen){const k=G.mugFall?Math.min(1,(now-G.mugFall)/380):1,e=k*k;m.position.set(4.5+e*.12,e*.32,-.9-e*.3);m.rotation.set(-1.48*e,0,.2*e);if(G.spill)G.spill.visible=k>=1}
+    else if(G.spill&&G.spill.visible)G.spill.visible=false}
   if(G.sip){const m=G.objs.coffee,k=(now-G.sip.t0)/1500;if(k>=1){m.position.set(4.5,0,-.9);m.rotation.set(0,0,0);G.sip=null}else{const e=Math.sin(Math.min(1,k)*Math.PI);m.position.set(4.5-e*1.6,e*2.2,-.9+e*3.4);m.rotation.set(0,0,e*.9)}}
   if(G.blackoutUntil){if(now<G.blackoutUntil){G.spot.intensity=0;G.hang.intensity=0;G.stoveLight.intensity=0;G.fill.intensity=0;G.amb.intensity=.012;G.stoveGlow.material.color.setRGB(.05,.02,.01);G.bulb.material.color.set(0x111111);G.outside.material.color.setScalar(.08)}else{G.blackoutUntil=0;G.outside.material.color.setScalar(1);sync3D();Sound.lightsBack();say("The lights come back. Everything is just as it was. The door opens easily now.")}}
   const d19=S&&S.day===19&&spiritUp();
-  if(S&&S.name&&!quietSunday(S.day)&&(S.phase==="evening"||(d19&&S.phase==="day"))&&S.rite&&S.rite.stage<4&&!G.visitor&&!TALK&&!reading&&(S.creeps||0)<(d19?(S.phase==="day"?2:5):2)){
+  if(S&&S.name&&!quietSunday(S.day)&&S.day>=6&&(S.phase==="evening"||(d19&&S.phase==="day"))&&S.rite&&S.rite.stage<4&&!G.visitor&&!TALK&&!reading&&(S.creeps||0)<(d19?(S.phase==="day"?2:5):S.day<=10?1:2)){
     G.creepT=(G.creepT||0)+dt;
-    if(G.creepT>(d19?8:12)){G.creepT=0;if(S.rite.angry||Math.random()<(d19?.5:.04+.02*S.day)){S.rite.angry=false;creep(now,d19&&!S.d19knock?"knock":null);if(d19)S.d19knock=true}}
+    if(G.creepT>(d19?8:12)){G.creepT=0;if(S.rite.angry||Math.random()<(d19?.5:.02+.015*S.day)){S.rite.angry=false;creep(now,d19&&!S.d19knock?"knock":null);if(d19)S.d19knock=true}}
   }
   if(G.doorShake&&now-G.doorShake<(G.doorShakeLen||1100))G.door.rotation.y+=Math.sin(now/22)*.035;
   G.rain.forEach(r=>{r.t.offset.y+=dt*r.speed;r.t.offset.x+=dt*.05});
@@ -2933,24 +3051,60 @@ function loop(){
   G.camera.lookAt(G.look);G.renderer.render(G.scene,G.camera);
 }
 /* ================= visitors in the station ================= */
-const CREEPS=[["knock","Someone pounds on the door, hard enough to rattle it in its frame. You make yourself open it. There is no one there."],["scream","A woman screams, somewhere out in the dark. Then nothing at all."],
+const CREEPS=[["tapwalk","Taps travel along the window glass from one side to the other, as if someone were walking past outside, tapping as they went."],["scratch3","The scratching comes from inside the wall again, near the cracks. Three strokes. A pause. Three strokes."],["creak","A floorboard creaks somewhere behind you, as if someone had shifted their weight."],["tap","Something taps on the window glass: three, four quick little taps, like fingernails. A silence. Then one more, slower."],["draft","A cold draught moves through the station. The door stirs in its frame, though it is shut fast."],["knock","Someone pounds on the door, hard enough to rattle it in its frame. You make yourself open it. There is no one there."],["scream","A woman screams, somewhere out in the dark. Then nothing at all."],
   ["steps","Slow footsteps cross the floor behind you. When you turn, the station is empty."],
   ["laugh","Somewhere out in the dark, someone is laughing."],
   ["whisper","Someone whispers your name, very close."],
-  ["scratch","Something scratches at the window glass."],
+  ["scratch","Something scratches, slow and deliberate, somewhere inside the wall."],
   ["chains","The chains in the empty cell rattle, and then are still."]];
+const CREEP_TIER=d=>d<=10?["creak","tap","draft"]:d<=15?["creak","draft","tap","steps","scratch","chains"]:["steps","scratch3","tapwalk","chains","knock","laugh","whisper",...(d>=17?["scream"]:[])];
 function creep(now,force){
-  const pool=CREEPS.filter(c=>c[0]!=="scream"||S.day>=15);
+  const pool=CREEPS.filter(c=>CREEP_TIER(S.day).includes(c[0]));
   const [k,t]=force?CREEPS.find(c=>c[0]===force):rnd(pool);S.creeps=(S.creeps||0)+1;Sound.creepy(k);
+  if(k==="draft"){G.doorShake=now;G.doorShakeLen=600}
   if(k==="knock"){G.doorShake=now;G.doorShakeLen=2600;if(reading){reading=false;renderReading()}picker=null;renderPicker();G.lookDoorUntil=now+3600;reframe();setTimeout(reframe,3700)}
   setTimeout(()=>{S.say=t;renderHud()},k==="steps"?2500:900);
 }
-function makeWatcher(){
-  const t=canvasTex(64,128,(x,w,h)=>{x.fillStyle="#050404";x.beginPath();x.ellipse(32,24,11,13,0,0,7);x.fill();x.fillRect(27,34,10,8);x.beginPath();x.moveTo(8,128);x.bezierCurveTo(8,62,18,44,32,42);x.bezierCurveTo(46,44,56,62,56,128);x.fill();x.fillRect(18,12,28,5);x.fillRect(24,4,16,10)});
-  const m=new THREE.Mesh(new THREE.PlaneGeometry(1.1,2.2),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false}));
-  const x0=2.6+(Math.random()<.5?-.7:.7);m.position.set(x0,2.3,-6.75);
-  if(S.phase!=="day"){const gl=new THREE.Mesh(new THREE.PlaneGeometry(2.6,2.4),new THREE.MeshBasicMaterial({map:canvasTex(128,128,(x,w,h)=>{const g=x.createRadialGradient(64,70,4,64,70,64);g.addColorStop(0,"rgba(120,118,112,.75)");g.addColorStop(1,"rgba(120,118,112,0)");x.fillStyle=g;x.fillRect(0,0,w,h)}),transparent:true,depthWrite:false}));gl.position.set(0,-.1,-.05);m.add(gl)}
+function watcherShape(x,rim){
+  const P=()=>{x.beginPath();x.moveTo(64,12);x.bezierCurveTo(47,12,40,30,42,50);x.lineTo(44,64);
+    x.bezierCurveTo(28,67,21,80,21,98);x.lineTo(16,150);x.lineTo(20,160);x.lineTo(27,157);x.lineTo(31,108);
+    x.lineTo(37,150);x.lineTo(40,198);x.lineTo(39,252);x.lineTo(56,252);x.lineTo(60,192);x.lineTo(68,192);x.lineTo(72,252);x.lineTo(89,252);x.lineTo(88,198);x.lineTo(91,150);
+    x.lineTo(97,108);x.lineTo(101,157);x.lineTo(108,160);x.lineTo(112,150);x.lineTo(107,98);x.bezierCurveTo(107,80,100,67,84,64);
+    x.lineTo(86,50);x.bezierCurveTo(88,30,81,12,64,12);x.closePath()};
+  P();x.fillStyle="#030405";x.fill();
+  if(rim){P();x.strokeStyle="rgba(130,165,200,.45)";x.lineWidth=2.2;x.stroke();P();x.strokeStyle="rgba(170,200,230,.18)";x.lineWidth=5;x.stroke()}
+}
+function makeWatcher(kind){
+  const far=kind!=="flash";
+  const t=canvasTex(128,256,(x,w,h)=>watcherShape(x,far));
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(far?.52:1.35,far?1.04:2.7),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0}));
+  if(far){
+    m.position.set(2.6+(Math.random()-.5)*1.4,2.45,-9.3);
+    const gl=new THREE.Mesh(new THREE.PlaneGeometry(2.6,2.2),new THREE.MeshBasicMaterial({map:canvasTex(160,140,(x,w,h)=>{
+      const g=x.createRadialGradient(80,52,4,80,58,78);g.addColorStop(0,"rgba(140,175,205,.7)");g.addColorStop(.45,"rgba(90,120,150,.28)");g.addColorStop(1,"rgba(60,80,100,0)");x.fillStyle=g;x.fillRect(0,0,w,h);
+      const f=x.createRadialGradient(80,118,2,80,118,58);f.addColorStop(0,"rgba(150,180,205,.45)");f.addColorStop(1,"rgba(150,180,205,0)");x.fillStyle=f;x.beginPath();x.ellipse(80,118,60,9,0,0,7);x.fill()}),transparent:true,depthWrite:false,opacity:0}));
+    gl.position.set(.05,.14,-.08);m.add(gl);
+  }else{m.position.set(2.6+(Math.random()<.5?-.55:.55),2.25,-6.8)}
   G.scene.add(m);return m;
+}
+function watcherTick(now,dt){
+  if(!G.renderer||!S||!S.name)return;const d=S.day,quiet=!reading&&!G.visitor&&!TALK&&!G.blackoutUntil;
+  if(!G.watcher&&d>=15&&S.phase==="evening"&&!quietSunday(d)){
+    S.watchPlan=S.watchPlan||{};
+    if(S.watchPlan[d]==null)S.watchPlan[d]=Math.random()<({15:.35,16:.5,17:.6,18:.65,19:.75,20:.5}[d]||0)?1:0;
+    if(S.watchPlan[d]===1&&quiet){G.watchIdle=(G.watchIdle||0)+dt;if(!G.watchWait)G.watchWait=8+Math.random()*22;
+      if(G.watchIdle>G.watchWait){S.watchPlan[d]=2;G.watchIdle=0;G.watchWait=0;G.watchGone=false;G.watcher=makeWatcher("far");G.watcherKind="far";G.watcherT=now}}
+  }
+  if(!G.watcher&&d===(S.flashDay||19)&&S.phase==="evening"&&!S.flashSeen&&G.lightning>.4&&quiet){
+    S.flashSeen=true;G.watcher=makeWatcher("flash");G.watcherKind="flash";G.watcherT=now;
+    setTimeout(()=>{S.say="For an instant, in the lightning, someone is standing right outside the window. Then the dark comes back, and there is nothing there.";renderHud();saveSoon()},900)}
+  if(!G.watcher)return;
+  if(G.watcherKind==="far"&&(reading||G.visitor||TALK))G.watchGone=true;
+  const W=G.watcher,k=(now-G.watcherT)/1000;let op;
+  if(G.watcherKind==="flash"){op=Math.min(1,(G.lightning||0)*3);if(k>.35&&(G.lightning||0)<=.02)op=-1}
+  else{op=G.watchGone?-1:k<1.8?k/1.8*.9:k<10?.9:.9-(k-10)/2;if(k>12)op=-1}
+  if(op<0){G.scene.remove(W);W.material.map.dispose();W.children.forEach(c=>{G.scene.remove(c);c.material.map&&c.material.map.dispose()});G.watcher=null;return}
+  W.material.opacity=op;W.children.forEach(c=>c.material.opacity=op*.9);
 }
 function sync3DLights(){if(!G.renderer||!S)return;const eve=S.phase!=="day",wi=WEATHERS.indexOf(weatherOf(S.day));G.fill.intensity=eve?.05:[.62,.3,.2,.22,.16][wi]}
 function gameMinutes(){
@@ -3057,11 +3211,11 @@ function firstPersonCrime(d,v){
 }
 const VOICE={
  0:{cls:"middle",pitch:1,rate:1,pre:["Oh, detective.","Dear me, detective.","Detective, I'm that upset."],post:["There. I've said it.","I've a batch in the oven, so I'll not stop.","I just don't know what the town's coming to."]},
- 1:{cls:"poor",pitch:1,rate:1.15,pre:["Morning, sir.","Uh, detective?","Sorry to bother you."],post:["Reckon that's all.","Don't tell Ma I was here long.","I've got the horses to see to."]},
+ 1:{cls:"poor",pitch:1,rate:1.15,pre:["Morning, detective.","Uh, detective?","Sorry to bother you."],post:["Reckon that's all.","Don't tell Ma I was here long.","I've got the horses to see to."]},
  2:{cls:"rich",pitch:.88,rate:.82,pre:["Detective. A word.","Now then, detective.","Good morning. I'll be brief, as I'm sure you will be."],post:["I shall expect results.","The council will want to hear of it.","I trust I need say no more."]},
  3:{cls:"middle",pitch:1.06,rate:1,pre:["Good morning, detective.","Excuse me. Have you a moment?","I'm sorry to come so early."],post:["I'd be grateful for your discretion.","I've written it out properly for your sergeant.","Please don't mention it to my father."]},
  4:{cls:"poor",pitch:.95,rate:1.05,pre:["Ja, detective.","So. You are awake.","Detective. Listen to me."],post:["Ach. That is all.","You come by the lunchroom, I give you pie.","Such a town."]},
- 5:{cls:"poor",pitch:1.22,rate:1.35,pre:["Mister! I mean, detective!","Honest, I came straight here.","Detective, sir!"],post:["Honest.","Can I go now?","Ma said I should come."]},
+ 5:{cls:"poor",pitch:1.22,rate:1.35,pre:["Oh! Detective!","Honest, I came straight here.","Detective! Detective!"],post:["Honest.","Can I go now?","Ma said I should come."]},
  6:{cls:"poor",pitch:.84,rate:.88,pre:["Detective.","Morning.","Got a minute?"],post:["That's all.","Hmph.","I've irons in the fire."]},
  7:{cls:"poor",pitch:.8,rate:.9,pre:["Hmph. Detective.","You. Detective.","Right."],post:["Find 'em.","Don't make me come back.","That's it. That's all I got."]},
  8:{cls:"middle",pitch:.95,rate:.9,pre:["God keep you, detective.","Peace be with you.","Good morning, my child. Detective, I should say."],post:["I'll pray on it.","Go gently.","The Lord sees, even when we don't."]},
@@ -3069,7 +3223,7 @@ const VOICE={
  10:{cls:"middle",pitch:1.12,rate:1.22,pre:["Well! Detective!","I won't keep you, but you must hear this.","You'll never guess."],post:["I've never been so upset.","Mark my words.","I shall tell the Ladies' Aid."]},
  11:{cls:"poor",pitch:.78,rate:.78,pre:["Detective.","Mornin'. Evenin'. It's all one to the dead.","Heh. Detective."],post:["The dead don't complain. The living do nothing else.","I'll get back to my digging.","Plenty of room on the hill."]},
  12:{cls:"poor",pitch:.96,rate:.84,pre:["Ah, the detective.","I saw you in the cards, you know.","You are expecting me. You only don't know it."],post:["The cards are rarely wrong.","We will speak again.","Mind the hour of three."]},
- 13:{cls:"poor",pitch:.9,rate:1.22,pre:["Mister detective!","Morning to you, chief.","Now, don't look at me like that."],post:["Now I'm owed a favor, ain't I?","That's the long and short of it.","You never saw me."]},
+ 13:{cls:"poor",pitch:.9,rate:1.22,pre:["Say, detective!","Morning to you, chief.","Now, don't look at me like that."],post:["Now I'm owed a favor, ain't I?","That's the long and short of it.","You never saw me."]},
  14:{cls:"rich",pitch:.9,rate:.78,pre:["Detective.","I shan't take up much of your time.","I trust you are sober at this hour."],post:["I expect it to be dealt with.","I do not care to repeat myself.","Good day."]},
  15:{cls:"poor",pitch:.95,rate:.84,pre:["Mornin', child.","Well now, detective.","Let old Maud sit a minute."],post:["Mark what old Maud says.","The river knows, even if you don't.","Mind yourself after dark."]},
  16:{cls:"poor",pitch:.85,rate:.84,pre:["Detective.","Mm. Morning.","Come to tell you something."],post:["That's it.","River's rising. I'd best get back.","Mm."]},
@@ -3101,16 +3255,19 @@ const INTRO={0:"I've baked this town's bread twenty-eight years. My boy Tom work
  17:"Laurence Whitcombe. I buy grain for the Cedar Valley Elevator Company and keep its accounts. I came out from Evanston in '29, which I am reliably informed was an unfortunate year to arrive anywhere."};
 function introFor(n,lines){if(typeof n.id!=="number"||!INTRO[n.id])return;S.met=S.met||[];if(S.met.includes(n.id))return;S.met.push(n.id);lines.push({t:INTRO[n.id]})}
 const PLEASANT={fair:["Fine morning, isn't it? Makes a change.","Sun's out, anyway. That's something."],rain:["Wet one again.","You'd think it would run out of rain."],fog:["Can't see your hand in front of you out there.","This fog gets into your bones."],heavy:["Wet enough for you?","I near swam here."],storm:["Filthy night it was.","Did you hear the wind last night?"]};
-const WARM_HELLO=["How are you keeping, detective?","Morning, detective. You look tired. Are they working you hard?","Good to see you. Folks are saying good things."];
-const CURT_HELLO=["Let's get this over with.","I'll say it once.","Are you actually going to do something this time?","I haven't got long."];
-const COLD_HELLO=["I don't know why I bother coming here.","Everyone knows this place is useless. But here I am.","Save your breath. Just listen."];
-const WARM_BYE=["Thank you, detective. Truly.","I feel better for telling you.","You're doing all right by this town, you know."];
-const CURT_BYE=["Well. Get on with it.","Don't keep me waiting for news.","I'll believe it when I see it."];
+const WARM_HELLO={rich:["Detective. I'm glad to find you in.","Good morning. I hear you've been doing sound work."],middle:["How are you keeping, detective?","Morning, detective. You look tired. Are they working you hard?","Good to see you. Folks are saying good things."],poor:["Morning, detective. They treating you right?","Good to see you. Folks down our way say you're all right."]};
+const CURT_HELLO={rich:["I'll be brief, and I'd thank you to be the same.","I am here because I must be, not because I expect much."],middle:["Let's get this over with.","I haven't got long.","I'll say it once."],poor:["Are you actually going to do something this time?","I'll say it once, and you'd best listen."]};
+const COLD_HELLO={rich:["I have written to the Sheriff about this office. Twice.","I expect nothing of you. Consider this a formality."],middle:["I don't know why I bother coming here.","Save your breath. Just listen."],poor:["Everyone knows this place is useless. But here I am.","Don't bother with the chair. I'm not stopping."]};
+const WARM_BYE={rich:["I'm obliged to you, detective.","You've been most helpful. I shan't forget it."],middle:["Thank you, detective. Truly.","I feel better for telling you.","You're doing all right by this town, you know."],poor:["Thank you kindly.","You're all right, you know. Folks'll hear it from me."]};
+const CURT_BYE={rich:["I shall expect to hear something by the end of the week.","Do try to be quicker than last time."],middle:["Well. Get on with it.","Why don't you actually fix something this time?"],poor:["Why don't you actually fix something this time?","Don't keep me waiting for news."]};
+const byCls=(T,n)=>{const c=(voiceOf(n).cls)||"middle";return T[c]||T.middle};
+const PROF={0:["I've bread in the oven this minute, so I'll be quick.","Four o'clock I'm up, every day God sends. I haven't time for this."],1:["Mr. Crane'll dock me if I'm gone from the livery long.","The horses don't feed themselves."],2:["I have a council meeting at ten.","The town cannot be seen to tolerate this sort of thing."],3:["I've thirty children waiting at the schoolhouse.","I've left the older ones hearing the little ones read."],4:["The lunchroom opens at seven. Who is serving, if I am here?","Every day I feed half this town. And this is the thanks."],5:["I'm meant to be at school. Don't tell Miss Crane.","Ma needs me back for the dinner rush."],6:["The fire'll be dead by the time I'm back at the forge.","I've three horses to shoe before noon."],7:["I lose a morning's cutting for this.","The mill pays by the load, not by the hour."],8:["I've a funeral at eleven.","I ought to be visiting the sick, not standing here."],9:["I have patients waiting, detective.","I was up half the night with a confinement on the Anamosa road."],10:["I've a wedding dress to finish by Saturday.","My eyes aren't what they were, and I lose the light if I'm away."],11:["There's a grave wants digging before the ground sets again.","The dead don't mind waiting. The living do."],12:["My clients will not wait, darling. They never do.","The cards said I should come. I nearly didn't."],13:["Every hour I'm away, somebody's walking off with my stock.","I buy and sell, detective. Mostly sell, when I'm there to do it."],14:["My late husband would never have stood for this.","I am not accustomed to calling at police stations."],15:["Folk'll be at my door for their remedies, and me not there.","I don't come into town if I can help it."],16:["The ferry doesn't run itself.","River's rising. I can't be gone long."],17:["I have a train to meet at eleven, Detective, and the Cedar Rapids market will not wait on either of us.","The elevator company takes a dim view of disorder, as, I may say, do I."]};
 const voiceOf=n=>VOICE[n.id]||{cls:"middle",pitch:1,rate:1,pre:[],post:[]};
 const CONNECT={rich:["I will tell you plainly.","You'll want to note this.","It is this."],middle:["It's like this.","I'll tell it plain.","You'll want to write this down.","It happened in the night."],poor:["Here's the thing.","I'll tell you straight.","It's like this, see.","Happened last night."]};
 const WHEN=["I found it first thing this morning.","It must have been after midnight.","I only saw it when I came down.","I heard nothing, and that's what frightens me.","It was like that when I got up."];
 const CLOSE={
   petty:{rich:["It is a small matter, but small matters grow.","I will not be made a fool of."],middle:["It's not the end of the world. But it isn't right.","It's the principle of the thing."],poor:["Ain't much, maybe. But it's mine.","Small thing, I know. Still."]},
+  moderate:{rich:["I trust this will not be allowed to pass.","It is not a small thing, whatever you may think."],middle:["It's more than a prank, detective.","I want it stopped before it gets worse."],poor:["That's money I haven't got.","It ain't right, and you know it."]},
   serious:{rich:["I expect this taken seriously.","This is no prank, detective."],middle:["I'd like it looked into properly.","I don't feel safe, and that's the truth."],poor:["I can't afford to lose it.","Somebody's got to answer for it."]},
   grave:{rich:["I want whoever did this found. Found, detective.","If the law can't manage it, I know men who can."],middle:["I want whoever did this found. Do you hear me?","I've not stopped shaking since."],poor:["Find 'em. Please. Just find 'em.","I near died. You understand? I near died."]}
 };
@@ -3138,6 +3295,12 @@ function scriptFor(item){
     const BYE={cheerful:["Night, chief! Don't let the bedbugs bite.","I'm off. Sleep well, detective."],friendly:["I'll see you in the morning. Mind the lamp.","It's on your desk. I'll be off home."],weary:["I'm going home.","Night."],curt:["Night.","That's all."]};
     const lines=[{n:true,t:pk(ARR[T])},{t:pk(HI[T])},{t:HOW[T]}];
     if(WX)lines.push({t:WX});
+    if(spiritUp()&&S.rite){
+      if(S.day>=12&&S.day<=14&&!quietSunday(S.day))lines.push({n:true,t:"Halfway through, Obermeyer stops and looks at the window."},{t:"Did you hear that? ... No. Wind, I suppose. Where was I?"});
+      else if(S.day===15||S.day===16)lines.push({n:true,t:"Obermeyer has his coat buttoned before he's finished talking."},{t:"I'll be off before full dark, if it's all the same to you. My wife doesn't like me out after dark these days. Truth be told, nor do I."});
+      else if(S.day===17||S.day===18)lines.push({n:true,t:"There's a rosary wound round Obermeyer's fingers. He sees you notice, and puts it in his pocket."},{t:"My mother's. I haven't carried it since France."});
+      else if(S.day>=19)lines.push({n:true,t:"Obermeyer won't look toward the back room."},{t:"I'm not going in the back, chief. Not tonight. Something's been moving the files about in there. I put them straight, and they don't stay put."});
+    }else if(S.rite&&S.rite.stage>=4&&S.day>=12&&!S.sgtSlept){S.sgtSlept=true;lines.push({t:"Slept the whole night through, chief. First time in a fortnight. Whatever you did, thank you."})}
     if(quietSunday(S.day))lines.push({t:{cheerful:pk(["Quiet one! Sundays always are.","Not a peep all day. That's a Sunday for you."]),friendly:"Quiet day. Sundays usually are.",weary:"Sunday. Thank God for it.",curt:"Quiet."}[T]});
     if(S.day===19)lines.push({t:{cheerful:"I won't pretend, chief. That was the worst day I've seen.",friendly:"Twenty-two years, and I've never known a Sunday like it.",weary:"I don't know what this town's coming to. I truly don't.",curt:"Worst day yet."}[T]});
     if((T==="cheerful"||T==="friendly")&&Math.random()<.5)lines.push({t:pk(PERSONAL)});
@@ -3171,15 +3334,17 @@ function scriptFor(item){
       ["Visitors","Folk drop in now and then with something to say. Pour them a coffee and they'll say more. Some of them lie, mind, especially about people they can't stand."],
       ["The cells","The cells are behind you. Click them and you'll see the lockup book: who's in, what for, and when they're out."],
       ["Ending the day","When the tray's empty, put out the lamp. I'll bring the day's report in the evening. Then take your hat and go home."],
+      ["The telephone","It runs off a box of dry cells under the desk, and they're nearly done. You can ring round to check where someone says they were. One call, mind, and it's dead till the day after tomorrow."],
       ["The register","The county keeps a register of every detective sent here. You can read the notebooks of the ones before you, if you've the stomach for it."]];
     const asked=new Set();
-    const menu=()=>[...TOPICS.filter(t=>!asked.has(t[0])).map(t=>({label:t[0],fn:()=>{asked.add(t[0]);talkMore(t[1],menu())}})),{label:asked.size?"That's all, thank you":"No, I'll manage",fn:()=>endVisit(asked.size?"":"")}];
-    return {lines:[{n:true,t:"Sergeant Obermeyer comes over from the front counter, wiping his spectacles."},{t:"Obermeyer. Desk sergeant. Twenty-two years at this station, man and boy."},{t:"Before the folk start coming in, is there anything you'd like me to go over?"}],choices:menu()};
+    const menu=()=>[...TOPICS.filter(t=>!asked.has(t[0])).map(t=>({label:t[0],fn:()=>{asked.add(t[0]);talkMore(t[1],menu())}})),{label:asked.size?"That's all, thank you":"Nothing after all",fn:()=>endVisit("")}];
+    return {lines:[{n:true,t:"Sergeant Obermeyer comes over from the front counter, wiping his spectacles."},{t:"Obermeyer. Desk sergeant. Twenty-two years at this station, man and boy."},{t:"Before the folk start coming in, is there anything you'd like me to go over?"}],
+      choices:[{label:"Yes, if you would",fn:()=>talkMore("Right you are. What would you like to know?",menu())},{label:"No, I'll manage",fn:()=>endVisit("")}]};
   }
   if(item.kind==="committee"){const L=n,V=S.vig;
-    return {lines:[{n:true,t:`${L.name} comes in with his cap in his hands and ${L.id===6&&!N[7].jailed?"his brother Karl behind him, arms folded":"two men from the lunchroom behind him"}.`},
+    return {lines:[{n:true,t:`${L.name} comes in with his cap in his hands and ${L.id===6&&!N[7].jailed?"his brother Karl a step behind him. Karl doesn't take his cap off. He folds his arms and looks round the station as if he were pricing it":"two men from the lunchroom behind him"}.`},
       {t:L.id===6?"Detective. I'll not keep you. Some of us met at the Odd Fellows hall tonight.":"Some of us have been talking, detective."},
-      {t:L.id===6?"Thirty men. Good men, most of them. We mean to walk the streets at night in pairs until this is over. I've done this before, in France. It keeps people calm.":"We're walking the streets from tonight. Somebody has to."},
+      {t:L.id===6?"Thirty men. Good men, most of them. We mean to walk the streets at night in pairs until this is over. I did this once before, back home in Germany, after the war, when there was nobody else to keep order. It keeps people calm.":"We're walking the streets from tonight. Somebody has to."},
       {t:L.id===6?"I'd rather do it with your blessing than without it.":"We'd like your blessing. We'll do it without."}],
       choices:[{label:"Give the committee your blessing",fn:()=>{V.formed=true;V.blessed=true;adj(N[6],8);S.unrest=clamp(S.unrest-4);talkMore(L.id===6?"He nods, relieved. \"Thank you. We'll not overstep. You have my word.\" Behind him, Karl smiles, and not pleasantly.":"\"Good.\" They leave before you can say anything else.",[{label:"See them out",fn:()=>endVisit()}])}},
         {label:"Tell them to leave it to the law",fn:()=>{V.formed=true;V.blessed=false;adj(N[6],-6);adj(N[7],-8);talkMore(L.id===6?"\"With respect, detective, the law isn't managing.\" He puts his cap back on. \"We'll walk anyway. But we'll remember you asked us not to.\"":"\"Suit yourself.\" They go anyway.",[{label:"See them out",fn:()=>endVisit()}])}}]};
@@ -3211,21 +3376,23 @@ function scriptFor(item){
       `${v.name} comes in, ${w==="fair"?"hat in hand":w==="fog"?"out of the fog, collar up":w==="rain"?"damp from the rain":"dripping wet"}.`,
       `${v.name} is waiting at the door when the sergeant unlocks it.`,
       `${v.name} comes in and stands at the desk without taking off ${his(v)} coat.`,
-      cls==="rich"?`${v.name} comes in and looks at the chair before deciding not to sit.`:cls==="poor"?`${v.name} comes in and hovers by the door, cap in hand.`:`${v.name} comes in, and sits when you offer the chair.`]);
+      cls==="rich"?`${v.name} comes in and looks at the chair before deciding not to sit.`:cls==="poor"?(v.sex==="f"?`${v.name} comes in and hovers by the door, shawl pulled tight.`:`${v.name} comes in and hovers by the door, cap in hand.`):`${v.name} comes in, and sits when you offer the chair.`,
+      v.sex==="f"?(["rain","heavy","storm"].includes(w)?`${v.name} comes in, shaking the wet from ${his(v)} umbrella.`:`${v.name} comes in, pulling off ${his(v)} gloves finger by finger.`):`${v.name} comes in and takes off ${his(v)} hat.`]);
     const at=attTier(v),ww=weatherOf(S.day);
-    const hello=at==="cold"?pk(COLD_HELLO):at==="curt"?pk(CURT_HELLO):(V.pre&&V.pre.length?pk(V.pre):"Detective.");
+    const hello=at==="cold"?pk(byCls(COLD_HELLO,v)):at==="curt"?pk(byCls(CURT_HELLO,v)):(V.pre&&V.pre.length?pk(V.pre):"Detective.");
     const arrive2=at==="warm"?`${v.name} comes in and manages a smile, all things considered.`:at==="cold"?`${v.name} comes in and doesn't bother to close the door.`:at==="curt"?`${v.name} comes in and doesn't say good morning.`:arrive;
     const lines=[{n:true,t:arrive2},{t:hello}];
     introFor(v,lines);
     if(Math.random()<.4){const wh=wearHint(v);if(wh)lines.splice(1,0,wh)}
-    if(at==="warm"){lines.push({t:pk(Math.random()<.5?PLEASANT[ww]:WARM_HELLO)})}
+    if(at==="warm"){lines.push({t:pk(Math.random()<.5?PLEASANT[ww]:byCls(WARM_HELLO,v))})}
     if(Math.random()<.6)lines.push({t:pk(CONNECT[cls])});
     lines.push({t:firstPersonCrime(c.crime.d(v),v)});
     if(Math.random()<.5)lines.push({t:pk(WHEN)});
+    if(PROF[v.id]&&Math.random()<.45)lines.push({t:pk(PROF[v.id])});
     if(c.kind==="super"){if(Math.random()<.3)lines.push({t:pk(EERIE_TAIL)})}
     else lines.push({t:pk(CLOSE[c.tier][cls])});
-    if(at==="warm")lines.push({t:pk(WARM_BYE)});
-    else if(at==="curt"||at==="cold")lines.push({t:pk(CURT_BYE)});
+    if(at==="warm")lines.push({t:pk(byCls(WARM_BYE,v))});
+    else if(at==="curt"||at==="cold")lines.push({t:pk(byCls(CURT_BYE,v))});
     else lines.push({t:V.post&&V.post.length&&Math.random()<.6?pk(V.post):pk(["I gave the rest to your sergeant.","Your sergeant has the particulars.","The sergeant wrote it all down."])});
     if(at==="cold")lines.push({n:true,t:`${v.name} leaves without another word.`});
     return {lines,done:()=>{c.reported=true;S.say=`Complaint No. ${c.no} is in the in-tray.`}};
@@ -3234,7 +3401,7 @@ function scriptFor(item){
   const ls=sc.lines.map((t,i)=>i===0?{n:true,t}:{t:t.replace(/^"|"$/g,"")});
   if(item.kind==="tip"||item.kind==="mystic"){const intro=[];introFor(n,intro);if(intro.length)ls.splice(1,0,...intro);if(Math.random()<.4){const wh=wearHint(n);if(wh)ls.splice(1,0,wh)}}
   if(item.kind==="tip"&&item.step!=="confess"){const at=attTier(n);
-    if(at==="warm")ls.splice(1,0,{t:pk([...(V.pre||[]),...PLEASANT[weatherOf(S.day)],...WARM_HELLO])});
+    if(at==="warm")ls.splice(1,0,{t:pk([...(V.pre||[]),...PLEASANT[weatherOf(S.day)],...byCls(WARM_HELLO,n)])});
     else if(at==="curt"||at==="cold")ls.splice(1,0,{t:pk(["I'll not stay. Just thought you ought to know something.","Don't make a fuss. I'm only here a minute.","I'm not here to chat."])});
     else if(V.pre&&V.pre.length&&Math.random()<.6)ls.splice(1,0,{t:pk(V.pre)})}
   return {lines:ls,choices:sc.choices};
@@ -3251,6 +3418,11 @@ function arrive(item){
   sp.material.color.setScalar(S.phase==="day"?[.95,.82,.8,.72,.64][WEATHERS.indexOf(weatherOf(S.day))]:.52);
   sp.scale.set(h/2,h,1);sp.position.set(7.05,-2.6+h/2,-6.2);G.scene.add(sp);
   G.visitor={sp,tex,h,state:"door",t:0,path:[[7.05,-4.3],[.6,-4.3]],leg:0,lastF:0};
+  const withs=item.with==null?[]:[].concat(item.with).filter(id=>N[id]&&!N[id].dead);
+  const SLOTS=item.kind==="mob"?[[2.1,-4.9],[3.4,-4.6],[-1.0,-4.9],[-2.6,-5.5],[4.9,-5.8],[1.2,-6.1]]:[[2.3,-5.0]];
+  G.visitor.comps=withs.map((id,i)=>{const c=N[id],ch=5.9*(c.age===14?.78:c.height==="short"?.93:c.height==="tall"?1.07:1),ct=[spriteTex(c,0,false),spriteTex(c,1,false),spriteTex(c,0,true)];
+    const cs=new THREE.Sprite(new THREE.SpriteMaterial({map:ct[0],transparent:true}));cs.material.color.copy(sp.material.color);cs.scale.set(ch/2,ch,1);cs.position.set(7.05+Math.random()*.3,-2.6+ch/2,-6.4-i*.05);G.scene.add(cs);
+    return {sp:cs,tex:ct,h:ch,slot:SLOTS[i%SLOTS.length],speed:2.2+Math.random()*1.6,delay:.35+i*.3,leg:Math.random()*3}});
   G.doorOpen=true;S.say="";renderHud();
   Sound.door();
   reframe();
@@ -3265,7 +3437,11 @@ function stepVisitor(dt,now){
   if(V.state==="door"){if(V.t>.5){V.state="in";V.i=0}}
   else if(V.state==="in"){if(walk(...V.path[V.i])){V.i++;if(V.i>=V.path.length){V.state="talk";G.doorOpen=false;sp.material.map=V.tex[0];sp.position.y=-2.6+V.h/2;openTalk()}}}
   else if(V.state==="talk"){sp.material.map=(now%4200)<140?V.tex[2]:(G.speaking&&Math.floor(now/180)%2?V.tex[2]:V.tex[0]);sp.position.y=-2.6+V.h/2+Math.sin(now/700)*.015}
-  else if(V.state==="out"){const back=[[7.05,-4.3],[7.05,-6.3]];if(V.i===undefined){V.i=0;G.doorOpen=true;Sound.door()}if(walk(...back[V.i])){V.i++;if(V.i>=back.length){G.scene.remove(sp);V.tex.forEach(t=>t.dispose());V.state="gone";G.doorOpen=false;G.visitor=null;reframe();refresh();setTimeout(processQueue,500)}}}
+  else if(V.state==="out"){const back=[[7.05,-4.3],[7.05,-6.3]];if(V.i===undefined){V.i=0;G.doorOpen=true;Sound.door()}if(walk(...back[V.i])){V.i++;if(V.i>=back.length){(V.comps||[]).forEach(C=>{G.scene.remove(C.sp);C.tex.forEach(t=>t.dispose())});G.scene.remove(sp);V.tex.forEach(t=>t.dispose());V.state="gone";G.doorOpen=false;G.visitor=null;reframe();refresh();setTimeout(processQueue,500)}}}
+  (V.comps||[]).forEach((C,i)=>{const cp=C.sp;if(V.t<C.delay&&V.state!=="out")return;
+    const [tx,tz]=V.state==="out"?[7.05,-6.3]:C.slot,dx=tx-cp.position.x,dz=tz-cp.position.z,dist=Math.hypot(dx,dz),st=(V.state==="out"?7:C.speed)*dt*(G.fast||1);
+    const moving=dist>.05;if(moving){const k=Math.min(1,st/dist);cp.position.x+=dx*k;cp.position.z+=dz*k;C.leg+=dt}
+    cp.material.map=moving?C.tex[Math.floor(C.leg/.2)%2]:((now+i*900+2100)%5200<140?C.tex[2]:C.tex[0]);cp.position.y=-2.6+C.h/2+(moving?Math.abs(Math.sin(C.leg*15.7))*.06:0)});
 }
 function portrait(n){const src=drawSprite(n,0,false),c=document.createElement("canvas");c.width=16;c.height=16;c.getContext("2d").drawImage(src,4,0,16,16,0,0,16,16);return c.toDataURL()}
 /* ---- captions, one line at a time ---- */
