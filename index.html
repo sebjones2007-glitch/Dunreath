@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dunreath</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#2C2017">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dunreath">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&family=Reenie+Beanie&family=Pinyon+Script&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Courier+Prime:ital@0;1&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
@@ -299,6 +308,31 @@ select.other{font:inherit;color:var(--ink);background:#FBF8F0;border:1px solid v
 .rdocs.n2 .nb.worn textarea,.rdocs.n3 .nb.worn textarea{font-size:21px}
 @media(max-width:520px){.nb.worn,.rdocs.n1 .nb.worn{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.nb.worn .pg{padding:12px 8px 10px 22px}.nb.worn textarea{font-size:19px}}
 .wit2{border-top:1px dashed var(--rule);margin:10px 0}
+/* title screen */
+.title{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));background:radial-gradient(ellipse at 50% 45%,rgba(10,7,5,.15),rgba(10,7,5,.72) 75%);overflow-y:auto}
+.title.show{display:flex}
+body.titling .hud,body.titling .objbar,body.titling .say{visibility:hidden}
+.tcard{width:min(420px,100%);background:var(--paper);color:var(--ink);padding:30px 34px 26px;box-shadow:0 1px 0 rgba(0,0,0,.25),0 18px 44px rgba(0,0,0,.55);transform:rotate(-.6deg);text-align:center;margin:auto}
+@media(max-width:520px){.tcard{padding:24px 20px 20px}}
+.tmast{font-family:var(--mast);font-size:64px;line-height:1;margin:2px 0 6px;letter-spacing:.01em}
+@media(max-width:520px){.tmast{font-size:52px}}
+.tsub{font-family:var(--typeH);font-size:12px;letter-spacing:.14em;color:var(--ink2)}
+.trule{border-top:3px double var(--ink);margin:14px 0 16px}
+.tmenu{display:flex;flex-direction:column;align-items:stretch;gap:2px}
+.tmenu button{background:none;border:0;border-bottom:1px dotted var(--rule);color:var(--ink);font-family:var(--typeH);font-size:16px;letter-spacing:.05em;padding:9px 6px;cursor:pointer;text-align:center}
+.tmenu button:last-child{border-bottom:0}
+.tmenu button:hover:not(:disabled),.tmenu button:focus-visible{background:var(--ink);color:var(--paper);outline:none}
+.tmenu button:disabled{color:var(--faint);cursor:default}
+.tmenu .tnote{display:block;font-family:var(--type);font-size:11.5px;letter-spacing:0;color:var(--faint);margin-top:2px;line-height:1.35}
+.tmenu button:hover:not(:disabled) .tnote{color:var(--paper2)}
+.tpane{font-size:13.5px;text-align:left}
+.tpane h3{font-family:var(--typeH);font-weight:400;font-size:13px;letter-spacing:.1em;text-align:center;margin:14px 0 4px;color:var(--ink2)}
+.tpane h3:first-child{margin-top:0}
+.tpane p{margin:0 0 6px;text-align:center}
+.tpane .tback{display:block;margin:16px auto 0}
+.tname{display:flex;flex-direction:column;gap:10px;align-items:center}
+.tname .namein{width:100%;max-width:280px;text-align:center}
+.tfoot{margin-top:14px;font-size:11px;color:var(--faint);font-family:var(--type)}
 </style>
 </head>
 <body>
@@ -315,6 +349,7 @@ select.other{font:inherit;color:var(--ink);background:#FBF8F0;border:1px solid v
   <div class="picker" id="picker"></div>
 </div>
 <div class="tip" id="tip"></div>
+<div class="title" id="title" role="dialog" aria-modal="true" aria-label="Dunreath"><div class="tcard"><div class="tmast">Dunreath</div><div class="tsub">WAPSIE COUNTY, IOWA &middot; MARCH 1931</div><div class="trule"></div><div id="tbody"></div><div class="tfoot">A season at the marshal's desk</div></div></div>
 <div class="fade" id="fade" aria-live="polite"><div class="ft" id="fadeT"></div><div class="fs" id="fadeS"></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -1145,6 +1180,7 @@ function startGame(name,easy){
     const r=([a,b])=>a+Math.floor(Math.random()*(b-a+1));
     n.ht=kid?59:r(H);n.wt=kid?84:r(W);
   });
+  if(name&&!easy)try{localStorage.setItem(STARTED_KEY,"1")}catch(e){}
   Object.assign(S,{easy:!!easy,name:name||null,saveId:name?("s"+Date.now().toString(36)):null,visit:null,desk:[],say:"",slips:[],call:null,memo:[],pages:{},printed:new Set(),record:{},caseNo:30,nbLeft:null,paper:null});
   S.sgt=55;
   S.wind=Array.from({length:DAYS},(_,i)=>{const b=i>=17?.92+i*.004:Math.pow(i/17,1.5)*.85;return Math.min(1,b+(Math.random()<.3&&i<17?.18+Math.random()*.22:0))});
@@ -1723,6 +1759,8 @@ function finish(kind){
 
 /* ================= saving ================= */
 const SAVE_KEY="hollowcreek.saves.v1",SERVED_KEY="hollowcreek.served";
+const STARTED_KEY="hollowcreek.startedNormal";
+function easyUnlocked(){try{if(localStorage.getItem(STARTED_KEY))return true}catch(e){}return seasonServed()||readSaves().some(x=>!x.easy)}
 function seasonServed(){try{if(localStorage.getItem(SERVED_KEY))return true}catch(e){}return readSaves().some(x=>x.outcome==="season")}
 function readSaves(){try{return JSON.parse(localStorage.getItem(SAVE_KEY)||"[]")}catch(e){return []}}
 function writeSaves(list){try{localStorage.setItem(SAVE_KEY,JSON.stringify(list));return true}catch(e){S.say="Your browser would not let the game save.";return false}}
@@ -1790,7 +1828,7 @@ function cloudInit(){
   sb.auth.onAuthStateChange((ev,session)=>{const u=session&&session.user,was=sbUser;sbUser=u||null;if(u&&(!was||was.id!==u.id))cloudPull().then(cloudPushAll);refreshRegister()});
   sb.auth.getSession().then(({data})=>{const u=data&&data.session&&data.session.user;if(u&&!sbUser){sbUser=u;cloudPull().then(cloudPushAll)}refreshRegister()});
 }
-function refreshRegister(){if(S&&S.desk&&S.desk.includes("register"))refresh()}
+function refreshRegister(){if(S&&S.desk&&S.desk.includes("register"))refresh();if(titlePane==="menu"&&$("title").classList.contains("show"))renderTitle()}
 const rowOf=r=>({user_id:sbUser.id,save_id:r.id,data:r,updated_at:new Date(r.updated||Date.now()).toISOString()});
 async function cloudPull(){
   if(!sb||!sbUser)return;sbMsg="Fetching your saves...";refreshRegister();
@@ -1892,7 +1930,7 @@ function registerDoc(){
     ${cloudSection()}
     <div class="sect">NEW APPOINTMENT</div>
     <div class="sign" style="margin-top:8px"><label for="newName" class="muted">Name</label><input id="newName" class="namein" maxlength="28" placeholder="e.g. Harriet Lowe" autocomplete="off"><button class="btn" id="newBtn">Take the post</button></div>
-    ${seasonServed()?`<label class="opt" style="margin-top:12px"><input type="checkbox" id="newEasy"><span class="box">[ ]</span><span>Easy terms. The council gives its word not to recall you, however badly things go.</span></label>`:`<p class="muted" style="font-size:13px;margin-top:12px">Easy terms, under which the council gives its word not to recall a detective, are offered only to one who has served a full season.</p>`}
+    ${easyUnlocked()?`<label class="opt" style="margin-top:12px"><input type="checkbox" id="newEasy"><span class="box">[ ]</span><span>Easy terms. The council gives its word not to recall you, however badly things go.</span></label>`:`<p class="muted" style="font-size:13px;margin-top:12px">Easy terms, under which the council gives its word not to recall a detective, are offered only to one who has already taken the post on ordinary terms.</p>`}
     <div class="sect">STANDING OF ALL DETECTIVES</div>
     ${list.length?`<div class="tablewrap"><table class="ledger"><thead><tr><th>Name</th><th>Status</th><th>Day</th><th>Success</th><th>Solved</th><th>Wrongful</th><th>Open</th><th>Unexplained</th><th>Standing</th><th>Spirit</th><th>Heist</th><th>Art</th><th></th></tr></thead><tbody>
     ${list.map(s=>`<tr${s.id===cur?' class="cur"':""}><td>${esc(s.name)}${s.easy?" (easy terms)":""}${s.id===cur?" (at the desk)":""}</td><td>${statusOf(s)}</td><td>${s.day}</td><td>${successRate(s.stats)}%</td><td>${s.stats.solved}</td><td>${s.stats.wrong}</td><td>${s.stats.shelved}</td><td>${s.stats.unexplained}</td><td>${council(councilScore(s.stats,s.rep))}</td><td>${s.spirit?"Laid to rest":"Unquiet"}</td><td>${s.heist==="foiled"?"Foiled":s.heist==="robbed"?"Robbed":"Not yet"}</td><td>${s.art==="recovered"?"Recovered":s.art==="lost"?"Lost":"Not yet"}</td>
@@ -2209,14 +2247,14 @@ function renderReading(){
   if(!reading){$("rdocs").innerHTML="";return}
   const keep=document.activeElement&&document.activeElement.id==="nbText";
   $("rdocs").className="rdocs n"+S.desk.length;
-  $("rdocs").innerHTML=S.desk.map(k=>`<section class="slot" data-key="${k}" aria-label="${esc(docTitle(k))}"><div class="slotbar"><span>${esc(docTitle(k))}</span>${S.name||k!=="register"?`<button data-away="${k}">Put away</button>`:""}</div>${docHtml(k)}</section>`).join("");
+  $("rdocs").innerHTML=S.desk.map(k=>`<section class="slot" data-key="${k}" aria-label="${esc(docTitle(k))}"><div class="slotbar"><span>${esc(docTitle(k))}</span><button data-away="${k}">Put away</button></div>${docHtml(k)}</section>`).join("");
   $("rmsg").textContent=S.say||"";
-  $("sitBack").style.visibility=S.name?"visible":"hidden";
+  $("sitBack").textContent=S.name?"Sit back":"Back to title";
   wireDocs($("rdocs"));
   if(keep&&$("nbText"))$("nbText").focus();
 }
 function openReading(){picker=null;if(!reading){reading=true;lean(true)}refresh();$("reading").scrollTop=0}
-function closeReading(){if(!S.name)return;reading=false;S.say="";lean(false);refresh();maybeWatcher()}
+function closeReading(){if(!S.name){if(reading){reading=false;S.desk=[];S.say="";lean(false);refresh();showTitle()}return}reading=false;S.say="";lean(false);refresh();maybeWatcher()}
 function maybeWatcher(){if(G.watcher&&G.watcherKind==="far"){G.watchGone=true}}
 function renderPicker(){
   const p=$("picker");p.classList.toggle("show",!!picker);
@@ -2264,7 +2302,7 @@ function wireDocs(root){
   root.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{if(b.dataset.armed){deleteSave(b.dataset.del)}else{b.dataset.armed=1;b.textContent="Strike out for good?"}});
   const nb=root.querySelector("#newBtn"),ni=root.querySelector("#newName"),ne=root.querySelector("#newEasy");
   if(ne)ne.onchange=()=>{ne.nextElementSibling.textContent=ne.checked?"[X]":"[ ]"};
-  if(nb){const go=()=>{const n=ni.value.trim().replace(/\s+/g," ");if(!n){ni.focus();return}startGame(n,!!(ne&&ne.checked&&seasonServed()))};nb.onclick=go;ni.onkeydown=e=>{if(e.key==="Enter")go()}}
+  if(nb){const go=()=>{const n=ni.value.trim().replace(/\s+/g," ");if(!n){ni.focus();return}startGame(n,!!(ne&&ne.checked&&easyUnlocked()))};nb.onclick=go;ni.onkeydown=e=>{if(e.key==="Enter")go()}}
 }
 
 /* ================= HUD and plain object list ================= */
@@ -3511,10 +3549,48 @@ function endVisit(msg){
 
 $("sitBack").onclick=closeReading;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(picker){picker=null;S.say="";refresh()}else if(reading)closeReading()}});
+/* ================= title screen ================= */
+let titlePane="menu";
+function showTitle(pane){titlePane=pane||"menu";$("title").classList.add("show");document.body.classList.add("titling");renderTitle()}
+function hideTitle(){$("title").classList.remove("show");document.body.classList.remove("titling")}
+function latestOpenSave(){return readSaves().filter(x=>!x.outcome).sort((a,b)=>(b.updated||0)-(a.updated||0))[0]}
+const CREDITS=`<h3>A GAME BY</h3><p>seb</p>
+<h3>CO-DEVELOPED WITH</h3><p>Claude, by Anthropic</p>
+<h3>TYPEFACES</h3><p>UnifrakturMaguntia, IM Fell English, Old Standard TT, Courier Prime, Special Elite, Caveat, Pinyon Script and Reenie Beanie, from Google Fonts under the SIL Open Font License</p>
+<h3>THE DESK</h3><p>Built with three.js (MIT License)</p>
+<h3>SOUND</h3><p>Every sound is made in the browser as you play</p>
+<h3>SAVES</h3><p>Online register kept with Supabase</p>`;
+function renderTitle(){
+  const b=$("tbody");if(!b)return;
+  if(titlePane==="credits"){b.innerHTML=`<div class="tpane">${CREDITS}<button class="btn tback" data-t="menu">Back</button></div>`}
+  else if(titlePane==="new"||titlePane==="easy"){
+    const easy=titlePane==="easy";
+    b.innerHTML=`<div class="tpane tname"><p>${easy?"Easy terms. The council gives its word not to recall you, however badly things go.":"Twenty days at the desk. The council may recall you if the town turns against you."}</p><label for="tName" class="muted">Your name, Detective</label><input id="tName" class="namein" maxlength="28" placeholder="e.g. Harriet Lowe" autocomplete="off"><button class="btn" id="tGo">Take the post</button><button class="btn tback" data-t="menu" style="margin-top:0">Back</button></div>`;
+    const ni=$("tName"),go=()=>{const n=ni.value.trim().replace(/\s+/g," ");if(!n){ni.focus();return}hideTitle();Sound.rustle();startGame(n,easy&&easyUnlocked())};
+    $("tGo").onclick=go;ni.onkeydown=e=>{if(e.key==="Enter")go()};setTimeout(()=>ni.focus(),50);
+  }else{
+    const cont=latestOpenSave(),open=easyUnlocked();
+    b.innerHTML=`<nav class="tmenu" aria-label="Title menu">
+      ${cont?`<button data-t="continue">Continue<span class="tnote">${esc(cont.name)}, day ${cont.day}${cont.easy?", easy terms":""}</span></button>`:""}
+      <button data-t="new">New Game</button>
+      <button data-t="easy"${open?"":" disabled"}>Easy Mode<span class="tnote">${open?"The council will not recall you":"Offered once you have taken the post on ordinary terms"}</span></button>
+      <button data-t="register">Register of Detectives</button>
+      <button data-t="credits">Credits</button></nav>`;
+  }
+  b.querySelectorAll("[data-t]").forEach(x=>x.onclick=()=>{
+    const t=x.dataset.t;
+    if(t==="continue"){const c=latestOpenSave();if(c){hideTitle();loadGame(c.id)}return}
+    if(t==="register"){hideTitle();Sound.rustle();place("register");return}
+    if(t==="easy"&&!easyUnlocked())return;
+    titlePane=t;renderTitle();
+  });
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("title").classList.contains("show")&&titlePane!=="menu"){titlePane="menu";renderTitle()}});
+
 cloudInit();
 init3D();
 startGame("");
-place("register");
+if(/access_token|error_description/.test(location.hash))place("register");else showTitle();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(!G.renderer)return;G.tc={};G.newsHead=null;G.calKey=null;G.outKey=null;G.outCache={};
   const re=(t,a,b,k)=>{const n=pageTex(a,b,k);t.image=n.image;t.needsUpdate=true};
   re(G.letterTex.letter,"SHERIFF","Wapsie County");re(G.letterTex.report,"MEMORANDUM","Town Marshal's Office");re(G.letterTex.end,"OFFICE OF THE MAYOR","Dunreath, Iowa");
