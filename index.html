@@ -3121,13 +3121,16 @@ function creep(now,force){
   setTimeout(()=>{S.say=t;renderHud()},k==="steps"?2500:900);
 }
 // The watcher. WATCH and the two drawing functions are mirrored in window-man.html, a viewer for tweaking him.
-const WATCH={rim:.4,haze:.3,eyes:.75,near:.55};
+const WATCH={rim:.4,haze:.3,eyes:.75,near:.55,hat:true,coat:true};
 function watcherShape(x,rim){
   const c=document.createElement("canvas");c.width=128;c.height=256;const s=c.getContext("2d");s.fillStyle="#020203";s.strokeStyle="#020203";
   const poly=pts=>{s.beginPath();s.moveTo(pts[0],pts[1]);for(let i=2;i<pts.length;i+=2)s.lineTo(pts[i],pts[i+1]);s.closePath();s.fill()};
   s.beginPath();s.ellipse(67,25,8.5,12.5,.22,0,7);s.fill();
+  if(WATCH.hat){s.save();s.translate(67,25);s.rotate(.22);s.beginPath();s.moveTo(-8,-10);s.lineTo(-7.5,-19);s.quadraticCurveTo(-4,-23,0,-20.5);s.quadraticCurveTo(4,-23,7.5,-19);s.lineTo(8,-10);s.closePath();s.fill();s.beginPath();s.ellipse(0,-10,16,2.4,0,0,7);s.fill();s.restore()}
   poly([62,33,70,35,69,52,59,51]);
   s.beginPath();s.moveTo(59,48);s.quadraticCurveTo(50,52,44,66);s.lineTo(47,100);s.lineTo(51,142);s.lineTo(77,142);s.lineTo(80,100);s.lineTo(83,63);s.quadraticCurveTo(78,51,69,49);s.closePath();s.fill();
+  if(WATCH.coat){s.beginPath();s.moveTo(58,49);s.quadraticCurveTo(49,53,44,66);s.lineTo(46,112);s.lineTo(42,206);s.lineTo(55,208);s.lineTo(64,205);s.lineTo(74,208);s.lineTo(86,205);s.lineTo(82,112);s.lineTo(84,63);s.quadraticCurveTo(79,52,70,49);s.closePath();s.fill();
+    poly([56,50,58,39,64,51]);poly([69,50,75,39,78,52])}
   poly([45,62,49,70,41,120,38,174,32,174,36,120]);
   poly([82,59,86,64,93,120,97,172,91,173,87,120,81,70]);
   s.lineWidth=1.8;s.lineCap="round";
