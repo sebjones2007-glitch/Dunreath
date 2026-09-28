@@ -3121,7 +3121,7 @@ function creep(now,force){
   setTimeout(()=>{S.say=t;renderHud()},k==="steps"?2500:900);
 }
 // The watcher. WATCH and the two drawing functions are mirrored in window-man.html, a viewer for tweaking him.
-const WATCH={rim:.4,haze:.3,eyes:.75,near:.55,hat:true,coat:true,pressed:false};
+const WATCH={rim:.2,haze:.15,eyes:.75,near:.55,hat:true,coat:true,pressed:true,pressedEyes:.8,lantern:true};
 function watcherShape(x,rim,K=1){
   const c=document.createElement("canvas");c.width=128*K;c.height=256*K;const s=c.getContext("2d");s.scale(K,K);s.fillStyle="#020203";s.strokeStyle="#020203";
   const poly=pts=>{s.beginPath();s.moveTo(pts[0],pts[1]);for(let i=2;i<pts.length;i+=2)s.lineTo(pts[i],pts[i+1]);s.closePath();s.fill()};
@@ -3134,7 +3134,10 @@ function watcherShape(x,rim,K=1){
   poly([45,62,49,70,41,120,38,174,32,174,36,120]);
   poly([82,59,86,64,93,120,97,172,91,173,87,120,81,70]);
   s.lineWidth=1.8;s.lineCap="round";
-  [[35,173,[[29,193],[32,197],[36,197],[40,191]]],[94,172,[[90,193],[94,197],[98,196],[101,189]]]].forEach(([hx,hy,fs])=>fs.forEach(([fx,fy])=>{s.beginPath();s.moveTo(hx,hy);s.quadraticCurveTo((hx+fx)/2+(fx<hx?-1:1),(hy+fy)/2,fx,fy);s.stroke()}));
+  const lantern=rim&&WATCH.lantern;
+  if(lantern){s.beginPath();s.ellipse(94,175,3.5,4,0,0,7);s.fill();s.lineWidth=1.2;s.beginPath();s.moveTo(90,184);s.quadraticCurveTo(94,171,99,184);s.stroke();
+    poly([89,182,99,182,97,185,91,185]);s.fillRect(89.5,185,1.6,12);s.fillRect(96.9,185,1.6,12);poly([88,197,100,197,99,200,89,200])}
+  [[35,173,[[29,193],[32,197],[36,197],[40,191]]],...(lantern?[]:[[94,172,[[90,193],[94,197],[98,196],[101,189]]]])].forEach(([hx,hy,fs])=>fs.forEach(([fx,fy])=>{s.beginPath();s.moveTo(hx,hy);s.quadraticCurveTo((hx+fx)/2+(fx<hx?-1:1),(hy+fy)/2,fx,fy);s.stroke()}));
   poly([51,138,63,140,60,200,58,252,50,252,52,200]);
   poly([65,140,77,138,76,200,78,252,70,252,68,200]);
   if(rim&&WATCH.rim>0){const r=document.createElement("canvas");r.width=128*K;r.height=256*K;const q=r.getContext("2d");
@@ -3143,7 +3146,7 @@ function watcherShape(x,rim,K=1){
     x.globalAlpha=WATCH.rim;x.drawImage(r,0,0);x.globalAlpha=1}
   x.drawImage(c,0,0);
 }
-function watcherEyes(x,K=1,bright){x.scale(K,K);if(bright){x.globalCompositeOperation="lighter";[[63.2,25],[70.6,23.4]].forEach(([ex,ey])=>{const g=x.createRadialGradient(ex,ey,0,ex,ey,4.5);g.addColorStop(0,"rgba(240,244,230,.9)");g.addColorStop(.3,"rgba(210,220,205,.35)");g.addColorStop(1,"rgba(200,210,200,0)");x.fillStyle=g;x.fillRect(ex-5,ey-5,10,10)})}[[63.2,25],[70.6,23.4]].forEach(([ex,ey])=>{const g=x.createRadialGradient(ex,ey,0,ex,ey,2.6);g.addColorStop(0,"rgba(226,228,214,1)");g.addColorStop(.45,"rgba(200,205,190,.55)");g.addColorStop(1,"rgba(200,205,190,0)");x.fillStyle=g;x.fillRect(ex-3,ey-3,6,6)})}
+function watcherEyes(x,K=1,bright){x.scale(K,K);if(bright){x.globalCompositeOperation="lighter";[[63.2,25],[70.6,23.4]].forEach(([ex,ey])=>{const g=x.createRadialGradient(ex,ey,0,ex,ey,4.5);g.addColorStop(0,"rgba(240,244,230,.7)");g.addColorStop(.3,"rgba(210,220,205,.25)");g.addColorStop(1,"rgba(200,210,200,0)");x.fillStyle=g;x.fillRect(ex-5,ey-5,10,10)})}[[63.2,25],[70.6,23.4]].forEach(([ex,ey])=>{const g=x.createRadialGradient(ex,ey,0,ex,ey,2.6);g.addColorStop(0,"rgba(226,228,214,1)");g.addColorStop(.45,"rgba(200,205,190,.55)");g.addColorStop(1,"rgba(200,205,190,0)");x.fillStyle=g;x.fillRect(ex-3,ey-3,6,6)})}
 function makeWatcher(kind){
   // pressed: in the lightning he is right up against the glass, so only his hat, collar and eyes fit in the window
   const far=kind!=="flash",P=!far&&WATCH.pressed,K=P?4:1,W=far?.625:P?5.1:1.35,H=far?1.25:P?10.2:2.7;
@@ -3157,6 +3160,9 @@ function makeWatcher(kind){
     if(WATCH.haze>0){const gl=new THREE.Mesh(new THREE.PlaneGeometry(1.1,1.9),new THREE.MeshBasicMaterial({map:canvasTex(128,128,(x,w,h)=>{
       const g=x.createRadialGradient(64,56,2,64,64,62);g.addColorStop(0,"rgba(110,135,160,1)");g.addColorStop(.55,"rgba(80,100,125,.4)");g.addColorStop(1,"rgba(60,80,100,0)");x.fillStyle=g;x.fillRect(0,0,w,h)}),transparent:true,depthWrite:false,opacity:0}));
       gl.position.set(0,.05,-.08);gl.userData.haze=true;m.add(gl)}
+    if(WATCH.lantern){const lp=new THREE.Mesh(new THREE.PlaneGeometry(.55,.55),new THREE.MeshBasicMaterial({map:canvasTex(128,128,(x,w,h)=>{
+      const g=x.createRadialGradient(64,64,0,64,64,62);g.addColorStop(0,"rgba(255,226,170,1)");g.addColorStop(.08,"rgba(255,190,110,.9)");g.addColorStop(.3,"rgba(210,130,55,.3)");g.addColorStop(1,"rgba(160,90,40,0)");x.fillStyle=g;x.fillRect(0,0,w,h)}),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0}));
+      lp.position.set(.146,-.308,.003);lp.userData.lamp=true;m.add(lp)}
   }else if(P)m.position.set(2.48+(Math.random()<.5?-.75:.75),-1.2,-6.62);else m.position.set(2.6+(Math.random()<.5?-.55:.55),2.25,-6.8)
   G.scene.add(m);return m;
 }
@@ -3173,14 +3179,17 @@ function watcherTick(now,dt){
     setTimeout(()=>{S.say="For an instant, in the lightning, someone is standing right outside the window. Then the dark comes back, and there is nothing there.";renderHud();saveSoon()},900)}
   if(!G.watcher)return;
   if(G.watcherKind==="far"&&(reading||G.visitor||TALK))G.watchGone=true;
-  const W=G.watcher,k=(now-G.watcherT)/1000;let op,eo;
-  if(G.watcherKind==="flash"){op=Math.min(1,(G.lightning||0)*3);eo=WATCH.pressed?1:op*WATCH.eyes;
+  const W=G.watcher,k=(now-G.watcherT)/1000;let op,eo,lo=0;
+  if(G.watcherKind==="flash"){op=Math.min(1,(G.lightning||0)*3);eo=WATCH.pressed?WATCH.pressedEyes:op*WATCH.eyes;
     // when pressed to the glass, his eyes stay lit a moment after the dark comes back
     if(k>.35&&(G.lightning||0)<=.02){if(!WATCH.pressed)op=-1;else{G.watchDarkT=G.watchDarkT||now;if(now-G.watchDarkT>700)op=-1}}}
   // he comes out of the dark quickly, and when he goes he is simply not there any more
+  // with the lantern: it lights, burns a while, gutters and goes out; only then do his eyes show
+  else if(WATCH.lantern){op=G.watchGone||k>13?-1:Math.min(1,k/.5);eo=WATCH.eyes*Math.max(0,Math.min(1,(k-8.3)/1.5));
+    lo=k<.8?0:k<1.3?(k-.8)/.5:k<6?.88+.12*Math.sin(k*9)*Math.sin(k*5.3):k<7.6?(Math.sin(k*41)+Math.sin(k*67.3)>.3?.9:k>7.2?0:.15):0}
   else{op=G.watchGone||k>11?-1:Math.min(1,k/.5);eo=WATCH.eyes*Math.max(0,Math.min(1,(k-4)/2.5))}
   if(op<0){G.scene.remove(W);W.material.map.dispose();W.children.forEach(c=>c.material.map&&c.material.map.dispose());G.watcher=null;return}
-  W.material.opacity=op;W.children.forEach(c=>c.material.opacity=c.userData.eyes?eo:c.userData.haze?op*WATCH.haze:op);
+  W.material.opacity=op;W.children.forEach(c=>c.material.opacity=c.userData.eyes?eo:c.userData.haze?op*WATCH.haze:c.userData.lamp?lo*Math.max(op,0):op);
 }
 function sync3DLights(){if(!G.renderer||!S)return;const eve=S.phase!=="day",wi=WEATHERS.indexOf(weatherOf(S.day));G.fill.intensity=eve?.05:[.62,.3,.2,.22,.16][wi]}
 function gameMinutes(){
