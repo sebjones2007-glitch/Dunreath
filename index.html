@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hollow Creek Casebook</title>
+<title>Dunreath Casebook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&family=Reenie+Beanie&family=Pinyon+Script&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Courier+Prime:ital@0;1&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
@@ -337,7 +337,7 @@ const CAST=[
   build:"average",height:"short",hand:"right",pipe:false,pub:["flour"],hid:[],shady:1,
   habits:"Does not smoke. Sings in the Methodist choir.",remarks:"Operates Hale's Bakery and bakes for the church suppers.",extra:"Widowed 1924. Keeps bees behind the bakery.",
   secret:"owes Mrs. Ashby more than the bakery is worth"},
- {name:"Tom Hale",called:"Tom",press:"Thomas Hale",full:"Thomas Edward Hale",sex:"m",age:19,role:"Stable hand",place:"livery stable",addr:"Rooms above Hale's Bakery, Main Street",born:"Hollow Creek, Iowa",eyes:"Blue",hair:"Sandy",church:"First Methodist (lapsed)",
+ {name:"Tom Hale",called:"Tom",press:"Thomas Hale",full:"Thomas Edward Hale",sex:"m",age:19,role:"Stable hand",place:"livery stable",addr:"Rooms above Hale's Bakery, Main Street",born:"Dunreath, Iowa",eyes:"Blue",hair:"Sandy",church:"First Methodist (lapsed)",
   build:"slight",height:"average",hand:"left",pipe:true,pub:["horses"],hid:["night"],shady:1.4,
   habits:"Smokes a pipe. Takes coffee at the Voss lunchroom.",remarks:"Employed at the Crane Livery, where he tends and exercises the horses.",extra:"Played second base for the town nine last summer.",
   secret:"slips out most nights to meet Wren Crane in secret"},
@@ -345,7 +345,7 @@ const CAST=[
   build:"heavy",height:"tall",hand:"right",pipe:true,pub:["keys"],hid:[],shady:1,
   habits:"Smokes a pipe; a cigar after council meetings.",remarks:"Holds keys to the town hall, the council rooms and the livery.",extra:"Mayor since 1919. Member, Odd Fellows Lodge No. 212.",
   secret:"took a fat bribe to approve the new mill"},
- {name:"Wren Crane",called:"Wren",press:"Miss Wren Crane",full:"Wren Adelaide Crane",sex:"f",age:24,role:"Teacher, District School No. 3",place:"schoolhouse",addr:"The Crane house, Oak Street",born:"Hollow Creek, Iowa",eyes:"Green",hair:"Auburn",church:"First Presbyterian",
+ {name:"Wren Crane",called:"Wren",press:"Miss Wren Crane",full:"Wren Adelaide Crane",sex:"f",age:24,role:"Teacher, District School No. 3",place:"schoolhouse",addr:"The Crane house, Oak Street",born:"Dunreath, Iowa",eyes:"Green",hair:"Auburn",church:"First Presbyterian",
   build:"slight",height:"short",hand:"left",pipe:false,pub:["letters"],hid:["night"],shady:.7,
   habits:"Does not smoke.",remarks:"Teaches at the district school and keeps its registers and correspondence.",extra:"Attended the normal school at Cedar Falls.",
   secret:"meets Tom Hale at night, and her father would disown her for it"},
@@ -353,7 +353,7 @@ const CAST=[
   build:"heavy",height:"average",hand:"right",pipe:true,pub:["night"],hid:[],shady:1.8,
   habits:"Smokes a pipe, which is remarked upon.",remarks:"Keeps the lunchroom open late most nights.",extra:"Naturalized 1911. Widowed.",
   secret:"sells bootleg rum from the lunchroom's back room, brought over the river by Jonah Reed"},
- {name:"Pip Voss",called:"Pip",press:"Philip Voss",full:"Philip Voss",sex:"m",age:14,role:"Errand boy",place:"room above the lunchroom",addr:"Voss Lunchroom, Front Street",born:"Hollow Creek, Iowa",eyes:"Blue",hair:"Red",church:"Zion Lutheran",
+ {name:"Pip Voss",called:"Pip",press:"Philip Voss",full:"Philip Voss",sex:"m",age:14,role:"Errand boy",place:"room above the lunchroom",addr:"Voss Lunchroom, Front Street",born:"Dunreath, Iowa",eyes:"Blue",hair:"Red",church:"Zion Lutheran",
   build:"slight",height:"short",hand:"right",pipe:false,pub:[],hid:["keys"],shady:1.8,
   habits:"Does not smoke. Chews licorice.",remarks:"Runs errands for most of the businesses on Front Street.",extra:"Absent from school eleven times this term.",
   secret:"copies keys for anyone who pays"},
@@ -397,7 +397,7 @@ const CAST=[
   build:"slight",height:"short",hand:"right",pipe:true,pub:["poisons","occult"],hid:["night"],shady:1.8,
   habits:"Smokes a corncob pipe.",remarks:"Sells herbs, salves and remedies. Said to tell fortunes.",extra:"Has lived on the bottoms since before the town was platted.",
   secret:"leaves offerings at the river's edge every new moon, for what she calls the ones below"},
- {name:"Jonah Reed",called:"Jonah",press:"Jonah Reed",full:"Jonah Reed",sex:"m",age:50,role:"Ferryman",place:"ferry landing",addr:"Ferry house, the river landing",born:"Hollow Creek, Iowa",eyes:"Blue",hair:"Brown",church:"First Methodist (lapsed)",
+ {name:"Jonah Reed",called:"Jonah",press:"Jonah Reed",full:"Jonah Reed",sex:"m",age:50,role:"Ferryman",place:"ferry landing",addr:"Ferry house, the river landing",born:"Dunreath, Iowa",eyes:"Blue",hair:"Brown",church:"First Methodist (lapsed)",
   build:"heavy",height:"average",hand:"right",pipe:false,pub:["boat"],hid:["night"],shady:2,
   habits:"Does not smoke.",remarks:"Operates the river ferry.",extra:"Pulled three people from the river in the flood of '26.",
   secret:"ferries bootleg liquor across the river at night, no questions asked"},
@@ -749,7 +749,7 @@ const PREPS=[
  {t:"The borrowed team",n:"Unauthorized use of a team",vict:1,d:v=>`A team and wagon were taken from the ${v.place} in the night and brought back before dawn, lathered and muddy to the hubs.`}
 ];
 const HEIST_TARGETS=[
- {name:"the Hollow Creek State Bank",head:"STATE BANK",loot:"$3,400",vict:14},
+ {name:"the Dunreath State Bank",head:"STATE BANK",loot:"$3,400",vict:14},
  {name:"the relief fund safe at the town hall",head:"RELIEF FUND",loot:"$1,150",vict:2},
  {name:"the payroll office at the grain elevator",head:"ELEVATOR PAYROLL",loot:"$2,200",vict:2}
 ];
@@ -1020,7 +1020,7 @@ const WEAR={
  13:{shoe:"boots",cloth:"tweed",hint:["~Crow's feet don't sound alike on the boards. One rings, the other thuds.","~His patched brown tweed coat smells of the junk yard."]},
  14:{shoe:"heels",cloth:"silk",hint:["~Mrs. Ashby's steps click across the boards like a clock ticking.","I shall not stand long on this floor. It is ruining my shoes.","~Her black silk rustles whenever she moves."]},
  15:{shoe:"soft",cloth:"homespun",hint:["~Maud comes in so quietly you don't hear the door.","Shoes pinch, detective. I gave them up the year Cleveland was elected the second time.","~Her brown homespun shawl smells of herbs and woodsmoke."]},
- 17:{shoe:"oxfords",cloth:"pinstripe",hint:["~Mr. Whitcombe wipes each shoe on the mat with great care before he steps inside.","I had these from Marshall Field's. I confess I had not reckoned on the streets of Hollow Creek.","~His grey pinstripe is pressed to an edge you could slice bread with."]},
+ 17:{shoe:"oxfords",cloth:"pinstripe",hint:["~Mr. Whitcombe wipes each shoe on the mat with great care before he steps inside.","I had these from Marshall Field's. I confess I had not reckoned on the streets of Dunreath.","~His grey pinstripe is pressed to an edge you could slice bread with."]},
  16:{shoe:"boots",cloth:"oilskin",hint:["~Jonah leaves big wet prints across the boards.","I can't hear myself walk on dry land. Too used to the deck, and the nails in my soles."]}
 };
 const CLOTH={calico:"brown calico with a little white sprig in it",denim:"faded blue denim",worsted:"good dark worsted, the kind a town suit is cut from",serge:"navy serge",gingham:"red and white gingham",homespun:"coarse brown homespun",leather:"scorched leather",flannel:"red plaid flannel",broadcloth:"fine black broadcloth",wool:"grey wool, very finely darned",blackwool:"black wool gone rusty with age",velvet:"plum-coloured velvet",tweed:"old brown tweed",silk:"black silk",oilskin:"stiff yellowed oilskin",pinstripe:"grey pinstriped flannel, of a city cut"};
@@ -1215,7 +1215,7 @@ const BRIEFS=[
  {head:"DEPOT AGENT REPORTS TRAMPS",decks:["Three Put Off Westbound Freight"],body:"The depot agent reports that three men were put off the westbound freight Tuesday night and were last seen walking toward the river bottoms."}
 ];
 const LATE_BRIEFS=[
- {head:"FAMILIES LEAVING TOWN",decks:["Three Households Gone to Relatives"],body:"At least three families have left Hollow Creek this week to stay with relatives in Cedar Rapids and Anamosa. \"We will come back when it is safe,\" one mother told the Courier. \"If it is ever safe.\""},
+ {head:"FAMILIES LEAVING TOWN",decks:["Three Households Gone to Relatives"],body:"At least three families have left Dunreath this week to stay with relatives in Cedar Rapids and Anamosa. \"We will come back when it is safe,\" one mother told the Courier. \"If it is ever safe.\""},
  {head:"GUNS SELLING FAST",decks:["Bostwick's Out of Shells"],body:"Bostwick's Hardware reports that it has sold every box of shotgun shells in the store and has wired Des Moines for more. Mr. Bostwick asks that customers not load their purchases inside the shop."},
  {head:"SCHOOL CLOSED UNTIL FURTHER NOTICE",decks:["Parents Keep Children Home"],body:"Fewer than half the pupils came to District School No. 3 on Monday, and the board has closed it until further notice."},
  {head:"CHURCH BELLS SILENT",decks:["Sexton Refuses to Climb Tower After Dark"],body:"The evening bell at St. Brendan's was not rung last night. The sexton would give no reason except that he had \"heard something up there.\""},
@@ -1234,7 +1234,7 @@ const SENT_OPT={petty:["Let off with a warning","Fine of $2 and costs","Fine of 
 function storyFor(c){
   const v=c.victim,w=c.who,tiny=c.tier==="petty",nat=c.crime.n.toLowerCase(),T=titleCase(low(titleOf(c)).replace(/^the /,""));
   const vp=v.press,sev=c.sev==null?1:c.sev,SUR=w?surname(w).toUpperCase():"";
-  const dl=`<span class="dl">Hollow Creek, ${shortD(S.day-1)}.</span>`;
+  const dl=`<span class="dl">Dunreath, ${shortD(S.day-1)}.</span>`;
   switch(c.outcome){
     case "guilty":{
       const head=tiny?[`${SUR} LET OFF WITH WARNING`,`${SUR} FINED`,`${SUR} FINED $10`][sev]
@@ -1257,7 +1257,7 @@ function buildPaper(prev,reports){
   const d=S.day,paper={weather:rnd(WEATHER_BY[weatherOf(S.day)]),stories:[],strange:reports,personal:[],ads:shuffle(ADS).slice(0,2),vol:57,no:61+d};
   let lead;
   if(!prev){
-    lead={head:"COUNTY DETECTIVE TAKES POST HERE",decks:["Mayor Crane Welcomes Officer to Town Hall","Council Hopes for End to Recent Troubles"],body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> A detective of the county sheriff's office took up quarters at the town hall this morning, at the request of Mayor Elias J. Crane and the council. The mayor told the Courier he expected "an end to the petty troubles of the winter, and a quick one." The officer is to serve a trial period of twenty days. Opinion on Front Street is divided.`};
+    lead={head:"COUNTY DETECTIVE TAKES POST HERE",decks:["Mayor Crane Welcomes Officer to Town Hall","Council Hopes for End to Recent Troubles"],body:`<span class="dl">Dunreath, ${shortD(d)}.</span> A detective of the county sheriff's office took up quarters at the town hall this morning, at the request of Mayor Elias J. Crane and the council. The mayor told the Courier he expected "an end to the petty troubles of the winter, and a quick one." The officer is to serve a trial period of twenty days. Opinion on Front Street is divided.`};
   }else{
     const st=prev.cases.map(r=>storyFor(r.ref)).filter(Boolean).sort((a,b)=>b.rank-a.rank);
     lead=st.shift()||{head:"COUNCIL AGAIN DEFERS ROAD QUESTION",decks:["No Arrests Reported Yesterday"],body:"The town council met in regular session last evening and again put off the question of graveling the River Road."};
@@ -1266,25 +1266,25 @@ function buildPaper(prev,reports){
   const H=S.heist,A=S.art;
   const V=S.vig;
   if(V&&V.killed&&!V.printedKill){V.printedKill=true;if(prev)paper.stories.unshift(lead);
-    lead={head:`MOB KILLS ${(V.deadName||"").toUpperCase().replace(/^MADAME /,"")}`,decks:["Committee Men Drag Victim From Station Door","Town Stunned; No Arrests Yet"],body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> ${V.deadName} is dead. A crowd of the so-called Citizens' Committee took ${V.deadName} from the door of the marshal's station yesterday morning, after the detective refused to hold ${V.deadName.startsWith("Crow")||V.deadName.startsWith("Silas")?"him":"her"}, and the body was found at first light by the river. The committee's founder, Hugo Brandt, could not be found for comment. Several families are said to have packed and left before noon.`};
+    lead={head:`MOB KILLS ${(V.deadName||"").toUpperCase().replace(/^MADAME /,"")}`,decks:["Committee Men Drag Victim From Station Door","Town Stunned; No Arrests Yet"],body:`<span class="dl">Dunreath, ${shortD(d)}.</span> ${V.deadName} is dead. A crowd of the so-called Citizens' Committee took ${V.deadName} from the door of the marshal's station yesterday morning, after the detective refused to hold ${V.deadName.startsWith("Crow")||V.deadName.startsWith("Silas")?"him":"her"}, and the body was found at first light by the river. The committee's founder, Hugo Brandt, could not be found for comment. Several families are said to have packed and left before noon.`};
   }else if(V&&V.outcome==="stoodDown"&&!V.printedDown){V.printedDown=true;paper.stories.unshift({head:"COMMITTEE STANDS DOWN",decks:["Detective Turns Away Crowd at Station Door"],body:"A crowd of the Citizens' Committee which brought a woman to the marshal's station yesterday dispersed peaceably when the detective refused to hold her. Hugo Brandt, the committee's founder, said afterward that he was \"satisfied the law is in good hands.\""})}
   else if(V&&V.outcome==="appeased"&&!V.printedApp){V.printedApp=true;paper.stories.unshift({head:"COMMITTEE HANDS OVER SUSPECT",decks:["Woman Held Without Charge"],body:"A woman brought to the marshal's station by the Citizens' Committee yesterday is being held in the cells, though no charge has been entered. Some call it prudence. Others do not."})}
   if(d===11&&V&&!V.printedForm){V.printedForm=true;paper.stories.unshift({head:"CITIZENS TO MEET TONIGHT",decks:["Brandt Calls for Night Patrols"],body:"Hugo Brandt, blacksmith, has called a meeting of \"all able-bodied men\" at the Odd Fellows hall this evening to form a committee for the patrol of the streets. \"The law needs help,\" Mr. Brandt told the Courier. \"We mean to give it.\""})}
   if(A&&A.news&&!A.printed){A.printed=true;if(prev)paper.stories.unshift(lead);
-    lead=A.news==="recovered"?{head:"STOLEN PAINTINGS RECOVERED",decks:["Ashby Madonna Found Wrapped in Oilcloth","Plan to Ship Art to Chicago Foiled"],body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> The Madonna taken from St. Brendan's, and the Dutch landscape cut from its frame at the Ashby house, were found this morning wrapped in oilcloth and ready for shipping. Mrs. Ashby is said to have wept, which those who know her find hard to credit.`}
-      :{head:"ASHBY PAINTINGS LEAVE TOWN",decks:["Crates Crossed on the Night Ferry","Chicago Dealers Said to Be Waiting"],body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> The paintings stolen from St. Brendan's and the Ashby house are believed to have left Hollow Creek last night by the ferry, bound for Chicago. Mrs. Ashby has engaged a Pinkerton man at her own expense, and has said what she thinks of the local officers.`};
+    lead=A.news==="recovered"?{head:"STOLEN PAINTINGS RECOVERED",decks:["Ashby Madonna Found Wrapped in Oilcloth","Plan to Ship Art to Chicago Foiled"],body:`<span class="dl">Dunreath, ${shortD(d)}.</span> The Madonna taken from St. Brendan's, and the Dutch landscape cut from its frame at the Ashby house, were found this morning wrapped in oilcloth and ready for shipping. Mrs. Ashby is said to have wept, which those who know her find hard to credit.`}
+      :{head:"ASHBY PAINTINGS LEAVE TOWN",decks:["Crates Crossed on the Night Ferry","Chicago Dealers Said to Be Waiting"],body:`<span class="dl">Dunreath, ${shortD(d)}.</span> The paintings stolen from St. Brendan's and the Ashby house are believed to have left Dunreath last night by the ferry, bound for Chicago. Mrs. Ashby has engaged a Pinkerton man at her own expense, and has said what she thinks of the local officers.`};
   }else if(H&&H.news&&!H.printed){
     H.printed=true;if(prev)paper.stories.unshift(lead);
-    lead=H.news==="foiled"?{head:`${H.target.head} ROBBERY FOILED`,decks:["Gang's Plans Came to Nothing","Detective's Work Credited"],body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> An attempt on ${H.target.name} came to nothing last night. Tools, papers and keys taken in a string of thefts over the past fortnight are now believed to have been gathered for the purpose. The council met at seven this morning to pass a vote of thanks.`}
-      :{head:`${H.target.head} ROBBED; ${H.target.loot} TAKEN`,decks:["Burglars Work Undisturbed Through the Night","Recent Thefts Now Seen as Preparation"],body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> ${cap(H.target.name)} was broken open in the small hours and ${H.target.loot} carried off. The string of thefts these past two weeks, of tools, papers and keys, is now seen for what it was. Feeling against the town's officers runs high.`};
+    lead=H.news==="foiled"?{head:`${H.target.head} ROBBERY FOILED`,decks:["Gang's Plans Came to Nothing","Detective's Work Credited"],body:`<span class="dl">Dunreath, ${shortD(d)}.</span> An attempt on ${H.target.name} came to nothing last night. Tools, papers and keys taken in a string of thefts over the past fortnight are now believed to have been gathered for the purpose. The council met at seven this morning to pass a vote of thanks.`}
+      :{head:`${H.target.head} ROBBED; ${H.target.loot} TAKEN`,decks:["Burglars Work Undisturbed Through the Night","Recent Thefts Now Seen as Preparation"],body:`<span class="dl">Dunreath, ${shortD(d)}.</span> ${cap(H.target.name)} was broken open in the small hours and ${H.target.loot} carried off. The string of thefts these past two weeks, of tools, papers and keys, is now seen for what it was. Feeling against the town's officers runs high.`};
   }else if(S.rite&&S.rite.justDone){
     S.rite.justDone=false;
     if(prev)paper.stories.unshift(lead);
-    lead={head:"STRANGE DOINGS CEASE",decks:[`Quiet Night at ${titleCase(S.rite.story.place.replace(/^the /,""))}`,"Residents Breathe Easier"],body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> For the first time in some weeks, no report of queer sights or sounds reached the Courier overnight. A light was seen moving at ${S.rite.story.place} late last evening, and some claim to have heard singing. Two figures were seen walking home near midnight, carrying a lantern, and would say nothing to a Courier reporter.`};
+    lead={head:"STRANGE DOINGS CEASE",decks:[`Quiet Night at ${titleCase(S.rite.story.place.replace(/^the /,""))}`,"Residents Breathe Easier"],body:`<span class="dl">Dunreath, ${shortD(d)}.</span> For the first time in some weeks, no report of queer sights or sounds reached the Courier overnight. A light was seen moving at ${S.rite.story.place} late last evening, and some claim to have heard singing. Two figures were seen walking home near midnight, carrying a lantern, and would say nothing to a Courier reporter.`};
   }
   if(d===19){if(prev)paper.stories.unshift(lead);const up=spiritUp(),st=S.rite&&S.rite.story;
-    lead={head:up?"NIGHT OF TERROR IN HOLLOW CREEK":"STORM AND FIRE LASH TOWN",decks:up?["Fires, Flood and Stranger Things","Families Barricade Doors; Church Bell Rings at Three"]:["Worst Storm of the Season","Fire Bell Rings Three Times Before Dawn"],
-      body:`<span class="dl">Hollow Creek, ${shortD(d)}.</span> The worst storm of the season broke over Hollow Creek last night. The river is over the bottoms road, the ferry is not running, and the fire company was called out three times before dawn. `+(up?`Residents along Front Street say the bell of St. Brendan's rang at three o'clock with the church locked and dark, and more than one person swears to having seen a figure standing at ${st?st.place:"the river"} while the lightning lasted. Several families spent the night together in the Odd Fellows hall and would not go home.`+(S.pip?` Philip Voss, fourteen, son of Mrs. Greta Voss of the lunchroom, did not come home last night.`:""):`No lives were lost, though several families on the low ground were taken off by wagon. The council asks all able-bodied men to report to the town hall with shovels.`+(S.pip?` Philip Voss, fourteen, son of Mrs. Greta Voss of the lunchroom, did not come home last night.`:""))};
+    lead={head:up?"NIGHT OF TERROR IN DUNREATH":"STORM AND FIRE LASH TOWN",decks:up?["Fires, Flood and Stranger Things","Families Barricade Doors; Church Bell Rings at Three"]:["Worst Storm of the Season","Fire Bell Rings Three Times Before Dawn"],
+      body:`<span class="dl">Dunreath, ${shortD(d)}.</span> The worst storm of the season broke over Dunreath last night. The river is over the bottoms road, the ferry is not running, and the fire company was called out three times before dawn. `+(up?`Residents along Front Street say the bell of St. Brendan's rang at three o'clock with the church locked and dark, and more than one person swears to having seen a figure standing at ${st?st.place:"the river"} while the lightning lasted. Several families spent the night together in the Odd Fellows hall and would not go home.`+(S.pip?` Philip Voss, fourteen, son of Mrs. Greta Voss of the lunchroom, did not come home last night.`:""):`No lives were lost, though several families on the low ground were taken off by wagon. The council asks all able-bodied men to report to the town hall with shovels.`+(S.pip?` Philip Voss, fourteen, son of Mrs. Greta Voss of the lunchroom, did not come home last night.`:""))};
   }
   if(d===15)paper.personal.unshift(`Lightning brought down the telephone wires along the county road ${DOWN_WD(14)} night. The exchange at Anamosa says the line cannot be restrung until the weather breaks.`);
   if(d>=6&&d%3===0&&S.name){S.letters=S.letters||[];const L=letterFor(d);if(L){S.letters.push(L);paper.letter=L}}
@@ -1312,7 +1312,7 @@ function buildPaper(prev,reports){
 /* ---- letters to the editor ----
    Written by townsfolk who like or loathe you. Signed with initials and a street, so you can guess who wrote them. */
 const PEN=["A Taxpayer","Mother of Four","One Who Remembers '81","A Plain Farmer","Name Withheld","A Churchgoer","An Old Settler"];
-function streetOf(n){const a=n.addr||"";const m=a.match(/(Main Street|Oak Street|Elm Street|Front Street|River Road|Hill Road|Hill Cemetery|the fairgrounds|the river landing|south of the tracks|the river bottoms|St\. Brendan's)/);return m?m[1].replace(/^the /,""):"Hollow Creek"}
+function streetOf(n){const a=n.addr||"";const m=a.match(/(Main Street|Oak Street|Elm Street|Front Street|River Road|Hill Road|Hill Cemetery|the fairgrounds|the river landing|south of the tracks|the river bottoms|St\. Brendan's)/);return m?m[1].replace(/^the /,""):"Dunreath"}
 function pickFresh(opts){const used=(S.letters||[]).map(l=>l.body);const f=opts.filter(o=>!used.includes(o));return rnd(f.length?f:opts)}
 function letterFor(d){
   const prev=S.history[S.history.length-2]||S.history[S.history.length-1],outs=prev?prev.cases.map(r=>r.outcome):[];
@@ -1327,7 +1327,7 @@ function letterFor(d){
     if(outs.includes("unexplained"))opts.push("Those who laugh at the detective's findings of \"no human hand\" have not walked the river bottoms after dark lately. I have. I would rather have an officer who admits what cannot be explained than one who hangs it on the nearest poor soul.");
     if(V&&V.outcome==="stoodDown")opts.push("The detective stood alone in the station doorway and turned away a crowd with pick handles. That took more courage than I have seen from any man on the council.");
     if(H&&H.news==="foiled")opts.push("The gang that meant to rob this town went away with nothing. I hope those who wrote to this paper complaining will have the grace to write again.");
-    opts.push("I write only to say that the detective has been civil to me, and fair, and has listened when others would not. In these times that is not nothing.","Much has been written in these columns against our new officer. Let me say plainly that I have found the detective honest, and patient, and willing to hear a poor man out. The council should count itself lucky.","I have lived in Hollow Creek forty years and seen three marshals come and go. None of them worked as hard as this one. Give the detective time.");
+    opts.push("I write only to say that the detective has been civil to me, and fair, and has listened when others would not. In these times that is not nothing.","Much has been written in these columns against our new officer. Let me say plainly that I have found the detective honest, and patient, and willing to hear a poor man out. The council should count itself lucky.","I have lived in Dunreath forty years and seen three marshals come and go. None of them worked as hard as this one. Give the detective time.");
     body=pickFresh(opts);
   }else{
     const opts=[];
@@ -1347,7 +1347,7 @@ function letterFor(d){
 function lettersDoc(list,name){
   if(!list||!list.length)return `<p class="deskmsg">No letters about ${esc(name)} were ever printed.</p>`;
   return `<article class="paper news" aria-label="Letters to the editor"><div class="mast" style="font-size:34px">Letters to the Editor</div>
-    <div class="dateline"><span>The Hollow Creek Courier</span><span>Clippings concerning Detective ${esc(name)}</span></div>
+    <div class="dateline"><span>The Dunreath Courier</span><span>Clippings concerning Detective ${esc(name)}</span></div>
     ${list.map(l=>`<div class="story"><h3 class="hd">TO THE EDITOR</h3><div class="deck">${fullDate(l.day)}</div><p>Sir: ${esc(l.body)}</p><p style="text-align:right;font-style:italic">${esc(l.sign)}</p></div>`).join("")}</article>`;
 }
 function oldLettersDoc(id){
@@ -1358,10 +1358,10 @@ function oldLettersDoc(id){
 function paperDoc(){
   const p=S.paper,d=S.day,x=dateOf(d);
   const story=(s,lead)=>`<div class="story ${lead?"lead":""}"><h3 class="hd">${s.head}</h3>${s.decks.map(k=>`<div class="deck">${k}</div>`).join("")}<p>${s.body}</p></div>`;
-  return `<article class="paper news" aria-label="The Hollow Creek Courier">
+  return `<article class="paper news" aria-label="The Dunreath Courier">
     <div class="ears"><div class="e">WEATHER<br>${p.weather}</div><div class="motto">Published Every Morning</div><div class="e">TWO CENTS<br>Vol. ${p.vol}, No. ${p.no}</div></div>
-    <div class="mast">The Hollow Creek Courier</div>
-    <div class="dateline"><span>Hollow Creek, Iowa</span><span>${fullDate(d)}</span><span>Established 1874</span></div>
+    <div class="mast">The Dunreath Courier</div>
+    <div class="dateline"><span>Dunreath, Iowa</span><span>${fullDate(d)}</span><span>Established 1874</span></div>
     ${story(p.lead,true)}
     <div class="cols">
       ${p.stories.map(s=>story(s)).join("")}
@@ -1379,7 +1379,7 @@ function letterDoc(){
     <div class="head"><b>OFFICE OF THE SHERIFF</b>Wapsie County, Iowa</div>
     <p style="text-align:right">${fullDate(1)}</p>
     <p>Dear Detective ${esc(S.name||"")},</p>
-    <p>You are hereby assigned to the town of Hollow Creek for a trial period of twenty days, at the request of Mayor Crane and the council. You will work from the front desk of the old town marshal's station. You will find complaints in your in-tray each morning, and a file on every resident in the card index.</p>
+    <p>You are hereby assigned to the town of Dunreath for a trial period of twenty days, at the request of Mayor Crane and the council. You will work from the front desk of the old town marshal's station. You will find complaints in your in-tray each morning, and a file on every resident in the card index.</p>
     <p>A word of advice. The evidence at a scene will rarely name anyone. You must reason from it to the person, and you will not always be sure. People with complaints will come to you each morning, and others drop in now and then, early or late, and some will tell you a great deal once they trust you, and nothing at all if they don't. They are not above lying for their own kin, or against those they dislike. Whatever you hear, you had better write in your notebook at the end of the day, for no one will say it twice.</p>
     <p>The trouble so far has been small, but I expect it to grow. You will also hear talk of strange things. Most is nonsense. Not all of it. Where you find no human hand in a matter, say so plainly and close it. If it comes to that, someone in town who claims to understand such things may come to you. I leave it to your judgment whether to listen.</p>
     <p>One thing more. The county has had word of a gang working the river towns. They take small things first. Watch for a pattern.</p>
@@ -1423,7 +1423,7 @@ function caseDoc(i){
   const ready=chosen&&(!charging||(sev!=null&&(chosen!=="o"||c.other!=null)));
   return `<article class="paper form">
     ${c.filed?`<div class="stamp">FILED</div>`:""}
-    <div class="lh">TOWN OF HOLLOW CREEK, OFFICE OF THE TOWN MARSHAL</div>
+    <div class="lh">TOWN OF DUNREATH, OFFICE OF THE TOWN MARSHAL</div>
     <h2 class="formtitle">COMPLAINT REPORT</h2>
     <div class="frow"><div class="fld"><span class="l">No.</span><span class="v">${c.no}</span></div><div class="fld"><span class="l">Date</span><span class="v">${fullDate(S.day)}</span></div></div>
     <div class="frow"><div class="fld"><span class="l">Complainant</span><span class="v">${nm(c.victim)}</span></div></div>
@@ -1457,13 +1457,13 @@ function slipsDoc(){
 }
 function cabinetDoc(){
   const list=[...N].sort((a,b)=>surname(a).localeCompare(surname(b)));
-  return `<article class="paper"><div class="lh">RESIDENT FILES, TOWN OF HOLLOW CREEK</div>
+  return `<article class="paper"><div class="lh">RESIDENT FILES, TOWN OF DUNREATH</div>
     <p class="muted" style="font-size:13px;margin:8px 0 0">Pull up to two files at a time. Pulling a third returns the oldest to the drawer.</p>
     <div class="cabinet">${list.map(n=>`<button class="card ${S.desk.includes("file:"+n.id)?"open":""}" data-file="${n.id}">${surname(n).toUpperCase()}, ${esc(n.name.replace(" "+surname(n),"").replace(surname(n),"").trim()||n.called)}<small>${esc(n.role)}</small></button>`).join("")}</div></article>`;
 }
 function lockupDoc(){
   const inn=N.filter(n=>n.jailed&&!n.dead);
-  return `<article class="paper"><div class="lh">LOCKUP BOOK, TOWN OF HOLLOW CREEK</div>
+  return `<article class="paper"><div class="lh">LOCKUP BOOK, TOWN OF DUNREATH</div>
     ${inn.length?`<div class="tablewrap"><table class="ledger"><thead><tr><th>Name</th><th>Charge</th><th>Since</th><th>Release</th></tr></thead><tbody>
     ${inn.map(n=>`<tr><td>${nm(n)}</td><td>${esc(n.jailFor||"Held")}</td><td>${n.jailFrom?shortD(n.jailFrom):"&nbsp;"}</td><td>${n.jailUntil?`${shortD(n.jailUntil)} (${n.jailUntil-S.day} day${n.jailUntil-S.day===1?"":"s"})`:"Held for the county court. Not expected back."}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">The cells are empty.</p>`}
   </article>`;
@@ -1663,9 +1663,9 @@ function consult(p){
   const reaction=before<30?`${He(p)} sounds none too pleased to hear from you.`:before<60?`${He(p)} goes quiet on the line when you raise the subject.`:`${He(p)} lowers ${p.sex==="f"?"her":"his"} voice, as if someone might be listening on the party line.`;
   S.phone={p,got,reaction};S.phoneNext=S.day+2;refresh();saveGame();
 }
-const EXCHANGE={8:["The rectory, St. Brendan's","Hollow Creek 12","The housekeeper fetches Father Dunn to the telephone."],
-  12:["Voss Lunchroom, for Madame Ysolde","Hollow Creek 31","Greta Voss shouts across the lunchroom, and after a while Madame Ysolde comes to the telephone."],
-  15:["Pruitt's store on the bottoms, for Maud Tillery","Hollow Creek 7-R","A boy is sent running down the path to fetch her. You wait a long time on the line."]};
+const EXCHANGE={8:["The rectory, St. Brendan's","Dunreath 12","The housekeeper fetches Father Dunn to the telephone."],
+  12:["Voss Lunchroom, for Madame Ysolde","Dunreath 31","Greta Voss shouts across the lunchroom, and after a while Madame Ysolde comes to the telephone."],
+  15:["Pruitt's store on the bottoms, for Maud Tillery","Dunreath 7-R","A boy is sent running down the path to fetch her. You wait a long time on the line."]};
 const CALLED=[["the night clerk at the Commercial Hotel","playing cards in the hotel lobby"],["the station agent at the depot","waiting on the late freight at the depot"],["Mrs. Pruitt at the store on the bottoms","at the store on the bottoms, arguing about credit"],["the secretary of the Odd Fellows","at the Odd Fellows' card evening"],["the manager of the Rialto","in the back row at the Rialto"],["the Grange hall","at the Grange meeting, and stayed on to stack the chairs"],["the operator herself, who hears most things on the party line","on the telephone to a cousin in Anamosa half the night"]];
 function alibiCall(ci,nid){
   if(!phoneReady())return;
@@ -1700,7 +1700,7 @@ function finish(kind){
   S.phase="over";
   const R=councilScore(),st=S.stats;
   const body={
-    season:R>=88?["It is my pleasure to inform you that the council has voted unanimously to make your appointment permanent. I don't mind saying that Hollow Creek has not been so well served in my memory."]
+    season:R>=88?["It is my pleasure to inform you that the council has voted unanimously to make your appointment permanent. I don't mind saying that Dunreath has not been so well served in my memory."]
       :R>=72?["The council has voted to extend your appointment. The town is not yet what it was, but it is better for your being here."]
       :R>=55?["The council has, after some discussion, voted to extend your appointment. I will be frank: the vote was close."]
       :["The council has extended your appointment, chiefly because no other officer will take the post. I trust you understand my meaning."],
@@ -1710,7 +1710,7 @@ function finish(kind){
   }[kind];
   if(kind==="season"&&S.easy&&wouldBeRecalled())body[0]="The council would have recalled you some time ago, had it not given its word when you took the post. It has kept its word. I trust you will not ask it to do so again.";
   if(kind==="season")try{localStorage.setItem(SERVED_KEY,"1")}catch(e){}
-  S.endLetter=`<article class="paper letter"><div class="head"><b>OFFICE OF THE MAYOR</b>Town of Hollow Creek, Iowa</div>
+  S.endLetter=`<article class="paper letter"><div class="head"><b>OFFICE OF THE MAYOR</b>Town of Dunreath, Iowa</div>
     <p style="text-align:right">${fullDate(S.day)}</p><p>Dear Detective ${esc(S.name||"")},</p><p>${body[0]}</p>
     ${S.rite.stage>=4?"<p>I will add that the queer doings of recent weeks have ceased. I don't pretend to understand why, and I would rather not be told.</p>":""}${S.art&&S.art.news==="recovered"?"<p>Mrs. Ashby has asked me to convey her thanks for the return of her pictures. I believe it is the first time she has thanked anyone for anything.</p>":S.art&&S.art.news==="lost"?"<p>Mrs. Ashby has not let the matter of her paintings rest, and I doubt she ever will.</p>":""}${S.heist&&S.heist.news==="foiled"?`<p>The council has asked me to record its particular thanks for the saving of ${S.heist.target.name}.</p>`:S.heist&&S.heist.news==="robbed"?`<p>I will not pretend the loss at ${S.heist.target.name} has been forgotten.</p>`:""}<p>For the record: ${st.solved} complaint${st.solved===1?"":"s"} answered, ${st.wrong} charge${st.wrong===1?"":"s"} made in error, ${st.shelved} left open, ${st.unexplained} closed with no human agency found.</p>
     <p>Yours truly,<br><span class="signed">Elias J. Crane</span><br>Mayor</p>
@@ -1833,11 +1833,11 @@ function wireCloud(root){
 function wireRegister(root){
   wireCloud(root);
   const msg=t=>{const m=root.querySelector("#expMsg");if(m)m.textContent=t};
-  const f=root.querySelector("#expFile");if(f)f.onclick=async()=>{const code=await packSaves();const ok=await offerFile("hollow-creek-register.json",JSON.stringify({code}));msg(ok?"Register saved to a file.":"Not saved.")};
+  const f=root.querySelector("#expFile");if(f)f.onclick=async()=>{const code=await packSaves();const ok=await offerFile("dunreath-register.json",JSON.stringify({code}));msg(ok?"Register saved to a file.":"Not saved.")};
   const c=root.querySelector("#expCode");if(c)c.onclick=async()=>{const code=await packSaves();try{await navigator.clipboard.writeText(code);msg(`Save code copied (${Math.round(code.length/1024)} KB of text). Paste it into an email to yourself.`)}catch(e){const ta=root.querySelector("#impCode");ta.value=code;ta.select();msg("Your browser wouldn't copy automatically, so the code is in the box below. Copy it from there.")}};
-  const m=root.querySelector("#expMail");if(m)packSaves().then(code=>{const intro="My Hollow Creek Casebook save. To restore it, open the game, go to the Register and paste everything below the line into the Restore box.\n\n----------\n";m.href="mailto:?subject="+encodeURIComponent("My Hollow Creek Casebook save")+"&body="+encodeURIComponent(code.length<1700?intro+code:intro+"(Paste your save code here. It has been copied for you.)\n")});
+  const m=root.querySelector("#expMail");if(m)packSaves().then(code=>{const intro="My Dunreath Casebook save. To restore it, open the game, go to the Register and paste everything below the line into the Restore box.\n\n----------\n";m.href="mailto:?subject="+encodeURIComponent("My Dunreath Casebook save")+"&body="+encodeURIComponent(code.length<1700?intro+code:intro+"(Paste your save code here. It has been copied for you.)\n")});
   if(m)m.addEventListener("click",async()=>{const code=await packSaves();try{await navigator.clipboard.writeText(code);msg("Save code copied. Paste it into the email that has just opened.")}catch(e){msg("Copy the save code first, then paste it into the email.")}});
-  const fi=root.querySelector("#impFile");if(fi)fi.onchange=async()=>{const file=fi.files[0];if(!file)return;try{const t=await file.text();let code=t;try{const j=JSON.parse(t);if(j.code)code=j.code}catch(e){}const n=mergeSaves(await unpackSaves(code));msg(`${n} detective${n===1?"":"s"} restored.`);setTimeout(refresh,700)}catch(e){msg("That file doesn't look like a Hollow Creek register.")}};
+  const fi=root.querySelector("#impFile");if(fi)fi.onchange=async()=>{const file=fi.files[0];if(!file)return;try{const t=await file.text();let code=t;try{const j=JSON.parse(t);if(j.code)code=j.code}catch(e){}const n=mergeSaves(await unpackSaves(code));msg(`${n} detective${n===1?"":"s"} restored.`);setTimeout(refresh,700)}catch(e){msg("That file doesn't look like a Dunreath register.")}};
   const ib=root.querySelector("#impBtn");if(ib)ib.onclick=async()=>{const t=root.querySelector("#impCode").value;if(!t.trim())return;try{const n=mergeSaves(await unpackSaves(t));msg(`${n} detective${n===1?"":"s"} restored.`);setTimeout(refresh,700)}catch(e){msg("That code didn't work. Check you copied all of it.")}};
 }
 function oldPages(rec){
@@ -1888,7 +1888,7 @@ function registerDoc(){
   const list=readSaves().sort((a,b)=>successRate(b.stats)-successRate(a.stats)||b.rep-a.rep);
   const cur=S&&S.saveId;
   return `<article class="paper"><div class="lh">REGISTER OF DETECTIVES, WAPSIE COUNTY</div>
-    <p class="muted" style="font-size:13px">Every appointment to Hollow Creek is entered here and saved as you go: each morning, each evening, and whenever you file or call on someone. Saves are kept in this browser.</p>
+    <p class="muted" style="font-size:13px">Every appointment to Dunreath is entered here and saved as you go: each morning, each evening, and whenever you file or call on someone. Saves are kept in this browser.</p>
     ${cloudSection()}
     <div class="sect">NEW APPOINTMENT</div>
     <div class="sign" style="margin-top:8px"><label for="newName" class="muted">Name</label><input id="newName" class="namein" maxlength="28" placeholder="e.g. Harriet Lowe" autocomplete="off"><button class="btn" id="newBtn">Take the post</button></div>
@@ -2046,7 +2046,7 @@ function sundayScript(v){
   const n=v.npc;
   return {lines:[`Father Dunn looks in on his way back from early Mass, his cassock showing under his overcoat.`,
     `"Sunday, detective. You'll find it quiet today. You'll find most Sundays quiet, if this town runs true to form."`,
-    `"Whatever else Hollow Creek is, it goes to church. Methodists, Lutherans, Presbyterians, my own few. They sit in their pews and sing and look sideways at their neighbours."`,
+    `"Whatever else Dunreath is, it goes to church. Methodists, Lutherans, Presbyterians, my own few. They sit in their pews and sing and look sideways at their neighbours."`,
     `"And nobody wants to be the one who was out making mischief the night before. A town that has been to church keeps itself quiet for a day. It's the nearest thing to a miracle I've seen here."`],
     choices:[
       {label:"Say you'll enjoy the quiet",fn:()=>{adj(n,3);endVisit(`Father Dunn smiles and goes out into the sunshine.`)}},
@@ -2640,7 +2640,7 @@ function photoTex(){
     x.strokeStyle="#9c8a6b";x.lineWidth=3;x.beginPath();x.moveTo(0,h*.8);x.bezierCurveTo(w*.3,h*.74,w*.6,h*.9,w,h*.82);x.stroke();
     speckle(x,w,h,.12,5000);
     const v=x.createRadialGradient(w/2,h/2,h*.2,w/2,h/2,w*.62);v.addColorStop(0,"rgba(0,0,0,0)");v.addColorStop(1,"rgba(40,25,10,.55)");x.fillStyle=v;x.fillRect(0,0,w,h);
-    x.fillStyle="rgba(245,238,225,.85)";x.font='22px "Caveat", cursive';x.fillText("Hollow Creek, 1908",20,h-18);
+    x.fillStyle="rgba(245,238,225,.85)";x.font='22px "Caveat", cursive';x.fillText("Dunreath, 1908",20,h-18);
   });
 }
 function spineTex(title,col,txt){return canvasTex(512,64,(x,w,h)=>{x.fillStyle=col;x.fillRect(0,0,w,h);speckle(x,w,h,.15,900);x.fillStyle="rgba(200,170,110,.7)";x.fillRect(22,0,3,h);x.fillRect(w-25,0,3,h);x.fillStyle=txt;x.font='26px "Old Standard TT", serif';x.textAlign="center";x.fillText(title,w/2,42)})}
@@ -2661,7 +2661,7 @@ function pageTex(title,sub,kind){
 function newsFace(x,w,h,headline){
   x.fillStyle="#EFE8DA";x.fillRect(0,0,w,h);speckle(x,w,h,.06);
   x.fillStyle="#1E1A16";x.textAlign="center";
-  x.font=`${Math.round(w*.082)}px "UnifrakturMaguntia", serif`;x.fillText("The Hollow Creek Courier",w/2,h*.12);
+  x.font=`${Math.round(w*.082)}px "UnifrakturMaguntia", serif`;x.fillText("The Dunreath Courier",w/2,h*.12);
   x.fillRect(20,h*.15,w-40,3);x.fillRect(20,h*.175,w-40,1);
   x.font=`bold ${Math.round(w*.058)}px "Old Standard TT", serif`;
   const words=(headline||"").split(" ");let line="",y=h*.25;const lines=[];
@@ -2876,7 +2876,7 @@ function init3D(){
   [brim,crown,band].forEach(m=>{m.castShadow=true});hat.add(brim,crown,band);
   obj("hat","Hat and coat",hat,-4.5,-.85,0);
   // letters
-  G.letterTex={letter:pageTex("SHERIFF","Wapsie County"),report:pageTex("MEMORANDUM","Town Marshal's Office"),end:pageTex("OFFICE OF THE MAYOR","Hollow Creek, Iowa"),register:pageTex("REGISTER","Wapsie County")};
+  G.letterTex={letter:pageTex("SHERIFF","Wapsie County"),report:pageTex("MEMORANDUM","Town Marshal's Office"),end:pageTex("OFFICE OF THE MAYOR","Dunreath, Iowa"),register:pageTex("REGISTER","Wapsie County")};
   ["letter","report","end"].forEach(k=>{const g=new THREE.Group();const m=paperMesh(1.1,1.4,G.letterTex[k]);m.position.y=PAPER_Y;g.add(m);obj(k,k==="letter"?"Letter from the Sheriff":k==="report"?"Sergeant's report":"Letter from the Mayor",g,-3.3,-.8,.03)});
   const reg=new THREE.Group();const rgc=box(1.2,.14,1.6,mat(0x2a1a10,.6));rgc.position.y=.07;reg.add(rgc);
   const rgl=new THREE.Mesh(new THREE.PlaneGeometry(.7,.3),new THREE.MeshStandardMaterial({map:canvasTex(256,110,(x,w,h)=>{x.fillStyle="#E7DFCC";x.fillRect(0,0,w,h);x.fillStyle="#1E1A16";x.textAlign="center";x.font='28px "Special Elite", monospace';x.fillText("REGISTER",w/2,60)}),roughness:.9}));rgl.rotation.x=-Math.PI/2;rgl.position.set(0,.142,-.3);reg.add(rgl);
@@ -2967,8 +2967,8 @@ function sync3D(){
       else if(k==="paper")tex=G.newsTex;
       else if(k==="notebook"||k==="slips"||k.startsWith("oldnb:"))tex=pageTex(k==="notebook"?nbDate(S.day):k.startsWith("oldnb:")?"Notes":"Detective,","","note");
       else if(k==="ledger")tex=pageTex("CASE LEDGER","1931");
-      else if(k==="calls")tex=pageTex("ADDRESSES","Hollow Creek");
-      else if(k==="lockup")tex=pageTex("LOCKUP BOOK","Town of Hollow Creek");
+      else if(k==="calls")tex=pageTex("ADDRESSES","Dunreath");
+      else if(k==="lockup")tex=pageTex("LOCKUP BOOK","Town of Dunreath");
       else if(k==="phone")tex=pageTex("TELEPHONE","Numbers");
       else tex=G.letterTex[k]||pageTex(docTitle(k).toUpperCase(),"");
       G.tc[k]=tex;
@@ -3252,7 +3252,7 @@ const INTRO={0:"I've baked this town's bread twenty-eight years. My boy Tom work
  7:"I cut timber. Hugo's my brother. He's the one that talks.",
  8:"I've had St. Brendan's since '26. Before that, Dubuque. It was a quiet parish. It was.",
  9:"I came from Vienna in '97, and I have been this town's doctor ever since. I delivered half of it.",
- 10:"I've done the town's sewing forty years. I know every hem in Hollow Creek, and a good deal besides.",
+ 10:"I've done the town's sewing forty years. I know every hem in Dunreath, and a good deal besides.",
  11:"I dig the graves up on the hill. Somebody has to. I get on well with my neighbours. They're very quiet.",
  12:"I came with the carnival in October. When it left, I stayed. This town needs its fortune told, even if it pretends otherwise.",
  13:"Crow Finch. Scrap, rags, what have you. If it's been lost in this town, chances are I bought it.",
@@ -3517,7 +3517,7 @@ startGame("");
 place("register");
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(!G.renderer)return;G.tc={};G.newsHead=null;G.calKey=null;G.outKey=null;G.outCache={};
   const re=(t,a,b,k)=>{const n=pageTex(a,b,k);t.image=n.image;t.needsUpdate=true};
-  re(G.letterTex.letter,"SHERIFF","Wapsie County");re(G.letterTex.report,"MEMORANDUM","Town Marshal's Office");re(G.letterTex.end,"OFFICE OF THE MAYOR","Hollow Creek, Iowa");
+  re(G.letterTex.letter,"SHERIFF","Wapsie County");re(G.letterTex.report,"MEMORANDUM","Town Marshal's Office");re(G.letterTex.end,"OFFICE OF THE MAYOR","Dunreath, Iowa");
   sync3D()});
 
 </script>
