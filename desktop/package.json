@@ -19,6 +19,7 @@
     "appId": "com.sebjones.dunreath",
     "productName": "Dunreath",
     "copyright": "Dunreath",
+    "protocols": [{ "name": "Dunreath", "schemes": ["dunreath"] }],
     "files": ["main.js", "offline.html", "build/icon.png"],
     "directories": { "output": "dist", "buildResources": "build" },
     "win": {

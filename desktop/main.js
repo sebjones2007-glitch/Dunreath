@@ -8,6 +8,27 @@ const GAME_ORIGIN = new URL(GAME_URL).origin;
 const GAME_PATH = new URL(GAME_URL).pathname;
 
 let win = null;
+let pendingLink = null;
+
+// Email sign-in links come back as dunreath://auth#access_token=... The
+// part after "auth" is handed to the game page, which finishes signing in.
+const LINK_PREFIX = "dunreath://auth";
+function linkTarget(url) {
+  if (typeof url !== "string" || !url.startsWith(LINK_PREFIX)) return null;
+  // A fresh query string forces a full page load even when the game is
+  // already open, so the game reads the new sign-in details.
+  const hash = url.indexOf("#");
+  return GAME_URL + "?signin=" + Date.now() + (hash < 0 ? "" : url.slice(hash));
+}
+function openLink(url) {
+  const target = linkTarget(url);
+  if (!target) return;
+  if (!win) { pendingLink = target; return }
+  win.loadURL(target);
+  if (win.isMinimized()) win.restore();
+  win.focus();
+}
+const linkInArgs = argv => argv.find(a => typeof a === "string" && a.startsWith(LINK_PREFIX));
 
 const isGamePage = url => {
   try { const u = new URL(url); return u.origin === GAME_ORIGIN && u.pathname.startsWith(GAME_PATH) }
@@ -15,7 +36,8 @@ const isGamePage = url => {
 };
 
 function loadGame() {
-  win.loadURL(GAME_URL);
+  win.loadURL(pendingLink || GAME_URL);
+  pendingLink = null;
 }
 
 function createWindow() {
@@ -64,14 +86,26 @@ function createWindow() {
   loadGame();
 }
 
+if (process.defaultApp && process.argv.length >= 2) {
+  app.setAsDefaultProtocolClient("dunreath", process.execPath, [path.resolve(process.argv[1])]);
+} else {
+  app.setAsDefaultProtocolClient("dunreath");
+}
+// macOS delivers links through open-url, possibly before the app is ready.
+app.on("open-url", (e, url) => { e.preventDefault(); openLink(url) });
+
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
-  app.on("second-instance", () => {
+  // Windows starts a second copy with the link in its arguments.
+  app.on("second-instance", (e, argv) => {
+    const link = linkInArgs(argv);
+    if (link) { openLink(link); return }
     if (!win) return;
     if (win.isMinimized()) win.restore();
     win.focus();
   });
+  { const link = linkInArgs(process.argv); if (link) pendingLink = linkTarget(link) }
   app.whenReady().then(async () => {
     Menu.setApplicationMenu(process.platform === "darwin" ? Menu.buildFromTemplate([
       { role: "appMenu" }, { role: "editMenu" },
