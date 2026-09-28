@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dunreath Casebook</title>
+<title>Dunreath</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&family=Reenie+Beanie&family=Pinyon+Script&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Courier+Prime:ital@0;1&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
@@ -1835,7 +1835,7 @@ function wireRegister(root){
   const msg=t=>{const m=root.querySelector("#expMsg");if(m)m.textContent=t};
   const f=root.querySelector("#expFile");if(f)f.onclick=async()=>{const code=await packSaves();const ok=await offerFile("dunreath-register.json",JSON.stringify({code}));msg(ok?"Register saved to a file.":"Not saved.")};
   const c=root.querySelector("#expCode");if(c)c.onclick=async()=>{const code=await packSaves();try{await navigator.clipboard.writeText(code);msg(`Save code copied (${Math.round(code.length/1024)} KB of text). Paste it into an email to yourself.`)}catch(e){const ta=root.querySelector("#impCode");ta.value=code;ta.select();msg("Your browser wouldn't copy automatically, so the code is in the box below. Copy it from there.")}};
-  const m=root.querySelector("#expMail");if(m)packSaves().then(code=>{const intro="My Dunreath Casebook save. To restore it, open the game, go to the Register and paste everything below the line into the Restore box.\n\n----------\n";m.href="mailto:?subject="+encodeURIComponent("My Dunreath Casebook save")+"&body="+encodeURIComponent(code.length<1700?intro+code:intro+"(Paste your save code here. It has been copied for you.)\n")});
+  const m=root.querySelector("#expMail");if(m)packSaves().then(code=>{const intro="My Dunreath save. To restore it, open the game, go to the Register and paste everything below the line into the Restore box.\n\n----------\n";m.href="mailto:?subject="+encodeURIComponent("My Dunreath save")+"&body="+encodeURIComponent(code.length<1700?intro+code:intro+"(Paste your save code here. It has been copied for you.)\n")});
   if(m)m.addEventListener("click",async()=>{const code=await packSaves();try{await navigator.clipboard.writeText(code);msg("Save code copied. Paste it into the email that has just opened.")}catch(e){msg("Copy the save code first, then paste it into the email.")}});
   const fi=root.querySelector("#impFile");if(fi)fi.onchange=async()=>{const file=fi.files[0];if(!file)return;try{const t=await file.text();let code=t;try{const j=JSON.parse(t);if(j.code)code=j.code}catch(e){}const n=mergeSaves(await unpackSaves(code));msg(`${n} detective${n===1?"":"s"} restored.`);setTimeout(refresh,700)}catch(e){msg("That file doesn't look like a Dunreath register.")}};
   const ib=root.querySelector("#impBtn");if(ib)ib.onclick=async()=>{const t=root.querySelector("#impCode").value;if(!t.trim())return;try{const n=mergeSaves(await unpackSaves(t));msg(`${n} detective${n===1?"":"s"} restored.`);setTimeout(refresh,700)}catch(e){msg("That code didn't work. Check you copied all of it.")}};
