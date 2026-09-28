@@ -731,7 +731,9 @@ function firstPerson(s){
    .replace(/her father would disown her/,"my father would disown me").replace(/his hands shake/,"my hands shake").replace(/\band wants\b/,"and want").replace(/\band is wanted\b/,"and am wanted").replace(/\bshe calls\b/,"I call").replace(/who she says she is/,"who I say I am").replace(/in his cart/,"in my cart").replace(/\band sells\b/,"and sell");
 }
 
+function wouldBeRecalled(){return S.rep<=0||S.unrest>=100||(!N[MAYOR].jailed&&N[MAYOR].rel<=0)}
 function checkEnd(){
+  if(S.easy)return null;
   if(S.rep<=0)return "badge";
   if(S.unrest>=100)return "unrest";
   if(!N[MAYOR].jailed&&N[MAYOR].rel<=0)return "mayor";
@@ -1133,7 +1135,7 @@ const temper=u=>u<16?"Settled":u<32?"Uneasy":u<50?"Worried":u<68?"Restless":u<85
 const unrestFloor=d=>d<=6?0:Math.round((d-6)*1.5);
 
 /* ================= game setup ================= */
-function startGame(name){
+function startGame(name,easy){
   reading=false;picker=null;if(G.tc)G.tc={};clearVisitor();G.lampOff=false;TALK=null;
   newGame();
   N.forEach(n=>{
@@ -1143,7 +1145,7 @@ function startGame(name){
     const r=([a,b])=>a+Math.floor(Math.random()*(b-a+1));
     n.ht=kid?59:r(H);n.wt=kid?84:r(W);
   });
-  Object.assign(S,{name:name||null,saveId:name?("s"+Date.now().toString(36)):null,visit:null,desk:[],say:"",slips:[],call:null,memo:[],pages:{},printed:new Set(),record:{},caseNo:30,nbLeft:null,paper:null});
+  Object.assign(S,{easy:!!easy,name:name||null,saveId:name?("s"+Date.now().toString(36)):null,visit:null,desk:[],say:"",slips:[],call:null,memo:[],pages:{},printed:new Set(),record:{},caseNo:30,nbLeft:null,paper:null});
   S.sgt=55;
   S.wind=Array.from({length:DAYS},(_,i)=>{const b=i>=17?.92+i*.004:Math.pow(i/17,1.5)*.85;return Math.min(1,b+(Math.random()<.3&&i<17?.18+Math.random()*.22:0))});
   S.blackoutDay=16+Math.floor(Math.random()*3);S.firstSuperDay=Math.random()<.5?4:6;S.flashDay=Math.random()<.5?18:19;S.mugDay=Math.random()<.5?17:18;S.coffee=4;S.sunN={5:Math.random()<.5?1:2,12:Math.random()<.5?1:2};[5,12].forEach(d=>{if(S.wind[d-1]!=null)S.wind[d-1]=Math.min(S.wind[d-1],.12)});S.wind[18]=1;
@@ -1188,7 +1190,7 @@ function morning(firstDay){
     S.cases.forEach((c,i)=>S.queue.push({kind:"complaint",ci:i}));
   }
   if(!firstDay){S.desk=[];S.say=sundayLine()+(S.weakCoffee?" Obermeyer only made half a cup of coffee this morning.":"")+(back.length?` ${back.map(n=>n.name).join(" and ")} ${back.length>1?"are":"is"} back in town, let out by the county.`:"")+(night.length?` Obermeyer let ${night.map(n=>n.name).join(" and ")} out of the lockup at first light, the fine${night.length>1?"s":""} paid.`:"")}
-  if(S.unrest>=100){finish("unrest");return}
+  if(S.unrest>=100&&!S.easy){finish("unrest");return}
   refresh();
   if(!firstDay)saveGame();
 }
@@ -1706,6 +1708,8 @@ function finish(kind){
     unrest:["I write in haste. Last night a crowd gathered outside the town hall, and I cannot answer for what it will do if you remain. Your appointment is ended, effective at once."],
     mayor:["I have lost all faith in your conduct of this office and have asked the Sheriff to recall you. Your desk is to be cleared by noon."]
   }[kind];
+  if(kind==="season"&&S.easy&&wouldBeRecalled())body[0]="The council would have recalled you some time ago, had it not given its word when you took the post. It has kept its word. I trust you will not ask it to do so again.";
+  if(kind==="season")try{localStorage.setItem(SERVED_KEY,"1")}catch(e){}
   S.endLetter=`<article class="paper letter"><div class="head"><b>OFFICE OF THE MAYOR</b>Town of Hollow Creek, Iowa</div>
     <p style="text-align:right">${fullDate(S.day)}</p><p>Dear Detective ${esc(S.name||"")},</p><p>${body[0]}</p>
     ${S.rite.stage>=4?"<p>I will add that the queer doings of recent weeks have ceased. I don't pretend to understand why, and I would rather not be told.</p>":""}${S.art&&S.art.news==="recovered"?"<p>Mrs. Ashby has asked me to convey her thanks for the return of her pictures. I believe it is the first time she has thanked anyone for anything.</p>":S.art&&S.art.news==="lost"?"<p>Mrs. Ashby has not let the matter of her paintings rest, and I doubt she ever will.</p>":""}${S.heist&&S.heist.news==="foiled"?`<p>The council has asked me to record its particular thanks for the saving of ${S.heist.target.name}.</p>`:S.heist&&S.heist.news==="robbed"?`<p>I will not pretend the loss at ${S.heist.target.name} has been forgotten.</p>`:""}<p>For the record: ${st.solved} complaint${st.solved===1?"":"s"} answered, ${st.wrong} charge${st.wrong===1?"":"s"} made in error, ${st.shelved} left open, ${st.unexplained} closed with no human agency found.</p>
@@ -1718,7 +1722,8 @@ function finish(kind){
 
 
 /* ================= saving ================= */
-const SAVE_KEY="hollowcreek.saves.v1";
+const SAVE_KEY="hollowcreek.saves.v1",SERVED_KEY="hollowcreek.served";
+function seasonServed(){try{if(localStorage.getItem(SERVED_KEY))return true}catch(e){}return readSaves().some(x=>x.outcome==="season")}
 function readSaves(){try{return JSON.parse(localStorage.getItem(SAVE_KEY)||"[]")}catch(e){return []}}
 function writeSaves(list){try{localStorage.setItem(SAVE_KEY,JSON.stringify(list));return true}catch(e){S.say="Your browser would not let the game save.";return false}}
 function enc(root){
@@ -1863,7 +1868,7 @@ function saveGame(){
   const blob={v:1,N:N.map(n=>({rel:n.rel,jailed:n.jailed,jailUntil:n.jailUntil||0,jailNight:!!n.jailNight,known:[...n.known],secretKnown:n.secretKnown,villain:n.villain,ht:n.ht,wt:n.wt,away:!!n.away})),S:enc(copy)};
   const list=readSaves().filter(x=>x.id!==S.saveId);
   cloudPushSoon(S.saveId);
-  list.push({id:S.saveId,name:S.name,updated:Date.now(),day:S.day,phase:S.phase,outcome:S.outcome||null,rep:S.rep,unrest:S.unrest,stats:{...S.stats},spirit:S.rite?S.rite.stage>=4:false,heist:S.heist&&S.heist.news?S.heist.news:null,art:S.art&&S.art.news?S.art.news:null,pages:{...S.pages},letters:(S.letters||[]).map(l=>({day:l.day,body:l.body,sign:l.sign})),blob});
+  list.push({id:S.saveId,name:S.name,easy:!!S.easy,updated:Date.now(),day:S.day,phase:S.phase,outcome:S.outcome||null,rep:S.rep,unrest:S.unrest,stats:{...S.stats},spirit:S.rite?S.rite.stage>=4:false,heist:S.heist&&S.heist.news?S.heist.news:null,art:S.art&&S.art.news?S.art.news:null,pages:{...S.pages},letters:(S.letters||[]).map(l=>({day:l.day,body:l.body,sign:l.sign})),blob});
   writeSaves(list);
 }
 function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(saveGame,900)}
@@ -1887,9 +1892,10 @@ function registerDoc(){
     ${cloudSection()}
     <div class="sect">NEW APPOINTMENT</div>
     <div class="sign" style="margin-top:8px"><label for="newName" class="muted">Name</label><input id="newName" class="namein" maxlength="28" placeholder="e.g. Harriet Lowe" autocomplete="off"><button class="btn" id="newBtn">Take the post</button></div>
+    ${seasonServed()?`<label class="opt" style="margin-top:12px"><input type="checkbox" id="newEasy"><span class="box">[ ]</span><span>Easy terms. The council gives its word not to recall you, however badly things go.</span></label>`:`<p class="muted" style="font-size:13px;margin-top:12px">Easy terms, under which the council gives its word not to recall a detective, are offered only to one who has served a full season.</p>`}
     <div class="sect">STANDING OF ALL DETECTIVES</div>
     ${list.length?`<div class="tablewrap"><table class="ledger"><thead><tr><th>Name</th><th>Status</th><th>Day</th><th>Success</th><th>Solved</th><th>Wrongful</th><th>Open</th><th>Unexplained</th><th>Standing</th><th>Spirit</th><th>Heist</th><th>Art</th><th></th></tr></thead><tbody>
-    ${list.map(s=>`<tr${s.id===cur?' class="cur"':""}><td>${esc(s.name)}${s.id===cur?" (at the desk)":""}</td><td>${statusOf(s)}</td><td>${s.day}</td><td>${successRate(s.stats)}%</td><td>${s.stats.solved}</td><td>${s.stats.wrong}</td><td>${s.stats.shelved}</td><td>${s.stats.unexplained}</td><td>${council(councilScore(s.stats,s.rep))}</td><td>${s.spirit?"Laid to rest":"Unquiet"}</td><td>${s.heist==="foiled"?"Foiled":s.heist==="robbed"?"Robbed":"Not yet"}</td><td>${s.art==="recovered"?"Recovered":s.art==="lost"?"Lost":"Not yet"}</td>
+    ${list.map(s=>`<tr${s.id===cur?' class="cur"':""}><td>${esc(s.name)}${s.easy?" (easy terms)":""}${s.id===cur?" (at the desk)":""}</td><td>${statusOf(s)}</td><td>${s.day}</td><td>${successRate(s.stats)}%</td><td>${s.stats.solved}</td><td>${s.stats.wrong}</td><td>${s.stats.shelved}</td><td>${s.stats.unexplained}</td><td>${council(councilScore(s.stats,s.rep))}</td><td>${s.spirit?"Laid to rest":"Unquiet"}</td><td>${s.heist==="foiled"?"Foiled":s.heist==="robbed"?"Robbed":"Not yet"}</td><td>${s.art==="recovered"?"Recovered":s.art==="lost"?"Lost":"Not yet"}</td>
       <td style="white-space:nowrap">${s.outcome||s.id===cur?"":`<button class="nm" data-load="${s.id}">Continue</button> `}<button class="nm" data-oldnb="${s.id}">Notebook</button> ${s.letters&&s.letters.length?`<button class="nm" data-oldlet="${s.id}">Letters</button> `:""}<button class="nm" data-del="${s.id}">Strike out</button></td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">No one has served yet.</p>`}
     
     <p class="muted" style="font-size:12px;margin-top:10px">Success is the share of complaints answered correctly, including those rightly closed with no human agency found.</p>
@@ -2256,8 +2262,9 @@ function wireDocs(root){
   root.querySelectorAll("[data-oldnext]").forEach(b=>b.onclick=()=>{S.oldNb[b.dataset.oldnext]++;Sound.rustle();refresh()});
   if(root.querySelector("#newBtn")||root.querySelector("#expFile"))wireRegister(root);
   root.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{if(b.dataset.armed){deleteSave(b.dataset.del)}else{b.dataset.armed=1;b.textContent="Strike out for good?"}});
-  const nb=root.querySelector("#newBtn"),ni=root.querySelector("#newName");
-  if(nb){const go=()=>{const n=ni.value.trim().replace(/\s+/g," ");if(!n){ni.focus();return}startGame(n)};nb.onclick=go;ni.onkeydown=e=>{if(e.key==="Enter")go()}}
+  const nb=root.querySelector("#newBtn"),ni=root.querySelector("#newName"),ne=root.querySelector("#newEasy");
+  if(ne)ne.onchange=()=>{ne.nextElementSibling.textContent=ne.checked?"[X]":"[ ]"};
+  if(nb){const go=()=>{const n=ni.value.trim().replace(/\s+/g," ");if(!n){ni.focus();return}startGame(n,!!(ne&&ne.checked&&seasonServed()))};nb.onclick=go;ni.onkeydown=e=>{if(e.key==="Enter")go()}}
 }
 
 /* ================= HUD and plain object list ================= */
