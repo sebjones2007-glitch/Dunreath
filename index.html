@@ -3120,25 +3120,39 @@ function creep(now,force){
   if(k==="knock"){G.doorShake=now;G.doorShakeLen=2600;if(reading){reading=false;renderReading()}picker=null;renderPicker();G.lookDoorUntil=now+3600;reframe();setTimeout(reframe,3700)}
   setTimeout(()=>{S.say=t;renderHud()},k==="steps"?2500:900);
 }
+// The watcher. WATCH and the two drawing functions are mirrored in window-man.html, a viewer for tweaking him.
+const WATCH={rim:.4,haze:.3,eyes:.75,near:.55};
 function watcherShape(x,rim){
-  const P=()=>{x.beginPath();x.moveTo(64,12);x.bezierCurveTo(47,12,40,30,42,50);x.lineTo(44,64);
-    x.bezierCurveTo(28,67,21,80,21,98);x.lineTo(16,150);x.lineTo(20,160);x.lineTo(27,157);x.lineTo(31,108);
-    x.lineTo(37,150);x.lineTo(40,198);x.lineTo(39,252);x.lineTo(56,252);x.lineTo(60,192);x.lineTo(68,192);x.lineTo(72,252);x.lineTo(89,252);x.lineTo(88,198);x.lineTo(91,150);
-    x.lineTo(97,108);x.lineTo(101,157);x.lineTo(108,160);x.lineTo(112,150);x.lineTo(107,98);x.bezierCurveTo(107,80,100,67,84,64);
-    x.lineTo(86,50);x.bezierCurveTo(88,30,81,12,64,12);x.closePath()};
-  P();x.fillStyle="#030405";x.fill();
-  if(rim){P();x.strokeStyle="rgba(130,165,200,.45)";x.lineWidth=2.2;x.stroke();P();x.strokeStyle="rgba(170,200,230,.18)";x.lineWidth=5;x.stroke()}
+  const c=document.createElement("canvas");c.width=128;c.height=256;const s=c.getContext("2d");s.fillStyle="#020203";s.strokeStyle="#020203";
+  const poly=pts=>{s.beginPath();s.moveTo(pts[0],pts[1]);for(let i=2;i<pts.length;i+=2)s.lineTo(pts[i],pts[i+1]);s.closePath();s.fill()};
+  s.beginPath();s.ellipse(67,25,8.5,12.5,.22,0,7);s.fill();
+  poly([62,33,70,35,69,52,59,51]);
+  s.beginPath();s.moveTo(59,48);s.quadraticCurveTo(50,52,44,66);s.lineTo(47,100);s.lineTo(51,142);s.lineTo(77,142);s.lineTo(80,100);s.lineTo(83,63);s.quadraticCurveTo(78,51,69,49);s.closePath();s.fill();
+  poly([45,62,49,70,41,120,38,174,32,174,36,120]);
+  poly([82,59,86,64,93,120,97,172,91,173,87,120,81,70]);
+  s.lineWidth=1.8;s.lineCap="round";
+  [[35,173,[[29,193],[32,197],[36,197],[40,191]]],[94,172,[[90,193],[94,197],[98,196],[101,189]]]].forEach(([hx,hy,fs])=>fs.forEach(([fx,fy])=>{s.beginPath();s.moveTo(hx,hy);s.quadraticCurveTo((hx+fx)/2+(fx<hx?-1:1),(hy+fy)/2,fx,fy);s.stroke()}));
+  poly([51,138,63,140,60,200,58,252,50,252,52,200]);
+  poly([65,140,77,138,76,200,78,252,70,252,68,200]);
+  if(rim&&WATCH.rim>0){const r=document.createElement("canvas");r.width=128;r.height=256;const q=r.getContext("2d");
+    q.shadowColor="rgb(150,175,200)";q.shadowBlur=3;q.drawImage(c,0,0);q.shadowBlur=0;
+    q.globalCompositeOperation="destination-in";const g=q.createLinearGradient(0,0,0,200);g.addColorStop(0,"rgba(0,0,0,1)");g.addColorStop(1,"rgba(0,0,0,0)");q.fillStyle=g;q.fillRect(0,0,128,256);
+    x.globalAlpha=WATCH.rim;x.drawImage(r,0,0);x.globalAlpha=1}
+  x.drawImage(c,0,0);
 }
+function watcherEyes(x){[[63.2,25],[70.6,23.4]].forEach(([ex,ey])=>{const g=x.createRadialGradient(ex,ey,0,ex,ey,2.6);g.addColorStop(0,"rgba(226,228,214,1)");g.addColorStop(.45,"rgba(200,205,190,.55)");g.addColorStop(1,"rgba(200,205,190,0)");x.fillStyle=g;x.fillRect(ex-3,ey-3,6,6)})}
 function makeWatcher(kind){
-  const far=kind!=="flash";
-  const t=canvasTex(128,256,(x,w,h)=>watcherShape(x,far));
-  const m=new THREE.Mesh(new THREE.PlaneGeometry(far?.52:1.35,far?1.04:2.7),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0}));
+  const far=kind!=="flash",W=far?.625:1.35,H=far?1.25:2.7;
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(W,H),new THREE.MeshBasicMaterial({map:canvasTex(128,256,x=>watcherShape(x,far)),transparent:true,depthWrite:false,opacity:0}));
+  const eyes=new THREE.Mesh(new THREE.PlaneGeometry(W,H),new THREE.MeshBasicMaterial({map:canvasTex(128,256,watcherEyes),transparent:true,depthWrite:false,opacity:0}));
+  eyes.position.z=.002;eyes.userData.eyes=true;m.add(eyes);
   if(far){
-    m.position.set(2.6+(Math.random()-.5)*1.4,2.45,-9.3);
-    const gl=new THREE.Mesh(new THREE.PlaneGeometry(2.6,2.2),new THREE.MeshBasicMaterial({map:canvasTex(160,140,(x,w,h)=>{
-      const g=x.createRadialGradient(80,52,4,80,58,78);g.addColorStop(0,"rgba(140,175,205,.7)");g.addColorStop(.45,"rgba(90,120,150,.28)");g.addColorStop(1,"rgba(60,80,100,0)");x.fillStyle=g;x.fillRect(0,0,w,h);
-      const f=x.createRadialGradient(80,118,2,80,118,58);f.addColorStop(0,"rgba(150,180,205,.45)");f.addColorStop(1,"rgba(150,180,205,0)");x.fillStyle=f;x.beginPath();x.ellipse(80,118,60,9,0,0,7);x.fill()}),transparent:true,depthWrite:false,opacity:0}));
-    gl.position.set(.05,.14,-.08);m.add(gl);
+    // each sighting he stands a little nearer the glass
+    const seen=Object.keys(S.watchPlan||{}).filter(k=>S.watchPlan[k]===2&&+k!==S.day).length;
+    m.position.set(2.6+(Math.random()-.5)*1.2,2.555,-9.3+Math.min(seen,3)*WATCH.near);
+    if(WATCH.haze>0){const gl=new THREE.Mesh(new THREE.PlaneGeometry(1.1,1.9),new THREE.MeshBasicMaterial({map:canvasTex(128,128,(x,w,h)=>{
+      const g=x.createRadialGradient(64,56,2,64,64,62);g.addColorStop(0,"rgba(110,135,160,1)");g.addColorStop(.55,"rgba(80,100,125,.4)");g.addColorStop(1,"rgba(60,80,100,0)");x.fillStyle=g;x.fillRect(0,0,w,h)}),transparent:true,depthWrite:false,opacity:0}));
+      gl.position.set(0,.05,-.08);gl.userData.haze=true;m.add(gl)}
   }else{m.position.set(2.6+(Math.random()<.5?-.55:.55),2.25,-6.8)}
   G.scene.add(m);return m;
 }
@@ -3148,18 +3162,19 @@ function watcherTick(now,dt){
     S.watchPlan=S.watchPlan||{};
     if(S.watchPlan[d]==null)S.watchPlan[d]=Math.random()<({15:.35,16:.5,17:.6,18:.65,19:.75,20:.5}[d]||0)?1:0;
     if(S.watchPlan[d]===1&&quiet){G.watchIdle=(G.watchIdle||0)+dt;if(!G.watchWait)G.watchWait=8+Math.random()*22;
-      if(G.watchIdle>G.watchWait){S.watchPlan[d]=2;G.watchIdle=0;G.watchWait=0;G.watchGone=false;G.watcher=makeWatcher("far");G.watcherKind="far";G.watcherT=now}}
+      if(G.watchIdle>G.watchWait){G.watchIdle=0;G.watchWait=0;G.watchGone=false;G.watcher=makeWatcher("far");S.watchPlan[d]=2;G.watcherKind="far";G.watcherT=now}}
   }
   if(!G.watcher&&d===(S.flashDay||19)&&S.phase==="evening"&&!S.flashSeen&&G.lightning>.4&&quiet){
     S.flashSeen=true;G.watcher=makeWatcher("flash");G.watcherKind="flash";G.watcherT=now;
     setTimeout(()=>{S.say="For an instant, in the lightning, someone is standing right outside the window. Then the dark comes back, and there is nothing there.";renderHud();saveSoon()},900)}
   if(!G.watcher)return;
   if(G.watcherKind==="far"&&(reading||G.visitor||TALK))G.watchGone=true;
-  const W=G.watcher,k=(now-G.watcherT)/1000;let op;
-  if(G.watcherKind==="flash"){op=Math.min(1,(G.lightning||0)*3);if(k>.35&&(G.lightning||0)<=.02)op=-1}
-  else{op=G.watchGone?-1:k<1.8?k/1.8*.9:k<10?.9:.9-(k-10)/2;if(k>12)op=-1}
-  if(op<0){G.scene.remove(W);W.material.map.dispose();W.children.forEach(c=>{G.scene.remove(c);c.material.map&&c.material.map.dispose()});G.watcher=null;return}
-  W.material.opacity=op;W.children.forEach(c=>c.material.opacity=op*.9);
+  const W=G.watcher,k=(now-G.watcherT)/1000;let op,eo;
+  if(G.watcherKind==="flash"){op=Math.min(1,(G.lightning||0)*3);eo=op*WATCH.eyes;if(k>.35&&(G.lightning||0)<=.02)op=-1}
+  // he comes out of the dark quickly, and when he goes he is simply not there any more
+  else{op=G.watchGone||k>11?-1:Math.min(1,k/.5);eo=WATCH.eyes*Math.max(0,Math.min(1,(k-4)/2.5))}
+  if(op<0){G.scene.remove(W);W.material.map.dispose();W.children.forEach(c=>c.material.map&&c.material.map.dispose());G.watcher=null;return}
+  W.material.opacity=op;W.children.forEach(c=>c.material.opacity=c.userData.eyes?eo:c.userData.haze?op*WATCH.haze:op);
 }
 function sync3DLights(){if(!G.renderer||!S)return;const eve=S.phase!=="day",wi=WEATHERS.indexOf(weatherOf(S.day));G.fill.intensity=eve?.05:[.62,.3,.2,.22,.16][wi]}
 function gameMinutes(){
