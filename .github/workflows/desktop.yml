@@ -1,0 +1,67 @@
+# Builds the Dunreath desktop app for Windows and Mac and posts it on the
+# repo's Releases page. Runs whenever the desktop/ folder changes on main,
+# or by hand from the Actions tab ("Build desktop app" > "Run workflow").
+# On a pull request it only builds, so the files can be tried before merging.
+name: Build desktop app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["desktop/**", ".github/workflows/desktop.yml"]
+  pull_request:
+    paths: ["desktop/**", ".github/workflows/desktop.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - run: npm run dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dunreath-${{ matrix.os }}
+          path: |
+            desktop/dist/Dunreath-Setup-Windows.exe
+            desktop/dist/Dunreath-Mac.dmg
+          if-no-files-found: ignore
+
+  release:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: desktop
+          name: Dunreath for Windows and Mac
+          make_latest: true
+          body: |
+            Download the file for your computer and open it.
+
+            - **Windows:** Dunreath-Setup-Windows.exe. If Windows says it protected your PC, choose More info, then Run anyway.
+            - **Mac:** Dunreath-Mac.dmg. Drag Dunreath into Applications. The first time, right-click it and choose Open. If macOS still refuses, open System Settings, Privacy & Security, and press Open Anyway.
+
+            The app always opens the latest edition of the game, so there is nothing to download again when the game is updated. It needs an internet connection.
+          files: out/*
