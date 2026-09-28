@@ -1,0 +1,41 @@
+{
+  "name": "dunreath",
+  "productName": "Dunreath",
+  "version": "1.0.0",
+  "description": "A detective's desk in Dunreath, Iowa, March 1931.",
+  "author": "seb",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --publish never"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.sebjones.dunreath",
+    "productName": "Dunreath",
+    "copyright": "Dunreath",
+    "files": ["main.js", "offline.html", "build/icon.png"],
+    "directories": { "output": "dist", "buildResources": "build" },
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "artifactName": "Dunreath-Setup-Windows.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Dunreath"
+    },
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["universal"] }],
+      "category": "public.app-category.games",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "artifactName": "Dunreath-Mac.${ext}"
+    }
+  }
+}

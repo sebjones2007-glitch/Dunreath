@@ -3575,7 +3575,7 @@ function curtain(fn,reveal){const c=$("curtain");c.style.transition="";c.classLi
     else setTimeout(()=>{c.style.transition="none";c.classList.remove("on");void c.offsetWidth;c.style.transition=""},900)},950)}
 let installEvt=null;
 const standalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
-const installable=()=>!standalone()&&location.protocol.startsWith("http");
+const installable=()=>!standalone()&&!/DunreathDesktop/.test(navigator.userAgent)&&location.protocol.startsWith("http");
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e});
 addEventListener("appinstalled",()=>{installEvt=null;if(titlePane==="menu")renderTitle()});
 function renderTitle(){
