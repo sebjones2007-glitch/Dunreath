@@ -2189,7 +2189,7 @@ function docHtml(k){
   if(k.startsWith("oldnb:"))return oldNotebookDoc(k.slice(6));
   if(k.startsWith("oldlet:"))return oldLettersDoc(k.slice(7));
   switch(k){case "lockup":return lockupDoc();case "paper":return paperDoc();case "ledger":return ledgerDoc();case "letter":return letterDoc();
-    case "report":return reportDoc();case "notebook":return notebookDoc();case "end":return S.endLetter;case "register":return registerDoc()}
+    case "report":return reportDoc();case "notebook":return notebookDoc();case "end":return S.endLetter;case "register":return registerDoc();case "phone":return phoneDoc()}
   return "";
 }
 let reading=false,picker=null;
@@ -2273,7 +2273,7 @@ function objects(){
   if(!S.name)return [["register","Register"]];
   if(S.phase==="day"){
     if(S.letterGiven)o.push(["letter","Letter"]);
-    o.push(["paper","The Courier"],["tray","In-tray"],["cards","Card index"],["ledger","Case ledger"],["lockup","The cells"],["notebook","Notebook"],["pipe","Pipe"],["coffee","Coffee"],["lamp","Put out the lamp"]);
+    o.push(["paper","The Courier"],["tray","In-tray"],["cards","Card index"],["ledger","Case ledger"],["lockup","The cells"],["notebook","Notebook"],["phone","Telephone"],["pipe","Pipe"],["coffee","Coffee"],["lamp","Put out the lamp"]);
   }else if(S.phase==="evening"){
     if(S.reportGiven)o.push(["report","Sergeant's report"]);
     o.push(["notebook","Notebook"],["paper","The Courier"],["cards","Card index"],["ledger","Case ledger"],["lockup","The cells"],["pipe","Pipe"],["coffee","Coffee"],["hat","Hat and coat"]);
@@ -2823,7 +2823,7 @@ function init3D(){
   const rec=new THREE.Group();const rh=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.3,12),black);const rc=new THREE.Mesh(new THREE.CylinderGeometry(.09,.06,.1,16),black);rc.position.y=-.18;rec.add(rh,rc);rec.position.set(.24,.8,0);
   const cord=new THREE.Mesh(new THREE.TorusGeometry(.35,.012,6,24,Math.PI),black);cord.position.set(.3,.3,.05);cord.rotation.y=Math.PI/2;
   [pb,ps,mouth,rh,rc].forEach(m=>m.castShadow=true);phn.add(pb,ps,mouth,hook,rec,cord);
-  phn.position.set(4.45,0,-2.1);phn.rotation.y=-.3;scene.add(phn);G.decor.phone=phn;
+  obj("phone","The telephone",phn,4.45,-2.1,-.3);G.decor.phone=phn;
   // mug
   const mug=new THREE.Group(),enamel=mat(0xe9e3d6,.35,.05);
   const mb=new THREE.Mesh(new THREE.CylinderGeometry(.2,.18,.38,24,1,true),enamel);mb.position.y=.19;mb.castShadow=true;
@@ -2946,7 +2946,7 @@ function sync3D(){
   if(!G.renderer)return;
   const vis=new Set(objects().map(o=>o[0]));
   Object.entries(G.objs).forEach(([k,o])=>{o.visible=vis.has(k)&&!S.desk.includes(k)});
-  G.objs.lamp.visible=true;G.objs.pipe.visible=true;G.objs.lockup.visible=true;
+  G.objs.lamp.visible=true;G.objs.pipe.visible=true;G.objs.lockup.visible=true;G.objs.phone.visible=true;
   const inCell=N.filter(n=>n.jailed&&!n.dead).slice(0,3),key=inCell.map(n=>n.id).join(",")+S.phase;
   if(G.cellKey!==key){G.cellKey=key;G.cellSprites.forEach(sp=>{G.scene.remove(sp);sp.material.map.dispose()});G.cellSprites=[];
     inCell.forEach((n,i)=>{const hm=n.age===14?.78:n.height==="short"?.93:n.height==="tall"?1.07:1,h=5.9*hm;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:spriteTex(n,0,false),transparent:true}));sp.material.color.setScalar(S.phase==="day"?.5:.35);sp.scale.set(h/2,h,1);sp.position.set(-9.2+i*1.05,-2.6+h/2,-5.75);G.scene.add(sp);G.cellSprites.push(sp)})}G.objs.coffee.visible=true;G.coffee.position.y=.03+.28*((S.coffee==null?4:S.coffee)/4);G.coffee.visible=(S.coffee==null?4:S.coffee)>0;G.objs.register.visible=!S.desk.includes("register");G.objs.hat.visible=true;G.objs.notebook.visible=!S.desk.includes("notebook");
