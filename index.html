@@ -3121,7 +3121,7 @@ function creep(now,force){
   setTimeout(()=>{S.say=t;renderHud()},k==="steps"?2500:900);
 }
 // The watcher. WATCH and the two drawing functions are mirrored in window-man.html, a viewer for tweaking him.
-const WATCH={rim:.2,haze:.15,eyes:.75,near:.55,hat:true,coat:true,pressed:true,pressedEyes:.8,lantern:true};
+const WATCH={rim:0,haze:0,eyes:.75,near:.55,hat:true,coat:true,pressed:true,pressedEyes:.8,lantern:true};
 function watcherShape(x,rim,K=1){
   const c=document.createElement("canvas");c.width=128*K;c.height=256*K;const s=c.getContext("2d");s.scale(K,K);s.fillStyle="#020203";s.strokeStyle="#020203";
   const poly=pts=>{s.beginPath();s.moveTo(pts[0],pts[1]);for(let i=2;i<pts.length;i+=2)s.lineTo(pts[i],pts[i+1]);s.closePath();s.fill()};
@@ -3160,7 +3160,7 @@ function makeWatcher(kind){
     if(WATCH.haze>0){const gl=new THREE.Mesh(new THREE.PlaneGeometry(1.1,1.9),new THREE.MeshBasicMaterial({map:canvasTex(128,128,(x,w,h)=>{
       const g=x.createRadialGradient(64,56,2,64,64,62);g.addColorStop(0,"rgba(110,135,160,1)");g.addColorStop(.55,"rgba(80,100,125,.4)");g.addColorStop(1,"rgba(60,80,100,0)");x.fillStyle=g;x.fillRect(0,0,w,h)}),transparent:true,depthWrite:false,opacity:0}));
       gl.position.set(0,.05,-.08);gl.userData.haze=true;m.add(gl)}
-    if(WATCH.lantern){const lp=new THREE.Mesh(new THREE.PlaneGeometry(.55,.55),new THREE.MeshBasicMaterial({map:canvasTex(128,128,(x,w,h)=>{
+    if(WATCH.lantern){const lp=new THREE.Mesh(new THREE.PlaneGeometry(.8,.8),new THREE.MeshBasicMaterial({map:canvasTex(128,128,(x,w,h)=>{
       const g=x.createRadialGradient(64,64,0,64,64,62);g.addColorStop(0,"rgba(255,226,170,1)");g.addColorStop(.08,"rgba(255,190,110,.9)");g.addColorStop(.3,"rgba(210,130,55,.3)");g.addColorStop(1,"rgba(160,90,40,0)");x.fillStyle=g;x.fillRect(0,0,w,h)}),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0}));
       lp.position.set(.146,-.308,.003);lp.userData.lamp=true;m.add(lp)}
   }else if(P)m.position.set(2.48+(Math.random()<.5?-.75:.75),-1.2,-6.62);else m.position.set(2.6+(Math.random()<.5?-.55:.55),2.25,-6.8)
