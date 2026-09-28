@@ -1661,6 +1661,8 @@ function goHome(){
   S.next=genDay(S.day+1);
   S.phase="evening";S.desk=[];S.nbLeft=null;S.say="";S.reportGiven=false;
   S.queue=[{kind:"sergeant"}];
+  S.nightWatch=null;{const v=S.verdicts.find(v=>v.c.kind==="human"&&v.choice==="arrest"&&v.who===v.c.culprit&&v.who.jailed&&MURDEROUS.includes(v.c.crime.n));
+    if(v)S.nightWatch={id:v.who.id,nat:v.c.crime.n.toLowerCase(),need:45+2*S.day,waited:0,said:false,done:false}}
   if(S.day===19&&S.pip&&!S.pip.found){const m=N[S.pip.by!=null?S.pip.by:4];S.queue.push({kind:"mystic",npc:m&&!m.jailed&&!m.dead?m:SERGEANT,when:"evening",step:"pipfound"})}
   if(S.eveVisit)S.queue.push(S.eveVisit);
   const V=S.vig;if(V){if(S.day===V.formDay&&vigLeader()){const L=vigLeader();S.queue.push({kind:"committee",with:L.id===6&&!N[7].jailed&&!N[7].dead?7:null})}
@@ -2363,6 +2365,7 @@ function act(k){
       if(S.phase==="over"){reading=false;S.desk=[];S.name=null;clearVisitor();place("register");return}
       if(busy()){say("Someone is still here.");return}
       if(G.blackoutUntil)return;
+      if(S.nightWatch&&!S.nightWatch.done){const n=N[S.nightWatch.id];say(`You can't leave ${n.name} alone in the cells. Not tonight. The night constable comes on at ten.`);return}
       if(S.day===S.blackoutDay&&!S.blackoutDone){
         if(!S.blackoutStage){S.blackoutStage=1;Sound.rattle();G.doorShake=performance.now();say("The door won't open. It's stuck fast.");return}
         S.blackoutDone=true;Sound.blackout();G.blackoutUntil=performance.now()+4800;say("");return;
@@ -2374,6 +2377,25 @@ function act(k){
 function endWorkday(){
   reading=false;picker=null;S.desk=[];Sound.click();G.lampOff=true;renderReading();renderPicker();
   setTimeout(()=>fadeCard("Evening","","eyes",()=>{goHome()},()=>processQueue()),450);
+}
+/* ---- keeping watch over a convicted killer until the night constable comes on ---- */
+const MURDEROUS=["Murder","Attempted murder","Arson with intent to kill","Administering poison"];
+const WATCH_LINES=[
+  n=>`${n.name} sits on the edge of the cot with ${his(n)} hands between ${his(n)} knees and doesn't move.`,
+  n=>`"You'll not sleep either, detective," ${n.name} says from the dark of the cell. "Not after today."`,
+  n=>`${n.name} is praying, or counting. You can't tell which.`,
+  n=>`"They'll come for me, you know. Not the law. The others." ${n.name} laughs once, with nothing in it.`,
+  n=>`The cot creaks. ${n.name} is standing at the bars, looking past you at the window.`,
+  n=>`"Is it always this quiet at night?" ${n.name} asks. ${He(n)} doesn't wait for an answer.`,
+  n=>`${n.name} has stopped muttering. The quiet is worse.`,
+  n=>`"Don't let the stove go out," ${n.name} says. "Please."`];
+function nightWatchTick(now,dt){
+  const W=S&&S.name&&S.phase==="evening"&&S.nightWatch;if(!W||W.done||busy()||G.blackoutUntil||TALK)return;
+  const n=N[W.id];
+  if(!W.said){W.said=true;G.nwLast=`${n.name} is in the cells for ${W.nat}, and the whole town knows it. You can't leave the lock-up unwatched tonight. The night constable comes on at ten.`;say(G.nwLast);G.nwNext=now+16000+Math.random()*8000;saveSoon();return}
+  W.waited+=dt;
+  if(W.waited>=W.need){W.done=true;Sound.door();say(`Boots on the step. The night constable lets himself in, takes the cell keys from you and settles by the stove without a word. You can go home.`);saveSoon();return}
+  if(now>(G.nwNext||0)&&(!S.say||S.say===G.nwLast)&&!reading){G.nwNext=now+14000+Math.random()*10000;G.nwLast=rnd(WATCH_LINES)(n);say(G.nwLast)}
 }
 function goHomeForNight(){
   reading=false;picker=null;S.desk=[];Sound.thump();renderReading();
@@ -3065,6 +3087,7 @@ function loop(){
   G.door.rotation.y+=((G.doorOpen?-1.2:0)-G.door.rotation.y)*Math.min(1,dt*5);if(!G.doorOpen&&Math.abs(G.door.rotation.y)<.002&&!(G.doorShake&&now-G.doorShake<(G.doorShakeLen||1100)))G.door.rotation.y=0;
   stepVisitor(dt,now);
   watcherTick(now,dt);
+  nightWatchTick(now,dt);
   if(G.objs.coffee&&S&&S.name){const m=G.objs.coffee;
     if(!S.mugFallen&&!S.mugFell&&spiritUp()&&S.phase==="evening"&&S.day===(S.mugDay||18)&&!G.visitor&&!TALK&&!reading){G.mugT=(G.mugT||0)+dt;if(G.mugT>18){S.mugFell=S.mugFallen=true;G.mugFall=now;S.coffee=0;Sound.mugFall();setTimeout(()=>{S.say="Your mug tips over on its own and rolls to the edge of the desk. Nobody touched it. The coffee soaks slowly into the blotter.";renderHud()},500)}}
     if(S.mugFallen){const k=G.mugFall?Math.min(1,(now-G.mugFall)/380):1,e=k*k;m.position.set(4.5+e*.12,e*.32,-.9-e*.3);m.rotation.set(-1.48*e,0,.2*e);if(G.spill)G.spill.visible=k>=1}
@@ -3121,6 +3144,8 @@ function creep(now,force){
   setTimeout(()=>{S.say=t;renderHud()},k==="steps"?2500:900);
 }
 // The watcher. WATCH and the two drawing functions are mirrored in window-man.html, a viewer for tweaking him.
+// how many seconds the far figure stands at the window; his whole lantern sequence is squeezed to fit
+const WATCH_STAY=7;
 const WATCH={rim:0,haze:0,eyes:.75,near:.55,hat:true,coat:true,pressed:true,pressedEyes:.8,lantern:true};
 function watcherShape(x,rim,K=1){
   const c=document.createElement("canvas");c.width=128*K;c.height=256*K;const s=c.getContext("2d");s.scale(K,K);s.fillStyle="#020203";s.strokeStyle="#020203";
@@ -3179,14 +3204,14 @@ function watcherTick(now,dt){
     setTimeout(()=>{S.say="For an instant, in the lightning, someone is standing right outside the window. Then the dark comes back, and there is nothing there.";renderHud();saveSoon()},900)}
   if(!G.watcher)return;
   if(G.watcherKind==="far"&&(reading||G.visitor||TALK))G.watchGone=true;
-  const W=G.watcher,k=(now-G.watcherT)/1000;let op,eo,lo=0;
+  const W=G.watcher,rt=(now-G.watcherT)/1000,k=rt*(G.watcherKind==="far"?13/WATCH_STAY:1);let op,eo,lo=0;
   if(G.watcherKind==="flash"){op=Math.min(1,(G.lightning||0)*3);eo=WATCH.pressed?WATCH.pressedEyes:op*WATCH.eyes;
     // when pressed to the glass, his eyes stay lit a moment after the dark comes back
     if(k>.35&&(G.lightning||0)<=.02){if(!WATCH.pressed)op=-1;else{G.watchDarkT=G.watchDarkT||now;if(now-G.watchDarkT>700)op=-1}}}
   // he comes out of the dark quickly, and when he goes he is simply not there any more
   // with the lantern: it lights, burns a while, gutters and goes out; only then do his eyes show
   else if(WATCH.lantern){op=G.watchGone||k>13?-1:Math.min(1,k/.5);eo=WATCH.eyes*Math.max(0,Math.min(1,(k-8.3)/1.5));
-    lo=k<.8?0:k<1.3?(k-.8)/.5:k<6?.88+.12*Math.sin(k*9)*Math.sin(k*5.3):k<7.6?(Math.sin(k*41)+Math.sin(k*67.3)>.3?.9:k>7.2?0:.15):0}
+    lo=k<.8?0:k<1.3?(k-.8)/.5:k<6?.88+.12*Math.sin(rt*9)*Math.sin(rt*5.3):k<7.6?(Math.sin(rt*41)+Math.sin(rt*67.3)>.3?.9:k>7.2?0:.15):0}
   else{op=G.watchGone||k>11?-1:Math.min(1,k/.5);eo=WATCH.eyes*Math.max(0,Math.min(1,(k-4)/2.5))}
   if(op<0){G.scene.remove(W);W.material.map.dispose();W.children.forEach(c=>c.material.map&&c.material.map.dispose());G.watcher=null;return}
   W.material.opacity=op;W.children.forEach(c=>c.material.opacity=c.userData.eyes?eo:c.userData.haze?op*WATCH.haze:c.userData.lamp?lo*Math.max(op,0):op);
@@ -3196,7 +3221,7 @@ function gameMinutes(){
   if(!S)return 8*60;
   if(S.day===19&&spiritUp())return 3*60+10;
   if(S.phase==="day"){const c=Math.max(S.cases.length,1);return 8*60+20+S.idx*(8*60+10)/c}
-  if(S.phase==="evening")return 19*60+10+(S.visit&&S.visit.done?35:0);
+  if(S.phase==="evening"){const W=S.nightWatch;return 19*60+10+(S.visit&&S.visit.done?35:0)+(W?Math.round(130*Math.min(1,W.waited/W.need)):0)}
   return 21*60;
 }
 const HAIR={Gray:"#8d8a84",Sandy:"#b39661",Red:"#8a452a",Auburn:"#743d27",Black:"#1c1917",Brown:"#56402d",White:"#d9d6ce"};
