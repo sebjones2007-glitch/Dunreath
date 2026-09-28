@@ -333,6 +333,9 @@ body.titling .hud,body.titling .objbar,body.titling .say{visibility:hidden}
 .tpane h3{font-family:var(--typeH);font-weight:400;font-size:13px;letter-spacing:.1em;text-align:center;margin:14px 0 4px;color:var(--ink2)}
 .tpane h3:first-child{margin-top:0}
 .tpane p{margin:0 0 6px;text-align:center}
+.tcred p{font-family:"Pinyon Script",cursive;font-size:27px;line-height:1.2;color:#1a130d;margin:0 0 4px}
+.tcred h3{margin-top:16px}
+@media(max-width:520px){.tcred p{font-size:23px}}
 .tpane .tback{display:block;margin:16px auto 0}
 .tname{display:flex;flex-direction:column;gap:10px;align-items:center}
 .tname .namein{width:100%;max-width:280px;text-align:center}
@@ -3566,16 +3569,14 @@ function latestOpenSave(){return readSaves().filter(x=>!x.outcome).sort((a,b)=>(
 const CREDITS=`<h3>DESIGNED AND DEVELOPED BY</h3><p>Seb</p>
 <h3>PLAYTESTING</h3><p>Oli, much esteemed playtester</p>
 <h3>TYPEFACES</h3><p>UnifrakturMaguntia, IM Fell English, Old Standard TT, Courier Prime, Special Elite, Caveat, Pinyon Script and Reenie Beanie, from Google Fonts under the SIL Open Font License</p>
-<h3>THE DESK</h3><p>Built with three.js (MIT License)</p>
-<h3>SOUND</h3><p>Every sound is made in the browser as you play</p>
-<h3>SAVES</h3><p>Online register kept with Supabase</p>
+<h3>SOUND</h3><p>Every sound is made in the browser as you play (with music coming ASAP)</p>
 <h3>MADE WITH THE HELP OF</h3><p>Claude, by Anthropic</p>`;
 function curtain(fn,reveal){const c=$("curtain");c.style.transition="";c.classList.add("on");
   setTimeout(()=>{fn();if(reveal!==false)setTimeout(()=>{c.style.transition="opacity 1.3s ease";c.classList.remove("on")},250);
     else setTimeout(()=>{c.style.transition="none";c.classList.remove("on");void c.offsetWidth;c.style.transition=""},900)},950)}
 function renderTitle(){
   const b=$("tbody");if(!b)return;
-  if(titlePane==="credits"){b.innerHTML=`<div class="tpane">${CREDITS}<button class="btn tback" data-t="menu">Back</button></div>`}
+  if(titlePane==="credits"){b.innerHTML=`<div class="tpane tcred">${CREDITS}<button class="btn tback" data-t="menu">Back</button></div>`}
   else if(titlePane==="new"||titlePane==="easy"){
     const easy=titlePane==="easy";
     b.innerHTML=`<div class="tpane tname"><p>${easy?"Easy terms. The council gives its word not to recall you, however badly things go.":"Twenty days at the desk. The council may recall you if the town turns against you."}</p><label for="tName" class="muted">Your name, Detective</label><input id="tName" class="namein" maxlength="28" placeholder="e.g. Harriet Lowe" autocomplete="off"><button class="btn" id="tGo">Take the post</button><button class="btn tback" data-t="menu" style="margin-top:0">Back</button></div>`;
