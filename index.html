@@ -333,9 +333,10 @@ body.titling .hud,body.titling .objbar,body.titling .say{visibility:hidden}
 .tpane h3{font-family:var(--typeH);font-weight:400;font-size:13px;letter-spacing:.1em;text-align:center;margin:14px 0 4px;color:var(--ink2)}
 .tpane h3:first-child{margin-top:0}
 .tpane p{margin:0 0 6px;text-align:center}
-.tcred p{font-family:"Pinyon Script",cursive;font-size:34px;line-height:1.2;color:#1a130d;margin:0 0 4px}
-.tcred h3{margin-top:18px;font-size:14px}
-@media(max-width:520px){.tcred p{font-size:28px}}
+.tcred h3{font-family:"Pinyon Script",cursive;font-size:34px;letter-spacing:0;line-height:1.15;color:#1a130d;margin:18px 0 2px}
+.tcred h3:first-child{margin-top:0}
+.tcred p{font-family:var(--typeH);font-size:15px;letter-spacing:.04em;line-height:1.5;color:var(--ink);margin:0 0 4px}
+@media(max-width:520px){.tcred h3{font-size:29px}.tcred p{font-size:14px}}
 .tpane .tback{display:block;margin:16px auto 0}
 .tname{display:flex;flex-direction:column;gap:10px;align-items:center}
 .tname .namein{width:100%;max-width:280px;text-align:center}
@@ -3597,11 +3598,11 @@ let titlePane="menu";
 function showTitle(pane){titlePane=pane||"menu";$("title").classList.add("show");document.body.classList.add("titling");renderTitle()}
 function hideTitle(){$("title").classList.remove("show");document.body.classList.remove("titling")}
 function latestOpenSave(){return readSaves().filter(x=>!x.outcome).sort((a,b)=>(b.updated||0)-(a.updated||0))[0]}
-const CREDITS=`<h3>DESIGNED AND DEVELOPED BY</h3><p>Seb</p>
-<h3>PLAYTESTING</h3><p>Oli, much esteemed playtester</p>
-<h3>TYPEFACES</h3><p>UnifrakturMaguntia, IM Fell English, Old Standard TT, Courier Prime, Special Elite, Caveat, Pinyon Script and Reenie Beanie, from Google Fonts under the SIL Open Font License</p>
-<h3>SOUND</h3><p>Every sound is made in the browser as you play (with music coming ASAP)</p>
-<h3>MADE WITH THE HELP OF</h3><p>Claude, by Anthropic</p>`;
+const CREDITS=`<h3>Designed and developed by</h3><p>Seb</p>
+<h3>Playtesting</h3><p>Oli, much esteemed playtester</p>
+<h3>Typefaces</h3><p>UnifrakturMaguntia, IM Fell English, Old Standard TT, Courier Prime, Special Elite, Caveat, Pinyon Script and Reenie Beanie, from Google Fonts under the SIL Open Font License</p>
+<h3>Sound</h3><p>Every sound is made in the browser as you play (with music coming ASAP)</p>
+<h3>Made with the help of</h3><p>Claude, by Anthropic</p>`;
 function curtain(fn,reveal){const c=$("curtain");c.style.transition="";c.classList.add("on");
   setTimeout(()=>{fn();if(reveal!==false)setTimeout(()=>{c.style.transition="opacity 1.3s ease";c.classList.remove("on")},250);
     else setTimeout(()=>{c.style.transition="none";c.classList.remove("on");void c.offsetWidth;c.style.transition=""},900)},950)}
