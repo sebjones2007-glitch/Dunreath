@@ -3742,6 +3742,21 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("title").classLis
 cloudInit();
 init3D();
 startGame("");
+/* seb's look-ahead: open the game with ?day=17 on the end of the address to play through to that morning.
+   Every case before it is closed as a sensible marshal would, and nothing is saved. */
+function skipToDay(target){
+  target=Math.max(2,Math.min(20,target|0));window.NOSAVE=true;hideTitle();startGame("Marshal",false);
+  const pq=window.processQueue;window.processQueue=()=>{};
+  for(let guard=0;S.day<target&&S.phase!=="over"&&guard<40;guard++){
+    S.cases.forEach(c=>{if(c.filed)return;c.reported=true;const who=c.culprit;
+      if(c.kind==="human"&&who&&N.includes(who)&&!who.jailed){c.sel="n"+who.id;c.sev=1}else c.sel=c.kind==="human"?"s":"u"});
+    S.cases.forEach((c,i)=>fileCase(i));
+    if(S.rite){S.rite.ladyMet=true;S.rite.priestMet=true}
+    clearVisitor();TALK=null;goHome();clearVisitor();TALK=null;S.visit=null;turnIn();
+  }
+  window.processQueue=pq;reading=false;picker=null;G.lampOff=false;refresh();renderHud();
+}
+{const d=+new URLSearchParams(location.search).get("day");if(d>1)setTimeout(()=>skipToDay(d),300)}
 if(/access_token|error_description/.test(location.hash))place("register");else showTitle();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(!G.renderer)return;G.tc={};G.newsHead=null;G.calKey=null;G.outKey=null;G.outCache={};
   const re=(t,a,b,k)=>{const n=pageTex(a,b,k);t.image=n.image;t.needsUpdate=true};
