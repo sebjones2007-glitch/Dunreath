@@ -2635,26 +2635,37 @@ function drawDoorWear(W,lv){
     split(w*.63,h,h*.52,9);}
   W.t.needsUpdate=true;
 }
-function drawCrack(W,lv,seed,grow){
-  const {c,x}=W,w=c.width,h=c.height;x.clearRect(0,0,w,h);if(!lv)return (W.t.needsUpdate=true);
-  const R=seededRng(seed),frac=[0,.4,.72,1][lv]*grow;
-  const walk=(sx,sy,steps,dir,width)=>{const pts=[[sx,sy]];let px=sx,py=sy;for(let i=0;i<steps;i++){px+=(R()-.5)*w*.07+dir*w*.012;py+=h/steps*(.7+R()*.5);pts.push([px,py])}return pts};
-  const main=walk(w*(.35+R()*.3),h*.02,26,R()<.5?-1:1),branches=[];
-  for(let b=0;b<4;b++){const at=6+Math.floor(R()*16),[bx,by]=main[at];branches.push({at,pts:walk(bx,by,8+Math.floor(R()*6),R()<.5?-2:2)})}
-  const path=(pts,m,dx)=>{x.beginPath();pts.slice(0,m).forEach(([a,b],i)=>i?x.lineTo(a+dx,b):x.moveTo(a+dx,b))};
-  const stroke=(pts,upto,wd)=>{const m=Math.max(1,Math.floor(pts.length*upto));
-    path(pts,m,-wd*.7);x.strokeStyle="rgba(214,178,128,.8)";x.lineWidth=1.8;x.stroke();
-    path(pts,m,wd*.7);x.strokeStyle="rgba(214,178,128,.55)";x.lineWidth=1.4;x.stroke();
-    path(pts,m,0);x.strokeStyle="rgba(6,3,1,.95)";x.lineWidth=wd;x.stroke()};
-  stroke(main,frac,lv>=3?5:3.6);
-  if(lv>=2)branches.forEach(br=>{if(br.at<main.length*frac)stroke(br.pts,lv>=3?1:.6,2.4)});
+function drawCrack(W,lv,seed){
+  const {c,x}=W,w=c.width,h=c.height,u=1.6;x.clearRect(0,0,w,h);x.lineCap="round";x.lineJoin="round";
+  if(!lv)return (W.t.needsUpdate=true);
+  const R=seededRng(seed),grow=[0,.4,.7,1][lv],wid=[0,4,6.5,9.5][lv]*u;
+  /* one arm of a split: runs with the grain (straight up and down the boards), now and then jogging sharply across it */
+  const arm=(sx,sy,ang,len)=>{const pts=[[sx,sy]];let px=sx,py=sy,a=ang,tg=ang,run=0;const st=3.5*u;
+    for(let d=0;d<len;d+=st){if(run>0)run--;else if(R()<.07){tg=ang+(R()<.5?-1:1)*(.4+R()*.55);run=2+Math.floor(R()*4)}else tg=ang+(R()-.5)*.35;a+=(tg-a)*.5;
+      px+=Math.sin(a)*st;py+=Math.cos(a)*st;pts.push([px,py])}return pts};
+  /* the whole split is worked out first, then only as much of it as the day allows is drawn */
+  const cracks=[],add=(pts,w0,from,depth,parent)=>{const cr={pts,w0,from,depth,parent};cracks.push(cr);return cr};
+  const ox=w*(.3+R()*.4),oy=h*(.25+R()*.3);
+  const mains=[add(arm(ox,oy,Math.PI,h*.9),wid,0,0),add(arm(ox,oy,0,h*1.1),wid,0,0),add(arm(ox,oy,Math.PI*.5*(R()<.5?1:-1)+.9*(R()<.5?1:-1)*.5,w*.35),wid*.7,0,1)];
+  mains.slice(0,2).forEach(m=>{for(let b=0;b<3;b++){const t=.12+R()*.6,i=Math.floor(m.pts.length*t),[bx,by]=m.pts[i],base=m===mains[0]?Math.PI:0,sd=R()<.5?-1:1;
+    const br=add(arm(bx,by,base+sd*(.45+R()*.5),m.pts.length*3.5*u*(.2+R()*.25)),wid*(1-t)*.65,t,1,m);
+    const t2=.2+R()*.5,j=Math.floor(br.pts.length*t2),[cx,cy]=br.pts[j];add(arm(cx,cy,base-sd*(.4+R()*.5),br.pts.length*3.5*u*(.3+R()*.3)),br.w0*.55,t2,2,br)}});
+  /* fine checks in the grain around it, as in weathered boards */
+  const checks=[];for(let i=0;i<30;i++){const cx=ox+(R()-.5)*w*.7,cy=R()*h,L=(8+R()*34)*u;checks.push(arm(cx,cy,R()<.5?0:Math.PI,L))}
+  const shown=cr=>{if(!cr.parent)return grow;const p=shown(cr.parent);if(p<=cr.from)return 0;return Math.min(1,(p-cr.from)/(1-cr.from)*1.3)};
+  const draw=(P0,w0,upto,halo)=>{const n=Math.floor(P0.length*upto);if(n<2)return;const P=P0.slice(0,n),L=[],Rt=[];
+    P.forEach(([a,b],i)=>{const [p,q]=P[Math.min(i+1,n-1)],[pp,qq]=P[Math.max(i-1,0)];let dx=p-pp,dy=q-qq;const m=Math.hypot(dx,dy)||1;dx/=m;dy/=m;
+      const t=i/(n-1),k=w0*Math.pow(1-t,.7)*(.75+.3*Math.sin(i*.35)+.15*((i*7919)%13)/13)/2+.35*u;L.push([a-dy*k,b+dx*k]);Rt.push([a+dy*k,b-dx*k])});
+        x.beginPath();L.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));for(let i=Rt.length-1;i>=0;i--)x.lineTo(Rt[i][0],Rt[i][1]);x.closePath();x.fillStyle="rgba(5,2,1,.95)";x.save();x.shadowColor=`rgba(170,122,70,${halo?.3:.2})`;x.shadowBlur=(halo?7:4)*u;x.fill();x.restore();x.fill()};
+  checks.slice(0,lv*9).forEach(P=>{x.beginPath();P.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));x.strokeStyle="rgba(8,4,1,.55)";x.lineWidth=1.1*u;x.stroke()});
+  cracks.forEach(cr=>{if(cr.depth>=2&&lv<3)return;draw(cr.pts,cr.w0,shown(cr),cr.depth===0)});
   W.t.needsUpdate=true;
 }
 function stationWear(){
   if(!G.doorWear||!S||!S.name)return;const d=S.day;
   const dl=d>=18?4:d>=15?3:d>=11?2:d>=7?1:0,wl=d>=19?3:d>=16?2:d>=13?1:0;
   if(G.wearD!==dl){G.wearD=dl;drawDoorWear(G.doorWear,dl)}
-  if(G.wearW!==wl){G.wearW=wl;G.wallWear.forEach((W,i)=>drawCrack(W,Math.max(0,wl-i),31+i*17,1))}
+  if(G.wearW!==wl){G.wearW=wl;G.wallWear.forEach((W,i)=>drawCrack(W,Math.max(0,wl-i),31+i*17))}
 }
 function canvasTex(w,h,draw){
   const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");draw(x,w,h);
@@ -2830,7 +2841,7 @@ function init3D(){
   pane.position.set(1.25,1.7,.06);pane.scale.set(1.3,1.3,1);G.door.add(pane);
   const knob=new THREE.Mesh(new THREE.SphereGeometry(.07,12,10),brass);knob.position.set(2.3,-.1,.1);G.door.add(knob);
   {const W=wearCanvas(512,1332);G.doorWear=W;const m=new THREE.Mesh(new THREE.PlaneGeometry(2.5,6.5),new THREE.MeshStandardMaterial({map:W.t,emissive:0xffffff,emissiveMap:W.t,emissiveIntensity:.16,transparent:true,depthWrite:false,roughness:.8}));m.position.set(1.25,0,.056);G.door.add(m)}
-  G.wallWear=[[-5.4,3.4,2.6,3.6],[5.0,3.1,1.3,3.2],[7.05,4.55,2.2,1.1]].map(([cx,cy,cw,ch])=>{const W=wearCanvas(Math.round(cw*100),Math.round(ch*100));const m=new THREE.Mesh(new THREE.PlaneGeometry(cw,ch),new THREE.MeshStandardMaterial({map:W.t,transparent:true,depthWrite:false,roughness:.9}));m.position.set(cx,cy,WZ+.012);scene.add(m);return W});G.wearD=G.wearW=-1;
+  G.wallWear=[[-5.4,3.4,2.6,3.6],[5.0,3.1,1.3,3.2],[7.05,4.55,2.2,1.1]].map(([cx,cy,cw,ch])=>{const W=wearCanvas(Math.round(cw*160),Math.round(ch*160));const m=new THREE.Mesh(new THREE.PlaneGeometry(cw,ch),new THREE.MeshStandardMaterial({map:W.t,emissive:0xffffff,emissiveMap:W.t,emissiveIntensity:.15,transparent:true,depthWrite:false,roughness:.9}));m.position.set(cx,cy,WZ+.012);scene.add(m);return W});G.wearD=G.wearW=-1;
   G.spill=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1),new THREE.MeshStandardMaterial({map:canvasTex(192,128,(x,w,h)=>{x.fillStyle="rgba(46,26,12,.82)";x.beginPath();x.ellipse(96,64,70,38,.2,0,7);x.fill();x.beginPath();x.ellipse(150,40,20,10,.5,0,7);x.fill();x.beginPath();x.ellipse(40,90,16,8,-.3,0,7);x.fill()}),transparent:true,depthWrite:false,roughness:.2}));
   G.spill.rotation.x=-Math.PI/2;G.spill.position.set(4.25,.02,-.55);G.spill.visible=false;scene.add(G.spill);
   G.door.position.set(5.8,.65,WZ+.07);scene.add(G.door);const doorHole=new THREE.Mesh(new THREE.PlaneGeometry(2.55,6.5),mat(0x0a0806,1));doorHole.position.set(7.05,.65,WZ+.012);scene.add(doorHole);
