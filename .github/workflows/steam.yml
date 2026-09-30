@@ -1,8 +1,10 @@
 # Builds the Steam edition of Dunreath for Windows: the game files packed
 # inside the app, ready to send to Steam. Runs on pull requests and changes
 # to main that touch the game or steam/, or by hand from the Actions tab
-# ("Build Steam edition" > "Run workflow"). The result is a zip under the
-# run's Artifacts; it is not posted anywhere public.
+# ("Build Steam edition" > "Run workflow"). On main, or when run by hand,
+# the zip is also posted on the repo's Releases page (tag steam-preview) so
+# friends can download it. It is never marked "latest", so the
+# releases/latest link keeps pointing at the free desktop app.
 name: Build Steam edition
 
 on:
@@ -38,7 +40,39 @@ jobs:
         run: |
           test -f dist/win-unpacked/Dunreath.exe
           test -f dist/win-unpacked/resources/app.asar.unpacked/node_modules/steamworks.js/dist/win64/steam_api64.dll
+      - name: Zip the game folder
+        shell: pwsh
+        run: Compress-Archive -Path dist/win-unpacked/* -DestinationPath dist/Dunreath-Steam-Preview-Windows.zip
       - uses: actions/upload-artifact@v4
         with:
           name: Dunreath-Steam-Windows
-          path: steam/dist/win-unpacked
+          path: steam/dist/Dunreath-Steam-Preview-Windows.zip
+
+  release:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Dunreath-Steam-Windows
+          path: out
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: steam-preview
+          target_commitish: ${{ github.sha }}
+          name: Dunreath, Steam edition (preview for friends)
+          make_latest: false
+          prerelease: true
+          body: |
+            A preview of the Steam edition for Windows. It plays offline and doesn't need Steam.
+
+            1. Download Dunreath-Steam-Preview-Windows.zip below.
+            2. Right-click it, choose Extract All, then Extract.
+            3. Open the new folder and double-click Dunreath.
+            4. If Windows says it protected your PC, choose More info, then Run anyway.
+
+            To bring saves across from the website or the other app, open the Register there, press Copy save code, then paste it into the Register here and press Restore.
+          files: out/Dunreath-Steam-Preview-Windows.zip
