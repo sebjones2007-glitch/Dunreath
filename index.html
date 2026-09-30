@@ -2584,25 +2584,60 @@ Sound.init();
 const G={};
 
 /* ---- the station itself: the door chips, the walls split ---- */
-function seeded(seed){let a=seed>>>0;return ()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function seededRng(seed){let a=seed>>>0;return ()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function wearCanvas(w,h){const c=document.createElement("canvas");c.width=w;c.height=h;const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return {c,x:c.getContext("2d"),t}}
 function drawDoorWear(W,lv){
-  const {c,x}=W,w=c.width,h=c.height;x.clearRect(0,0,w,h);const R=seeded(7),chips=[];
-  for(let i=0;i<16;i++)chips.push({x:w*(.06+R()*.88),y:h*(.38+R()*.58),r:3+R()*7,k:5+Math.floor(R()*4),s:R()});
-  const n=[0,3,6,10,16][lv];
-  chips.slice(0,n).forEach(p=>{x.beginPath();for(let j=0;j<p.k;j++){const a=j/p.k*Math.PI*2,rr=p.r*(.55+R()*.6);x.lineTo(p.x+Math.cos(a)*rr,p.y+Math.sin(a)*rr*.8)}x.closePath();
-    x.fillStyle="rgba(196,160,112,.92)";x.fill();x.strokeStyle="rgba(28,16,8,.75)";x.lineWidth=1.2;x.stroke();
-    x.fillStyle="rgba(28,16,8,.35)";x.fillRect(p.x-p.r*.3,p.y+p.r*.2,p.r*.7,1.5)});
-  const scratch=(sx,sy,len,ang)=>{for(let k=0;k<4;k++){const ox=k*7;x.beginPath();x.moveTo(sx+ox,sy);x.quadraticCurveTo(sx+ox+len*.3*Math.sin(ang),sy+len*.5,sx+ox+len*.15,sy+len);
-    x.strokeStyle="rgba(24,14,6,.8)";x.lineWidth=2.4;x.stroke();x.strokeStyle="rgba(205,170,120,.7)";x.lineWidth=1;x.stroke()}};
-  if(lv>=3)scratch(w*.62,h*.55,h*.14,.3);
-  if(lv>=4){scratch(w*.2,h*.7,h*.12,-.2);scratch(w*.7,h*.78,h*.1,.1);
-    x.beginPath();let px=w*.48,py=h*.34;x.moveTo(px,py);const Rs=seeded(21);for(let i=0;i<14;i++){px+=(Rs()-.5)*10;py+=h*.03;x.lineTo(px,py)}x.strokeStyle="rgba(15,8,4,.9)";x.lineWidth=2.2;x.stroke()}
+  const {c,x}=W,w=c.width,h=c.height,s=w/512;x.clearRect(0,0,w,h);x.lineCap="round";x.lineJoin="round";
+  if(!lv)return (W.t.needsUpdate=true);
+  const R=seededRng(7),KX=w*.92,KY=h*.515;
+  /* soft grime: hands round the knob, boots at the foot of the door */
+  const smudge=(cx,cy,rx,ry,a)=>{x.save();x.translate(cx,cy);x.scale(1,ry/rx);const g=x.createRadialGradient(0,0,0,0,0,rx);g.addColorStop(0,`rgba(14,8,3,${a})`);g.addColorStop(1,"rgba(14,8,3,0)");x.fillStyle=g;x.beginPath();x.arc(0,0,rx,0,7);x.fill();x.restore()};
+  /* one nail dragged through the varnish: a dark groove, a pale torn lip on one side, thinning out at the end */
+  const groove=(pts,wd,pale)=>{for(let i=1;i<pts.length;i++){const t=i/(pts.length-1),k=1.5*wd*s*(t<.12?.35+t/.12*.65:1-(t-.12)/.88*.85);if(pts[i][2])continue;
+      const [a,b]=pts[i-1],[p,q]=pts[i];
+      x.beginPath();x.moveTo(a-k*.5,b);x.lineTo(p-k*.5,q);x.strokeStyle=`rgba(212,172,120,${Math.min(1,pale*1.05)})`;x.lineWidth=k*.6;x.stroke();
+      x.beginPath();x.moveTo(a+k*.15,b);x.lineTo(p+k*.15,q);x.strokeStyle="rgba(8,4,1,.9)";x.lineWidth=k*.75;x.stroke()}};
+  const drag=(x0,y0,len,ang,wobble,skips)=>{const pts=[],n=Math.max(6,Math.round(len/(6*s))),ph=R()*6,dx=Math.sin(ang),dy=Math.cos(ang);
+    let gap=0;for(let j=0;j<=n;j++){const t=j/n,sw=Math.sin(t*5+ph)*wobble*s+(R()-.5)*1.4*s;if(gap>0)gap--;else if(j>2&&R()<skips)gap=1+Math.floor(R()*2);
+      pts.push([x0+dx*len*t+dy*sw,y0+dy*len*t-dx*sw,gap>0])}return pts};
+  /* a hand's worth of nails, uneven, the outer ones shorter, drawing together as they drag */
+  const claw=(x0,y0,len,ang,n,spread,wd,pale)=>{for(let k=0;k<n;k++){const o=(k-(n-1)/2)*spread*s,mid=1-Math.abs(k-(n-1)/2)/n,L=len*s*(.62+mid*.3+R()*.18),st=(1-mid)*len*s*.12+R()*6*s;
+      const sx=x0+o*Math.cos(ang)+Math.sin(ang)*st,sy=y0-o*Math.sin(ang)+Math.cos(ang)*st,ang2=ang-o/(len*s)*.35;
+      groove(drag(sx,sy,L,ang2,1.6,.05),wd*(.75+mid*.4),pale);
+      if(R()<.5){const e=L*(.9+R()*.1);x.fillStyle=`rgba(196,154,104,${pale*.7})`;x.beginPath();x.moveTo(sx+Math.sin(ang2)*e,sy+Math.cos(ang2)*e);x.lineTo(sx+Math.sin(ang2)*e+2.5*s,sy+Math.cos(ang2)*e+5*s);x.lineTo(sx+Math.sin(ang2)*e-1*s,sy+Math.cos(ang2)*e+3*s);x.fill()}}};
+  /* a splinter torn out along the grain: raw wood, shadowed on one side, hairs at the tips */
+  const gouge=(cx,cy,gl,gw)=>{gl*=s;gw*=s;const L=[],Rt=[];for(let j=0;j<=6;j++){const t=j/6,b=Math.sin(t*Math.PI);L.push([cx-gw*b*(.5+R()*.5),cy-gl/2+gl*t]);Rt.push([cx+gw*b*(.4+R()*.6),cy-gl/2+gl*t])}
+    x.beginPath();L.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));Rt.reverse().forEach(([a,b])=>x.lineTo(a,b));x.closePath();
+    const g=x.createLinearGradient(cx-gw,0,cx+gw,0);g.addColorStop(0,"rgba(40,24,11,.9)");g.addColorStop(.45,"rgba(170,128,82,.92)");g.addColorStop(1,"rgba(208,166,114,.85)");x.fillStyle=g;x.fill();
+    x.beginPath();L.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));x.strokeStyle="rgba(8,4,2,.8)";x.lineWidth=1.2*s;x.stroke();
+    x.strokeStyle="rgba(196,154,104,.55)";x.lineWidth=.8*s;for(let f=0;f<3;f++){const e=R()<.5?-1:1;x.beginPath();x.moveTo(cx+(R()-.5)*gw,cy+e*gl*.45);x.lineTo(cx+(R()-.5)*gw*1.6,cy+e*gl*(.6+R()*.3));x.stroke()}};
+  /* the plank giving way along its grain, widest where it was struck */
+  const split=(x0,y0,y1,maxw)=>{const pts=[];let px=x0;for(let y=y0;y>=y1;y-=5*s){px+=(R()-.5)*1.4*s;if(R()<.05)px+=(R()-.5)*7*s;pts.push([px,y])}
+    const wd=i=>maxw*s*Math.pow(1-i/(pts.length-1),1.6)+.6*s;
+    x.beginPath();pts.forEach(([a,b],i)=>i?x.lineTo(a-wd(i)/2-R()*s,b):x.moveTo(a-wd(i)/2,b));for(let i=pts.length-1;i>=0;i--)x.lineTo(pts[i][0]+wd(i)/2+R()*s,pts[i][1]);x.closePath();x.fillStyle="rgba(3,2,1,.97)";x.fill();
+    [-1,1].forEach(sd=>{x.beginPath();pts.forEach(([a,b],i)=>{const X=a+sd*(wd(i)/2+1.2*s);i?x.lineTo(X,b):x.moveTo(X,b)});x.strokeStyle=`rgba(196,154,104,${sd<0?.6:.35})`;x.lineWidth=1.3*s;x.stroke()});
+    x.strokeStyle="rgba(196,154,104,.6)";x.lineWidth=.9*s;pts.forEach(([a,b],i)=>{if(R()<.22){const sd=R()<.5?-1:1,X=a+sd*wd(i)/2;x.beginPath();x.moveTo(X,b);x.lineTo(X+sd*(2+R()*4)*s,b-(6+R()*12)*s);x.stroke()}})};
+
+  /* day 7: the varnish goes dull where hands and boots meet it; a couple of nicks by the latch */
+  smudge(KX-14*s,KY,46*s,70*s,.28);smudge(w*.5,h*.97,w*.42,h*.05,.22);smudge(w*.22,h*.93,40*s,22*s,.15);
+  for(let i=0;i<9;i++){const a=R()*Math.PI*2,r=(12+R()*22)*s;groove(drag(KX+Math.cos(a)*r-6*s,KY+Math.sin(a)*r,(5+R()*8)*s,a+Math.PI/2,.2,0),1.1,.45)}
+  gouge(w*.82,h*.47,16,4);
+  if(lv>=2){ /* day 11: something has worried at the latch side, and the first faint marks appear low down */
+    gouge(w*.86,h*.56,26,6);gouge(w*.97,h*.44,34,5);gouge(w*.95,h*.6,20,4);gouge(w*.27,h*.9,14,4);
+    claw(w*.34,h*.83,70,.1,3,7,1.1,.4);}
+  if(lv>=3){ /* day 15: scratches, deliberate and slow: by the latch, low down as if from the floor, and one set higher than a man should reach */
+    claw(w*.72,h*.41,190,-.12,4,11,2.4,.75);claw(w*.64,h*.47,150,-.05,4,10,2,.6);
+    claw(w*.2,h*.8,150,.18,4,10,2.2,.7);claw(w*.45,h*.86,110,-.1,3,9,1.8,.6);
+    claw(w*.5,h*.36,120,.02,4,9,1.4,.45);gouge(w*.78,h*.52,30,7);}
+  if(lv>=4){ /* day 18: it has been at the door in earnest. The plank splits up from the foot, and the scratches cross each other */
+    claw(w*.8,h*.5,160,.35,4,10,2.6,.8);claw(w*.58,h*.62,170,-.4,4,11,2.4,.7);claw(w*.3,h*.72,140,.3,4,10,2.2,.65);claw(w*.12,h*.88,90,-.2,3,9,2,.6);
+    gouge(w*.9,h*.5,40,9);gouge(w*.74,h*.58,28,6);gouge(w*.6,h*.9,22,5);
+    split(w*.63,h,h*.52,9);}
   W.t.needsUpdate=true;
 }
 function drawCrack(W,lv,seed,grow){
   const {c,x}=W,w=c.width,h=c.height;x.clearRect(0,0,w,h);if(!lv)return (W.t.needsUpdate=true);
-  const R=seeded(seed),frac=[0,.4,.72,1][lv]*grow;
+  const R=seededRng(seed),frac=[0,.4,.72,1][lv]*grow;
   const walk=(sx,sy,steps,dir,width)=>{const pts=[[sx,sy]];let px=sx,py=sy;for(let i=0;i<steps;i++){px+=(R()-.5)*w*.07+dir*w*.012;py+=h/steps*(.7+R()*.5);pts.push([px,py])}return pts};
   const main=walk(w*(.35+R()*.3),h*.02,26,R()<.5?-1:1),branches=[];
   for(let b=0;b<4;b++){const at=6+Math.floor(R()*16),[bx,by]=main[at];branches.push({at,pts:walk(bx,by,8+Math.floor(R()*6),R()<.5?-2:2)})}
@@ -2794,7 +2829,7 @@ function init3D(){
   const pane=new THREE.Mesh(new THREE.PlaneGeometry(1.3,1.1),new THREE.MeshStandardMaterial({map:canvasTex(256,220,(x,w,h)=>{x.fillStyle="#b9b6ad";x.fillRect(0,0,w,h);x.fillStyle="rgba(255,255,255,.25)";for(let i=0;i<60;i++)x.fillRect(Math.random()*w,Math.random()*h,3,3);x.fillStyle="#1e1a16";x.textAlign="center";x.font='bold 30px "Old Standard TT", serif';x.fillText("TOWN",w/2,90);x.fillText("MARSHAL",w/2,130)}),roughness:.3}));
   pane.position.set(1.25,1.7,.06);pane.scale.set(1.3,1.3,1);G.door.add(pane);
   const knob=new THREE.Mesh(new THREE.SphereGeometry(.07,12,10),brass);knob.position.set(2.3,-.1,.1);G.door.add(knob);
-  {const W=wearCanvas(256,666);G.doorWear=W;const m=new THREE.Mesh(new THREE.PlaneGeometry(2.5,6.5),new THREE.MeshStandardMaterial({map:W.t,transparent:true,depthWrite:false,roughness:.8}));m.position.set(1.25,0,.056);G.door.add(m)}
+  {const W=wearCanvas(512,1332);G.doorWear=W;const m=new THREE.Mesh(new THREE.PlaneGeometry(2.5,6.5),new THREE.MeshStandardMaterial({map:W.t,emissive:0xffffff,emissiveMap:W.t,emissiveIntensity:.16,transparent:true,depthWrite:false,roughness:.8}));m.position.set(1.25,0,.056);G.door.add(m)}
   G.wallWear=[[-5.4,3.4,2.6,3.6],[5.0,3.1,1.3,3.2],[7.05,4.55,2.2,1.1]].map(([cx,cy,cw,ch])=>{const W=wearCanvas(Math.round(cw*100),Math.round(ch*100));const m=new THREE.Mesh(new THREE.PlaneGeometry(cw,ch),new THREE.MeshStandardMaterial({map:W.t,transparent:true,depthWrite:false,roughness:.9}));m.position.set(cx,cy,WZ+.012);scene.add(m);return W});G.wearD=G.wearW=-1;
   G.spill=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1),new THREE.MeshStandardMaterial({map:canvasTex(192,128,(x,w,h)=>{x.fillStyle="rgba(46,26,12,.82)";x.beginPath();x.ellipse(96,64,70,38,.2,0,7);x.fill();x.beginPath();x.ellipse(150,40,20,10,.5,0,7);x.fill();x.beginPath();x.ellipse(40,90,16,8,-.3,0,7);x.fill()}),transparent:true,depthWrite:false,roughness:.2}));
   G.spill.rotation.x=-Math.PI/2;G.spill.position.set(4.25,.02,-.55);G.spill.visible=false;scene.add(G.spill);
