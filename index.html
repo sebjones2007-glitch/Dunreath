@@ -330,6 +330,9 @@ body.titling .hud,body.titling .objbar,body.titling .say{visibility:hidden}
 .tmenu .tnote{display:block;font-family:var(--type);font-size:11.5px;letter-spacing:0;color:#5f5240;margin-top:2px;line-height:1.35}
 .tmenu button:hover:not(:disabled) .tnote{color:var(--paper2)}
 .tpane{font-size:13.5px;text-align:left}
+.topts .orow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px dotted rgba(30,26,22,.28);font-family:var(--typeH);letter-spacing:.05em}
+.topts .orow .btn{margin:0;min-width:64px}
+.topts input[type=range]{flex:1;max-width:190px;accent-color:#3a2d20}
 .tpane h3{font-family:var(--typeH);font-weight:400;font-size:13px;letter-spacing:.1em;text-align:center;margin:14px 0 4px;color:var(--ink2)}
 .tpane h3:first-child{margin-top:0}
 .tpane p{margin:0 0 6px;text-align:center}
@@ -1773,12 +1776,14 @@ function finish(kind){
 
 
 /* ================= saving ================= */
-const SAVE_KEY="hollowcreek.saves.v1",SERVED_KEY="hollowcreek.served";
+const SAVE_KEY="hollowcreek.saves.v1",SERVED_KEY="hollowcreek.served",STRUCK_KEY="hollowcreek.struck";
+/* The Steam edition runs the game from inside its own app and hands it window.dunreathSteam (Steam Cloud and quitting). */
+const STEAM=!!window.dunreathSteam,IN_APP=STEAM||/DunreathDesktop/.test(navigator.userAgent);
 const STARTED_KEY="hollowcreek.startedNormal";
 function easyUnlocked(){try{if(localStorage.getItem(STARTED_KEY))return true}catch(e){}return seasonServed()||readSaves().some(x=>!x.easy)}
 function seasonServed(){try{if(localStorage.getItem(SERVED_KEY))return true}catch(e){}return readSaves().some(x=>x.outcome==="season")}
 function readSaves(){try{return JSON.parse(localStorage.getItem(SAVE_KEY)||"[]")}catch(e){return []}}
-function writeSaves(list){try{localStorage.setItem(SAVE_KEY,JSON.stringify(list));return true}catch(e){S.say="Your browser would not let the game save.";return false}}
+function writeSaves(list){try{localStorage.setItem(SAVE_KEY,JSON.stringify(list));steamPushSoon();return true}catch(e){S.say="Your browser would not let the game save.";return false}}
 function enc(root){
   const seen=new Map();let nid=0;
   const e=v=>{
@@ -1824,19 +1829,49 @@ async function unpackSaves(code){
   else json=code;
   const data=JSON.parse(json);return data.saves||[];
 }
+function struckIds(){try{return JSON.parse(localStorage.getItem(STRUCK_KEY)||"[]")}catch(e){return []}}
 function mergeSaves(incoming){
-  const list=readSaves();let added=0;
-  incoming.forEach(x=>{if(!x||!x.id||!x.blob)return;const i=list.findIndex(y=>y.id===x.id);if(i<0){list.push(x);added++}else if((x.updated||0)>(list[i].updated||0)){list[i]=x;added++}});
+  const list=readSaves(),struck=struckIds();let added=0;
+  incoming.forEach(x=>{if(!x||!x.id||!x.blob||struck.includes(x.id))return;const i=list.findIndex(y=>y.id===x.id);if(i<0){list.push(x);added++}else if((x.updated||0)>(list[i].updated||0)){list[i]=x;added++}});
   writeSaves(list);return added;
 }
 async function offerFile(name,text){
   try{if(window.claude&&claude.use){const dl=await claude.use("downloads");if(dl){await dl.save({filename:name,data:text});return true}}}catch(e){if(e&&e.code==="declined")return false}
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"application/json"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);return true;
 }
+/* ---- Steam Cloud (Steam edition only) ----
+   One file, dunreath-saves.json, holds every save, the struck-out list and the unlock flags.
+   On start the cloud copy is merged in (newest copy of each detective wins), then written back. */
+const STEAM_FILE="dunreath-saves.json";let steamTimer=null,steamReady=false;
+function steamPack(){
+  const flag=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+  return JSON.stringify({v:1,saves:readSaves(),struck:struckIds(),served:flag(SERVED_KEY),startedNormal:flag(STARTED_KEY)});
+}
+function steamPushSoon(){
+  if(!STEAM||!steamReady)return;clearTimeout(steamTimer);
+  steamTimer=setTimeout(()=>{Promise.resolve(window.dunreathSteam.cloudWrite(STEAM_FILE,steamPack())).catch(e=>console.warn("Steam Cloud save failed",e))},1500);
+}
+async function steamPull(){
+  if(!STEAM)return;
+  try{
+    const txt=await window.dunreathSteam.cloudRead(STEAM_FILE);
+    if(txt){const d=JSON.parse(txt);
+      if(Array.isArray(d.struck)&&d.struck.length){const all=[...new Set([...struckIds(),...d.struck])];try{localStorage.setItem(STRUCK_KEY,JSON.stringify(all))}catch(e){}
+        const kept=readSaves().filter(x=>!all.includes(x.id));try{localStorage.setItem(SAVE_KEY,JSON.stringify(kept))}catch(e){}}
+      try{if(d.served)localStorage.setItem(SERVED_KEY,d.served);if(d.startedNormal)localStorage.setItem(STARTED_KEY,d.startedNormal)}catch(e){}
+      mergeSaves(d.saves||[])}
+  }catch(e){console.warn("Steam Cloud read failed",e)}
+  steamReady=true;steamPushSoon();
+  if($("title").classList.contains("show")&&titlePane==="menu")renderTitle();
+}
+function quitGame(){try{if(S&&S.name)saveGame()}catch(e){}
+  if(STEAM&&window.dunreathSteam.cloudWrite)Promise.resolve(window.dunreathSteam.cloudWrite(STEAM_FILE,steamPack())).catch(()=>{}).finally(()=>window.dunreathSteam.quit());
+  else window.close()}
 /* ---- online saves, tied to an email address ---- */
 const SB_URL="https://lqmrmkhwvkjglrygmciv.supabase.co",SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbXJta2h3dmtqZ2xyeWdtY2l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzNzAwNjAsImV4cCI6MjEwNTk0NjA2MH0.mJgNSaKPsnO3HER9_1kJ85zVz0q8rea8a7ydbqec5Vs",SB_TABLE="hollow_creek_saves";
 let sb=null,sbUser=null,sbMsg="",sbBlocked=false,cloudTimer=null;
 function cloudInit(){
+  if(STEAM)return;
   sbBlocked=/claude\.(ai|site)|claudeusercontent|anthropic/.test(location.hostname)||location.protocol==="file:";
   if(sbBlocked||!window.supabase||!window.supabase.createClient)return;
   try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:"implicit",storageKey:"hollowcreek.auth"}})}catch(e){sb=null;return}
@@ -1863,6 +1898,7 @@ function cloudPushSoon(id){
 async function cloudDelete(id){if(sb&&sbUser)await sb.from(SB_TABLE).delete().eq("save_id",id)}
 function cloudSection(){
   let body;
+  if(STEAM)return `<div class="sect">YOUR SAVES</div><p class="muted" style="font-size:13px;margin:6px 0">Steam keeps your saves in Steam Cloud, so they follow you to any computer where you play Dunreath on Steam.</p>`;
   if(sbBlocked)body=`<p class="muted" style="font-size:13px;margin:6px 0">Online saves work on the website version of the game. Here, use a save code or a file to carry your progress across.</p>`;
   else if(!sb)body=`<p class="muted" style="font-size:13px;margin:6px 0">Online saves couldn't load. Check your internet connection and reload the page.</p>`;
   else if(!sbUser)body=`<p class="muted" style="font-size:13px;margin:6px 0">Sign in with your email and your saves are kept online, safe from cleared browsers, and follow you to any computer or phone. We'll email you a sign-in link. No password.</p>
@@ -1888,7 +1924,7 @@ function wireRegister(root){
   wireCloud(root);
   const msg=t=>{const m=root.querySelector("#expMsg");if(m)m.textContent=t};
   const f=root.querySelector("#expFile");if(f)f.onclick=async()=>{const code=await packSaves();const ok=await offerFile("dunreath-register.json",JSON.stringify({code}));msg(ok?"Register saved to a file.":"Not saved.")};
-  const c=root.querySelector("#expCode");if(c)c.onclick=async()=>{const code=await packSaves();try{await navigator.clipboard.writeText(code);msg(`Save code copied (${Math.round(code.length/1024)} KB of text). Paste it into an email to yourself.`)}catch(e){const ta=root.querySelector("#impCode");ta.value=code;ta.select();msg("Your browser wouldn't copy automatically, so the code is in the box below. Copy it from there.")}};
+  const c=root.querySelector("#expCode");if(c)c.onclick=async()=>{const code=await packSaves();try{await navigator.clipboard.writeText(code);msg(`Save code copied (${Math.round(code.length/1024)} KB of text). Paste it into the Register of the other copy.`)}catch(e){const ta=root.querySelector("#impCode");ta.value=code;ta.select();msg("Your browser wouldn't copy automatically, so the code is in the box below. Copy it from there.")}};
   const m=root.querySelector("#expMail");if(m)packSaves().then(code=>{const intro="My Dunreath save. To restore it, open the game, go to the Register and paste everything below the line into the Restore box.\n\n----------\n";m.href="mailto:?subject="+encodeURIComponent("My Dunreath save")+"&body="+encodeURIComponent(code.length<1700?intro+code:intro+"(Paste your save code here. It has been copied for you.)\n")});
   if(m)m.addEventListener("click",async()=>{const code=await packSaves();try{await navigator.clipboard.writeText(code);msg("Save code copied. Paste it into the email that has just opened.")}catch(e){msg("Copy the save code first, then paste it into the email.")}});
   const fi=root.querySelector("#impFile");if(fi)fi.onchange=async()=>{const file=fi.files[0];if(!file)return;try{const t=await file.text();let code=t;try{const j=JSON.parse(t);if(j.code)code=j.code}catch(e){}const n=mergeSaves(await unpackSaves(code));msg(`${n} detective${n===1?"":"s"} restored.`);setTimeout(refresh,700)}catch(e){msg("That file doesn't look like a Dunreath register.")}};
@@ -1937,13 +1973,18 @@ function loadGame(id){
   setTimeout(processQueue,1200);
 }
 function clearVisitor(){if(typeof G!=="undefined"){if(G.visitor){(G.visitor.comps||[]).forEach(C=>G.scene.remove(C.sp));G.scene.remove(G.visitor.sp);G.visitor=null;G.doorOpen=false}G.talkItem=null}if(typeof TALK!=="undefined"&&TALK){clearInterval(TALK.timer)}const t=document.getElementById("talk");if(t)t.classList.remove("show")}
-function deleteSave(id){writeSaves(readSaves().filter(x=>x.id!==id));cloudDelete(id);refresh()}
+function deleteSave(id){try{const st=struckIds();if(!st.includes(id)){st.push(id);localStorage.setItem(STRUCK_KEY,JSON.stringify(st.slice(-200)))}}catch(e){}writeSaves(readSaves().filter(x=>x.id!==id));cloudDelete(id);refresh()}
 function registerDoc(){
   const list=readSaves().sort((a,b)=>successRate(b.stats)-successRate(a.stats)||b.rep-a.rep);
   const cur=S&&S.saveId;
   return `<article class="paper"><div class="lh">REGISTER OF DETECTIVES, WAPSIE COUNTY</div>
-    <p class="muted" style="font-size:13px">Every appointment to Dunreath is entered here and saved as you go: each morning, each evening, and whenever you file or call on someone. Saves are kept in this browser.</p>
+    <p class="muted" style="font-size:13px">Every appointment to Dunreath is entered here and saved as you go: each morning, each evening, and whenever you file or call on someone. Saves are kept ${IN_APP?"on this computer":"in this browser"}.</p>
     ${cloudSection()}
+    <div class="sect">CARRY YOUR SAVES ACROSS</div>
+    <p class="muted" style="font-size:13px;margin:6px 0">To move your detectives to another copy of Dunreath, such as the Steam edition or another computer, copy your save code here and paste it into the Register there, or save the register to a file and restore it there.</p>
+    <div class="sign" style="margin-top:6px;gap:10px 16px"><button class="btn" id="expCode">Copy save code</button><button class="btn" id="expFile">Save register to a file</button><label class="btn" for="impFile" style="cursor:pointer">Restore from a file</label><input type="file" id="impFile" accept=".json,application/json,text/plain" style="position:absolute;opacity:0;width:1px;height:1px"></div>
+    <div style="margin-top:10px;display:flex;gap:10px;align-items:stretch"><textarea id="impCode" placeholder="Paste a save code here" aria-label="Save code" style="font:inherit;font-size:12px;flex:1;min-height:46px;background:#FBF8F0;border:1px solid var(--rule);color:var(--ink);padding:8px"></textarea><button class="btn" id="impBtn">Restore</button></div>
+    <p class="muted" id="expMsg" style="font-size:13px;min-height:1em" aria-live="polite"></p>
     <div class="sect">NEW APPOINTMENT</div>
     <div class="sign" style="margin-top:8px"><label for="newName" class="muted">Name</label><input id="newName" class="namein" maxlength="28" placeholder="e.g. Harriet Lowe" autocomplete="off"><button class="btn" id="newBtn">Take the post</button></div>
     ${easyUnlocked()?`<label class="opt" style="margin-top:12px"><input type="checkbox" id="newEasy"><span class="box">[ ]</span><span>Easy terms. The council gives its word not to recall you, however badly things go.</span></label>`:`<p class="muted" style="font-size:13px;margin-top:12px">Easy terms, under which the council gives its word not to recall a detective, are offered only to one who has already taken the post on ordinary terms.</p>`}
@@ -2342,14 +2383,14 @@ function renderHud(){
     $("hud-l").innerHTML=S.phase==="evening"?`${fullDate(S.day)}. Evening.`:`${fullDate(S.day)}.${S.phase==="over"?"":" "+clockAt(S.idx,S.cases.length)}`;
     $("hud-r").innerHTML=`Detective ${esc(S.name)}. Day ${S.day} of ${DAYS}. Council's opinion: ${council(councilScore())}. Temper of the town: ${temper(S.unrest)}.`;
   }
-  $("objbar").innerHTML=`<span class="muted">On the desk:</span> `+objects().map(([k,t])=>`<button data-obj="${k}">${t}</button>`).join("")+(S.desk.length&&S.name?` <button data-obj="read">Read what's laid out (${S.desk.length})</button>`:"")+` <button data-obj="sound" class="snd">Sound: ${Sound.on?"on":"off"}</button>`+(document.fullscreenEnabled||document.webkitFullscreenEnabled?` <button data-obj="full">${document.fullscreenElement||document.webkitFullscreenElement?"Leave full screen":"Full screen"}</button>`:"");
-  $("objbar").querySelectorAll("[data-obj]").forEach(b=>b.onclick=()=>b.dataset.obj==="read"?openReading():b.dataset.obj==="sound"?Sound.toggle():b.dataset.obj==="full"?toggleFull():act(b.dataset.obj));
+  $("objbar").innerHTML=`<span class="muted">On the desk:</span> `+objects().map(([k,t])=>`<button data-obj="${k}">${t}</button>`).join("")+(S.desk.length&&S.name?` <button data-obj="read">Read what's laid out (${S.desk.length})</button>`:"")+` <button data-obj="sound" class="snd">Sound: ${Sound.on?"on":"off"}</button> <button data-obj="options">Options</button>`+(document.fullscreenEnabled||document.webkitFullscreenEnabled?` <button data-obj="full">${document.fullscreenElement||document.webkitFullscreenElement?"Leave full screen":"Full screen"}</button>`:"");
+  $("objbar").querySelectorAll("[data-obj]").forEach(b=>b.onclick=()=>b.dataset.obj==="read"?openReading():b.dataset.obj==="sound"?Sound.toggle():b.dataset.obj==="full"?toggleFull():b.dataset.obj==="options"?showTitle("options",true):act(b.dataset.obj));
   $("say").textContent=reading||picker?"":(S.say||"");
 }
 function toggleFull(){const d=document,el=d.documentElement;
   if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}
   else{const f=el.requestFullscreen||el.webkitRequestFullscreen;if(f){const p=f.call(el);if(p&&p.catch)p.catch(()=>say("Your browser won't allow full screen here. Try opening the game in its own tab."))}}}
-document.addEventListener("fullscreenchange",()=>{renderHud();setTimeout(resize3D,120)});
+document.addEventListener("fullscreenchange",()=>{renderHud();if(titlePane==="options"&&$("title").classList.contains("show"))renderTitle();setTimeout(resize3D,120)});
 function busy(){return (S.queue&&S.queue.length)||(G.visitor&&G.visitor.state!=="gone")}
 function act(k){
   S.say="";
@@ -2414,8 +2455,9 @@ function fadeCard(title,sub,kind,mid,after){
   setTimeout(()=>{f.className="fade";if(after)after()},hold+800);
 }
 /* ================= station sound ================= */
-const Sound={ctx:null,master:null,on:true,started:false,gains:{},
-  init(){try{const v=localStorage.getItem("hollowcreek.sound");if(v==="off")this.on=false}catch(e){}},
+const Sound={ctx:null,master:null,on:true,started:false,gains:{},vol:1,out:null,
+  init(){try{const v=localStorage.getItem("hollowcreek.sound");if(v==="off")this.on=false;const q=parseFloat(localStorage.getItem("hollowcreek.volume"));if(q>=0&&q<=1)this.vol=q}catch(e){}},
+  setVol(v){this.vol=Math.max(0,Math.min(1,v));try{localStorage.setItem("hollowcreek.volume",String(this.vol))}catch(e){}if(this.out)this.out.gain.setTargetAtTime(this.vol*this.vol,this.ctx.currentTime,.05)},
   noise(sec){const c=this.ctx,sr=c.sampleRate,len=sr*sec,buf=c.createBuffer(2,len,sr);
     for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);let b0=0,b1=0,b2=0;for(let i=0;i<len;i++){const w=Math.random()*2-1;b0=.99765*b0+w*.099;b1=.963*b1+w*.2965;b2=.57*b2+w*1.0526;d[i]=(b0+b1+b2+w*.1848)*.11}}return buf},
   start(){
@@ -2423,7 +2465,8 @@ const Sound={ctx:null,master:null,on:true,started:false,gains:{},
     const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
     try{this.ctx=new AC()}catch(e){return}
     const c=this.ctx;this.started=true;this.buf=this.noise(3);
-    this.master=c.createGain();this.master.gain.value=0;this.master.connect(c.destination);this._realM=this.master;
+    this.out=c.createGain();this.out.gain.value=this.vol*this.vol;this.out.connect(c.destination);
+    this.master=c.createGain();this.master.gain.value=0;this.master.connect(this.out);this._realM=this.master;
     const loop=(rate,filters,name)=>{const src=c.createBufferSource();src.buffer=this.buf;src.loop=true;src.playbackRate.value=rate;let n=src;filters.forEach(f=>{n.connect(f);n=f});const g=c.createGain();g.gain.value=0;n.connect(g).connect(this.master);src.start(0,Math.random()*2);this.gains[name]=g};
     const bq=(t,f,q=.7)=>{const b=c.createBiquadFilter();b.type=t;b.frequency.value=f;b.Q.value=q;return b};
     loop(1,[bq("highpass",500),bq("lowpass",4200)],"rain");
@@ -2459,7 +2502,7 @@ const Sound={ctx:null,master:null,on:true,started:false,gains:{},
   duck(sec){if(!this.ctx||!this.gains||!this._amb)return;const t=this.ctx.currentTime,A=this._amb;
     this.gains.rain.gain.setTargetAtTime(A[0]*.4,t,.12);this.gains.rumble.gain.setTargetAtTime(A[1]*.4,t,.12);
     clearTimeout(this._dk);this._dk=setTimeout(()=>{if(!this.ctx||!this._amb)return;const t2=this.ctx.currentTime;this.gains.rain.gain.setTargetAtTime(this._amb[0],t2,.8);this.gains.rumble.gain.setTargetAtTime(this._amb[1],t2,.8)},sec*1000)},
-  boom(){if(!this._boom){const c=this.ctx,g=c.createGain();g.gain.value=this.on?5:0;const lim=c.createDynamicsCompressor();lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.001;lim.release.value=.3;g.connect(lim).connect(c.destination);this._boom=g}return this._boom},
+  boom(){if(!this._boom){const c=this.ctx,g=c.createGain();g.gain.value=this.on?5:0;const lim=c.createDynamicsCompressor();lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.001;lim.release.value=.3;g.connect(lim).connect(this.out);this._boom=g}return this._boom},
   bigThunder(){
     if(!this.ctx||!this.on)return;const c=this.ctx,t=c.currentTime;
     const B=this.boom(),m0=this.master;this.master=B;
@@ -2486,7 +2529,7 @@ const Sound={ctx:null,master:null,on:true,started:false,gains:{},
 /* ---- little sounds ---- */
 Object.assign(Sound,{
   ok(){return this.ctx&&this.on&&this.burst},
-  loud(){if(this._loud)return this._loud;const c=this.ctx,comp=c.createDynamicsCompressor();comp.threshold.value=-10;comp.ratio.value=4;const g=c.createGain();g.gain.value=this.on?3.4:0;g.connect(comp).connect(c.destination);this._loud=g;this._loudComp=comp;return g},
+  loud(){if(this._loud)return this._loud;const c=this.ctx,comp=c.createDynamicsCompressor();comp.threshold.value=-10;comp.ratio.value=4;const g=c.createGain();g.gain.value=this.on?3.4:0;g.connect(comp).connect(this.out);this._loud=g;this._loudComp=comp;return g},
   /* a pen scratching across paper, for as long as you keep writing */
   scribble(ms=260){
     if(!this.ok())return;const c=this.ctx,t=c.currentTime;
@@ -3689,8 +3732,8 @@ function endVisit(msg){
 $("sitBack").onclick=closeReading;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(picker){picker=null;S.say="";refresh()}else if(reading)closeReading()}});
 /* ================= title screen ================= */
-let titlePane="menu";
-function showTitle(pane){titlePane=pane||"menu";$("title").classList.add("show");document.body.classList.add("titling");renderTitle()}
+let titlePane="menu",optFromGame=false;
+function showTitle(pane,fromGame){titlePane=pane||"menu";optFromGame=!!fromGame;$("title").classList.add("show");document.body.classList.add("titling");renderTitle()}
 function hideTitle(){$("title").classList.remove("show");document.body.classList.remove("titling")}
 function latestOpenSave(){return readSaves().filter(x=>!x.outcome).sort((a,b)=>(b.updated||0)-(a.updated||0))[0]}
 const CREDITS=`<h3>Designed and developed by</h3><p>Seb</p>
@@ -3703,7 +3746,7 @@ function curtain(fn,reveal){const c=$("curtain");c.style.transition="";c.classLi
     else setTimeout(()=>{c.style.transition="none";c.classList.remove("on");void c.offsetWidth;c.style.transition=""},900)},950)}
 let installEvt=null;
 const standalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
-const installable=()=>!standalone()&&!/DunreathDesktop/.test(navigator.userAgent)&&location.protocol.startsWith("http");
+const installable=()=>!standalone()&&!IN_APP&&location.protocol.startsWith("http");
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e});
 addEventListener("appinstalled",()=>{installEvt=null;if(titlePane==="menu")renderTitle()});
 function renderTitle(){
@@ -3711,6 +3754,20 @@ function renderTitle(){
   if(titlePane==="install"){
     const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
     b.innerHTML=`<div class="tpane tname"><p>${ios?"In Safari, press the Share button, then choose Add to Home Screen.":"Open your browser's menu and choose Install Dunreath, or Add to Home Screen."}</p><p class="muted">Dunreath will then open from its own icon, like any other app. It always runs the latest edition of the game, so there is nothing to download again.</p><button class="btn tback" data-t="menu">Back</button></div>`;
+  }
+  else if(titlePane==="options"){
+    const fs=document.fullscreenEnabled||document.webkitFullscreenEnabled,isFs=!!(document.fullscreenElement||document.webkitFullscreenElement);
+    b.innerHTML=`<div class="tpane topts">
+      <div class="orow"><span>Sound</span><button class="btn" id="oSnd">${Sound.on?"On":"Off"}</button></div>
+      <div class="orow"><label for="oVol">Volume</label><input type="range" id="oVol" min="0" max="100" step="5" value="${Math.round(Sound.vol*100)}"></div>
+      ${fs?`<div class="orow"><span>Full screen</span><button class="btn" id="oFull">${isFs?"On":"Off"}</button></div>`:""}
+      ${IN_APP?`<p class="muted" style="font-size:12px;margin:4px 0 0">F11 also switches full screen.</p>`:""}
+      <button class="btn tback" id="oBack">${optFromGame?"Back to the desk":"Back"}</button></div>`;
+    $("oSnd").onclick=()=>{Sound.toggle();renderTitle();renderHud()};
+    $("oVol").oninput=e=>Sound.setVol(e.target.value/100);
+    if($("oFull"))$("oFull").onclick=()=>toggleFull();
+    $("oBack").onclick=()=>{if(optFromGame){optFromGame=false;hideTitle();renderHud()}else{titlePane="menu";renderTitle()}};
+    return;
   }
   else if(titlePane==="credits"){b.innerHTML=`<div class="tpane tcred">${CREDITS}<button class="btn tback" data-t="menu">Back</button></div>`}
   else if(titlePane==="new"||titlePane==="easy"){
@@ -3726,20 +3783,24 @@ function renderTitle(){
       <button data-t="easy"${open?"":" disabled"}>Easy Mode<span class="tnote">${open?"The council will not recall you":"Offered once you have taken the post on ordinary terms"}</span></button>
       <button data-t="register">Register of Detectives</button>
       ${installable()?`<button data-t="install">Install as App<span class="tnote">Keeps Dunreath on your device, and it updates itself</span></button>`:""}
-      <button data-t="credits">Credits</button></nav>`;
+      <button data-t="options">Options</button>
+      <button data-t="credits">Credits</button>
+      ${IN_APP?`<button data-t="quit">Quit</button>`:""}</nav>`;
   }
   b.querySelectorAll("[data-t]").forEach(x=>x.onclick=()=>{
     const t=x.dataset.t;
     if(t==="continue"){const c=latestOpenSave();if(c)curtain(()=>{hideTitle();loadGame(c.id)});return}
     if(t==="register"){hideTitle();Sound.rustle();place("register");return}
+    if(t==="quit"){quitGame();return}
     if(t==="easy"&&!easyUnlocked())return;
     if(t==="install"&&installEvt){const e=installEvt;installEvt=null;e.prompt();e.userChoice.finally(()=>{titlePane="menu";renderTitle()});return}
     titlePane=t;renderTitle();
   });
 }
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("title").classList.contains("show")&&titlePane!=="menu"){titlePane="menu";renderTitle()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("title").classList.contains("show")&&titlePane!=="menu"){if(optFromGame){optFromGame=false;hideTitle();renderHud();return}titlePane="menu";renderTitle()}});
 
 cloudInit();
+steamPull();
 init3D();
 startGame("");
 /* seb's look-ahead: open the game with ?day=17 on the end of the address to play through to that morning.

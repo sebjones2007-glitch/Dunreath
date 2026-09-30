@@ -1,0 +1,34 @@
+{
+  "name": "dunreath-steam",
+  "productName": "Dunreath",
+  "version": "1.0.0",
+  "description": "A detective's desk in Dunreath, Iowa, March 1931.",
+  "author": "seb",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "bundle": "node scripts/bundle-game.js",
+    "start": "npm run bundle && electron .",
+    "dist": "npm run bundle && electron-builder --publish never"
+  },
+  "dependencies": {
+    "steamworks.js": "0.4.0"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3",
+    "three": "0.128.0"
+  },
+  "build": {
+    "appId": "com.sebjones.dunreath.steam",
+    "productName": "Dunreath",
+    "copyright": "Dunreath",
+    "files": ["main.js", "preload.js", "steam-config.js", "game/**", "build/icon.png"],
+    "asarUnpack": ["node_modules/steamworks.js/**"],
+    "directories": { "output": "dist", "buildResources": "build" },
+    "win": {
+      "target": [{ "target": "dir", "arch": ["x64"] }]
+    }
+  }
+}
