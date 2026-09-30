@@ -2635,14 +2635,23 @@ function drawDoorWear(W,lv){
     split(w*.63,h,h*.52,9);}
   W.t.needsUpdate=true;
 }
-function drawCrack(W,lv,seed){
-  const {c,x}=W,w=c.width,h=c.height,u=1.6;x.clearRect(0,0,w,h);x.lineCap="round";x.lineJoin="round";
-  if(!lv)return (W.t.needsUpdate=true);
-  const R=seededRng(seed),grow=[0,.4,.7,1][lv],wid=[0,4,6.5,9.5][lv]*u;
+/* the tools for drawing a split in the boards: arm() works out its path, draw() paints as much of it as has opened */
+function splitKit(x,R,u){
   /* one arm of a split: runs with the grain (straight up and down the boards), now and then jogging sharply across it */
   const arm=(sx,sy,ang,len)=>{const pts=[[sx,sy]];let px=sx,py=sy,a=ang,tg=ang,run=0;const st=3.5*u;
     for(let d=0;d<len;d+=st){if(run>0)run--;else if(R()<.07){tg=ang+(R()<.5?-1:1)*(.4+R()*.55);run=2+Math.floor(R()*4)}else tg=ang+(R()-.5)*.35;a+=(tg-a)*.5;
       px+=Math.sin(a)*st;py+=Math.cos(a)*st;pts.push([px,py])}return pts};
+  const draw=(P0,w0,upto,halo)=>{const n=Math.floor(P0.length*upto);if(n<2)return;const P=P0.slice(0,n),L=[],Rt=[];
+    P.forEach(([a,b],i)=>{const [p,q]=P[Math.min(i+1,n-1)],[pp,qq]=P[Math.max(i-1,0)];let dx=p-pp,dy=q-qq;const m=Math.hypot(dx,dy)||1;dx/=m;dy/=m;
+      const t=i/(n-1),k=w0*Math.pow(1-t,.7)*(.75+.3*Math.sin(i*.35)+.15*((i*7919)%13)/13)/2+.35*u;L.push([a-dy*k,b+dx*k]);Rt.push([a+dy*k,b-dx*k])});
+    x.beginPath();L.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));for(let i=Rt.length-1;i>=0;i--)x.lineTo(Rt[i][0],Rt[i][1]);x.closePath();x.fillStyle="rgba(5,2,1,.95)";x.save();x.shadowColor=`rgba(170,122,70,${halo?.3:.2})`;x.shadowBlur=(halo?7:4)*u;x.fill();x.restore();x.fill()};
+  const hair=P=>{x.beginPath();P.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));x.strokeStyle="rgba(8,4,1,.55)";x.lineWidth=1.1*u;x.stroke()};
+  return {arm,draw,hair};
+}
+function drawCrack(W,lv,seed){
+  const {c,x}=W,w=c.width,h=c.height,u=1.6;x.clearRect(0,0,w,h);x.lineCap="round";x.lineJoin="round";
+  if(!lv)return (W.t.needsUpdate=true);
+  const R=seededRng(seed),{arm,draw,hair}=splitKit(x,R,u),grow=[0,.4,.7,1][lv],wid=[0,4,6.5,9.5][lv]*u;
   /* the whole split is worked out first, then only as much of it as the day allows is drawn */
   const cracks=[],add=(pts,w0,from,depth,parent)=>{const cr={pts,w0,from,depth,parent};cracks.push(cr);return cr};
   const ox=w*(.3+R()*.4),oy=h*(.25+R()*.3);
@@ -2653,12 +2662,25 @@ function drawCrack(W,lv,seed){
   /* fine checks in the grain around it, as in weathered boards */
   const checks=[];for(let i=0;i<30;i++){const cx=ox+(R()-.5)*w*.7,cy=R()*h,L=(8+R()*34)*u;checks.push(arm(cx,cy,R()<.5?0:Math.PI,L))}
   const shown=cr=>{if(!cr.parent)return grow;const p=shown(cr.parent);if(p<=cr.from)return 0;return Math.min(1,(p-cr.from)/(1-cr.from)*1.3)};
-  const draw=(P0,w0,upto,halo)=>{const n=Math.floor(P0.length*upto);if(n<2)return;const P=P0.slice(0,n),L=[],Rt=[];
-    P.forEach(([a,b],i)=>{const [p,q]=P[Math.min(i+1,n-1)],[pp,qq]=P[Math.max(i-1,0)];let dx=p-pp,dy=q-qq;const m=Math.hypot(dx,dy)||1;dx/=m;dy/=m;
-      const t=i/(n-1),k=w0*Math.pow(1-t,.7)*(.75+.3*Math.sin(i*.35)+.15*((i*7919)%13)/13)/2+.35*u;L.push([a-dy*k,b+dx*k]);Rt.push([a+dy*k,b-dx*k])});
-        x.beginPath();L.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));for(let i=Rt.length-1;i>=0;i--)x.lineTo(Rt[i][0],Rt[i][1]);x.closePath();x.fillStyle="rgba(5,2,1,.95)";x.save();x.shadowColor=`rgba(170,122,70,${halo?.3:.2})`;x.shadowBlur=(halo?7:4)*u;x.fill();x.restore();x.fill()};
-  checks.slice(0,lv*9).forEach(P=>{x.beginPath();P.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));x.strokeStyle="rgba(8,4,1,.55)";x.lineWidth=1.1*u;x.stroke()});
+  checks.slice(0,lv*9).forEach(hair);
   cracks.forEach(cr=>{if(cr.depth>=2&&lv<3)return;draw(cr.pts,cr.w0,shown(cr),cr.depth===0)});
+  W.t.needsUpdate=true;
+}
+/* small splits creeping down from under the roof beam, one or two more every few days */
+function drawEaves(W,lv,seed){
+  const {c,x}=W,w=c.width,h=c.height,u=1.6;x.clearRect(0,0,w,h);x.lineCap="round";x.lineJoin="round";
+  if(!lv)return (W.t.needsUpdate=true);
+  const R=seededRng(seed),{arm,draw,hair}=splitKit(x,R,u),N=16,sites=[];
+  for(let i=0;i<N;i++){const sx=w*(i+.2+R()*.6)/N,from=1+Math.floor(R()*5)+(i%3===0?0:1);
+    const len=h*(.3+R()*.7),main=arm(sx,-2*u,(R()-.5)*.3,len),br=[];
+    for(let b=0;b<1+Math.floor(R()*2);b++){const t=.2+R()*.5,[bx,by]=main[Math.floor(main.length*t)],sd=R()<.5?-1:1;br.push({t,pts:arm(bx,by,sd*(.5+R()*.5),len*(.2+R()*.3))})}
+    const seam=arm(sx,1.5*u,(R()<.5?1:-1)*Math.PI/2,w/N*(.3+R()*.6)),checks=[0,1,2].map(()=>arm(sx+(R()-.5)*w/N,h*R()*.6,0,(6+R()*18)*u));
+    sites.push({from,main,br,seam,checks,wd:(3.6+R()*4)*u})}
+  /* a split first shows as a short tongue under the beam; each later stage it runs further down the wall, forks, and opens wider */
+  sites.forEach(s=>{const age=lv-s.from+1;if(age<1)return;const g=Math.min(1,age/4),wd=s.wd*(.45+g*.55);
+    const mf=Math.min(1,.16+(age-1)*.17);draw(s.seam,wd*.6,Math.min(1,.4+age*.2),false);draw(s.main,wd,mf,true);s.checks.slice(0,age-1).forEach(hair);
+    if(age>=2)s.br.forEach(b=>{if(mf>b.t)draw(b.pts,wd*.55,Math.min(1,(age-1)/2.5),false)})});
+  (W.holes||[]).forEach(([a,b,c2,d2])=>x.clearRect(a,b,c2,d2));
   W.t.needsUpdate=true;
 }
 function stationWear(){
@@ -2666,6 +2688,7 @@ function stationWear(){
   const dl=d>=18?4:d>=15?3:d>=11?2:d>=7?1:0,wl=d>=19?3:d>=16?2:d>=13?1:0;
   if(G.wearD!==dl){G.wearD=dl;drawDoorWear(G.doorWear,dl)}
   if(G.wearW!==wl){G.wearW=wl;G.wallWear.forEach((W,i)=>drawCrack(W,Math.max(0,wl-i),31+i*17))}
+  const el=[4,7,10,13,16,19].filter(v=>d>=v).length;if(G.wearE!==el){G.wearE=el;drawEaves(G.eavesWear,el,53)}
 }
 function canvasTex(w,h,draw){
   const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");draw(x,w,h);
@@ -2841,7 +2864,8 @@ function init3D(){
   pane.position.set(1.25,1.7,.06);pane.scale.set(1.3,1.3,1);G.door.add(pane);
   const knob=new THREE.Mesh(new THREE.SphereGeometry(.07,12,10),brass);knob.position.set(2.3,-.1,.1);G.door.add(knob);
   {const W=wearCanvas(512,1332);G.doorWear=W;const m=new THREE.Mesh(new THREE.PlaneGeometry(2.5,6.5),new THREE.MeshStandardMaterial({map:W.t,emissive:0xffffff,emissiveMap:W.t,emissiveIntensity:.16,transparent:true,depthWrite:false,roughness:.8}));m.position.set(1.25,0,.056);G.door.add(m)}
-  G.wallWear=[[-5.4,3.4,2.6,3.6],[5.0,3.1,1.3,3.2],[7.05,4.55,2.2,1.1]].map(([cx,cy,cw,ch])=>{const W=wearCanvas(Math.round(cw*160),Math.round(ch*160));const m=new THREE.Mesh(new THREE.PlaneGeometry(cw,ch),new THREE.MeshStandardMaterial({map:W.t,emissive:0xffffff,emissiveMap:W.t,emissiveIntensity:.15,transparent:true,depthWrite:false,roughness:.9}));m.position.set(cx,cy,WZ+.012);scene.add(m);return W});G.wearD=G.wearW=-1;
+  G.wallWear=[[-5.4,3.4,2.6,3.6],[5.0,3.1,1.3,3.2],[7.05,4.55,2.2,1.1]].map(([cx,cy,cw,ch])=>{const W=wearCanvas(Math.round(cw*160),Math.round(ch*160));const m=new THREE.Mesh(new THREE.PlaneGeometry(cw,ch),new THREE.MeshStandardMaterial({map:W.t,emissive:0xffffff,emissiveMap:W.t,emissiveIntensity:.15,transparent:true,depthWrite:false,roughness:.9}));m.position.set(cx,cy,WZ+.012);scene.add(m);return W});G.wearD=G.wearW=G.wearE=-1;
+  {const W=wearCanvas(3296,416);G.eavesWear=W;/* keep the splits off the window and the doorway */W.holes=[[(L-.1+10.3)*160,(5.2-T-.07)*160,(WW+.2)*160,416],[(5.7+10.3)*160,(5.2-4.08)*160,2.75*160,416]];const m=new THREE.Mesh(new THREE.PlaneGeometry(20.6,2.6),new THREE.MeshStandardMaterial({map:W.t,emissive:0xffffff,emissiveMap:W.t,emissiveIntensity:.15,transparent:true,depthWrite:false,roughness:.9}));m.position.set(0,3.9,WZ+.014);scene.add(m)}
   G.spill=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1),new THREE.MeshStandardMaterial({map:canvasTex(192,128,(x,w,h)=>{x.fillStyle="rgba(46,26,12,.82)";x.beginPath();x.ellipse(96,64,70,38,.2,0,7);x.fill();x.beginPath();x.ellipse(150,40,20,10,.5,0,7);x.fill();x.beginPath();x.ellipse(40,90,16,8,-.3,0,7);x.fill()}),transparent:true,depthWrite:false,roughness:.2}));
   G.spill.rotation.x=-Math.PI/2;G.spill.position.set(4.25,.02,-.55);G.spill.visible=false;scene.add(G.spill);
   G.door.position.set(5.8,.65,WZ+.07);scene.add(G.door);const doorHole=new THREE.Mesh(new THREE.PlaneGeometry(2.55,6.5),mat(0x0a0806,1));doorHole.position.set(7.05,.65,WZ+.012);scene.add(doorHole);
