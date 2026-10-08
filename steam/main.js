@@ -47,6 +47,15 @@ ipcMain.handle("cloud-write", (e, name, text) => {
   try { return steam.cloud.writeFile(name, text) }
   catch (err) { console.warn("Steam Cloud write failed:", err); return false }
 });
+// Achievements the game may unlock. Each API name must match one set up in
+// Steamworks (Stats & Achievements); see README.md.
+const ACHIEVEMENTS = ["SPIRIT_LAID_TO_REST", "ART_RECOVERED", "ROBBERY_FOILED", "SEASON_SERVED", "HIGH_STANDING"];
+ipcMain.on("achieve", (e, id) => {
+  if (!steam || !ACHIEVEMENTS.includes(id)) return;
+  try {
+    if (!steam.achievement.isActivated(id)) { steam.achievement.activate(id); steam.stats.store() }
+  } catch (err) { console.warn("Steam achievement failed:", err) }
+});
 ipcMain.on("quit", () => app.quit());
 
 let win = null;
