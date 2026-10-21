@@ -63,6 +63,10 @@ button:focus-visible,textarea:focus-visible,input:focus-visible+label{outline:2p
 
 /* paper */
 .doc-area{min-width:0}
+.townmap{width:100%;height:auto;display:block;cursor:crosshair;border:1px solid var(--rule);box-shadow:inset 0 0 30px rgba(90,60,30,.25)}
+.photos{display:flex;flex-wrap:wrap;gap:14px 16px;margin:10px 0 4px}
+.photo{margin:0;background:#EFE6D2;padding:6px 6px 4px;box-shadow:0 2px 6px rgba(0,0,0,.3);transform:rotate(-.6deg)}.photo:nth-child(2n){transform:rotate(.8deg)}
+.photo img{display:block;width:96px;height:122px}.photo figcaption{font-family:var(--hand);font-size:15px;text-align:center;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#3a2a1c}
 .paper{background:var(--paper);color:var(--ink);box-shadow:0 1px 0 rgba(0,0,0,.25),0 14px 34px rgba(0,0,0,.4);padding:30px 32px;position:relative}
 @media(max-width:520px){.paper{padding:22px 18px}}
 .paper+.paper{margin-top:18px}
@@ -130,7 +134,7 @@ button:focus-visible,textarea:focus-visible,input:focus-visible+label{outline:2p
 .slip{background:#FBF8F0;color:var(--ink);padding:18px 20px 16px;width:min(100%,330px);font-family:var(--hand);font-size:22px;line-height:1.25;box-shadow:0 2px 0 rgba(0,0,0,.2),0 10px 22px rgba(0,0,0,.35)}
 .slip:nth-child(odd){transform:rotate(-1.3deg)}
 .slip:nth-child(even){transform:rotate(1.1deg)}
-.slip .sig{text-align:right;margin-top:8px;min-height:1em}.slip .slipnb{font-family:var(--type);font-size:13px;margin-top:10px}
+.slip .sig{text-align:right;margin-top:8px;min-height:1em}.slip.odd{background:#EDE3CC;color:#4a3524;font-family:"Pinyon Script",var(--hand);font-size:25px;line-height:1.4;letter-spacing:.01em}.slip .slipnb{font-family:var(--type);font-size:13px;margin-top:10px}
 .deskmsg{color:var(--deskFaint);font-style:italic;padding:8px 2px}
 
 /* files */
@@ -287,6 +291,7 @@ select.other{font:inherit;color:var(--ink);background:#FBF8F0;border:1px solid v
 .nb.worn .hb{height:236px;overflow-y:auto;background-image:repeating-linear-gradient(180deg,transparent 0 29px,rgba(60,40,20,.14) 29px 30px);background-attachment:local}
 .nb.worn .scr{padding-top:2px}
 .nb.worn .scr .ln{display:block;line-height:30px;transform-origin:left center;white-space:pre-wrap;word-wrap:break-word}
+.nb.worn .scr .ln.shaky{text-shadow:.7px .5px 0 rgba(38,26,16,.35)}
 .nb.worn .scr.blank{font-size:22px;color:rgba(60,40,20,.45);line-height:30px}
 .nb.worn textarea{width:100%;height:236px;min-height:0;font-family:"Reenie Beanie",var(--hand);font-size:25px;line-height:30px;color:#261a10;background:transparent;border:none;resize:none;padding:0;transform:rotate(-.5deg);transform-origin:left top}
 .nb.worn .divider{display:block;width:100%;height:16px;margin:6px 0 8px;position:relative;z-index:1}
@@ -365,7 +370,7 @@ body.titling .hud,body.titling .objbar,body.titling .say{visibility:hidden}
   <div class="picker" id="picker"></div>
 </div>
 <div class="tip" id="tip"></div>
-<div class="title" id="title" role="dialog" aria-modal="true" aria-label="Dunreath"><div class="tcard"><div class="tmast">Dunreath</div><div class="tsub">WAPSIE COUNTY, IOWA &middot; MARCH 1931</div><div class="trule"></div><div id="tbody"></div><div class="tfoot">A season at the marshal's desk</div></div></div>
+<div class="title" id="title" role="dialog" aria-modal="true" aria-label="Dunreath"><div class="tcard"><div class="tmast">Dunreath</div><div class="tsub">MARION COUNTY, IOWA &middot; MARCH 1931</div><div class="trule"></div><div id="tbody"></div><div class="tfoot">A season at the marshal's desk</div></div></div>
 <div class="curtain" id="curtain"></div>
 <div class="fade" id="fade" aria-live="polite"><div class="ft" id="fadeT"></div><div class="fs" id="fadeS"></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -689,7 +694,7 @@ function genHuman(day,tier,opt={}){
 }
 function genSuper(day,tier){
   const pool=free();if(pool.length<4)return null;
-  const victim=rnd(pool),others=pool.filter(n=>n!==victim);
+  const victim=wpick(pool,n=>1+3*nearGhost(n)),others=pool.filter(n=>n!==victim);
   const suspects=[];
   while(suspects.length<3){
     const s=wpick(others.filter(o=>!suspects.includes(o)),o=>(o.pub.includes("occult")?1.8:1)+(o.rivals.includes(victim.id)?2:0)+o.shady*.5);
@@ -871,6 +876,9 @@ CRIME_ALL=[...CRIME_ALL,...V4_CRIMES];
   toSer.map(take).filter(Boolean).forEach(k=>CRIMES.serious.push(k));
 }
 const FIRE_GRAVE=CRIMES.grave.filter(k=>/arson/i.test(k.n)&&!k.late);
+// crimes the story places on one day only, kept out of the tiers; appended last so saved games keep their crime numbers
+const PADDY_CRIME={story:1,ctx:"yard",t:"The night of the dance",n:"Drunk and disorderly",d:v=>`Somebody came home from the St. Patrick's dance roaring drunk, sang under ${v.name}'s window until two, put a fist through the glass of the ${v.place} door and was sick on the step. The dance was meant to be dry. The drink came from somewhere.`};
+CRIME_ALL=[...CRIME_ALL,PADDY_CRIME];
 function pickCrime(list){return wpick(list,k=>/arson/i.test(k.n)?1.25:/murder/i.test(k.n)?.25:1)}
 
 const CTX_T={"The missing pies":"yard","The daubed door":"yard","The stripped apple tree":"yard","The rotten eggs":"yard","The cut clothesline":"yard","The scattered hens":"animal","The stolen milk bottles":"yard","The tipped outhouse":"yard","The pilfered coal":"yard","The soaped windows":"yard","The loosed cow":"animal","The stolen pig":"animal","The painted horse":"animal","The chimney stuffed with sacking":"sabotage",
@@ -1155,6 +1163,7 @@ function genDay(d){
     if(by){const c=genHuman(d,"serious",{culprit:by,crime:prep.crime,victim:N[prep.crime.vict]});if(c){c.prep=prep;prep.by=by;prep.done=true;list.push(c)}}
   }
   if(d===((S.firstSuperDay)||6)&&riteF()&&!S.firstSuper){S.firstSuper=true;const sc=genSuper(d,"serious");if(sc)list.push(sc)}
+  if(d===15){const sots=free().filter(n=>![5,8].includes(n.id));if(sots.length){const c=genHuman(d,"petty",{culprit:wpick(sots,n=>.4+n.shady),crime:PADDY_CRIME});if(c){c.paddy=true;list.push(c)}}}
   if(d===19&&!S.pip&&!N[5].jailed&&!N[5].dead){N[5].away=true;S.pip={search:null,found:false}}
   if(d===19){
     // a night of fires, whatever else walks
@@ -1284,7 +1293,7 @@ const LATE_BRIEFS=[
  {head:"CHURCH BELLS SILENT",decks:["Sexton Refuses to Climb Tower After Dark"],body:"The evening bell at St. Brendan's was not rung last night. The sexton would give no reason except that he had \"heard something up there.\""},
  {head:"NIGHT WATCH DOUBLED",decks:["Merchants Board Up Windows"],body:"Merchants on Main Street have taken to boarding their windows at dusk. The council has voted funds for two more night watchmen, though none has yet applied."}
 ];
-const FILLER=["The Ladies' Aid Society will meet Thursday afternoon in the Methodist church parlors.","Bostwick's Hardware reports the arrival of a car of garden seed and fencing.","Roads west of town are nearly impassable owing to the rain, and the mail carrier was two hours late Monday.","The high school basketball five lost a close game at Pella Friday evening, 18 to 16.","Hog prices at the Des Moines yards were steady yesterday at $7.10.","The Odd Fellows will hold a card party and oyster supper Saturday evening.","The council has again deferred the question of a new town pump.","The creamery reports that milk deliveries have been late all week owing to the state of the roads.","The Rialto announces a picture of the supernatural sort for Friday and Saturday evenings. Admission 25 cents.","Relief committee members ask that donations of flour and coal be left at the town hall."];
+const FILLER=["The Ladies' Aid Society will meet Thursday afternoon in the Methodist church parlors.","Bostwick's Hardware reports the arrival of a car of garden seed and fencing.","Roads west of town are nearly impassable owing to the rain, and the mail carrier was two hours late Monday.","The high school basketball five lost a close game at Pella Friday evening, 18 to 16.","Hog prices at the Des Moines yards were steady yesterday at $7.10.","The Odd Fellows will hold a card party and oyster supper Saturday evening.","The council has again deferred the question of a new town pump.","The creamery reports that milk deliveries have been late all week owing to the state of the roads.","The Rialto asks patrons not to whistle during the newsreel.","Relief committee members ask that donations of flour and coal be left at the town hall."];
 const ADS=[["BOSTWICK'S HARDWARE","Garden seed, poultry netting, lamp chimneys. Front Street."],["KESSLER'S LIVER TONIC","For that tired feeling. At all druggists, 50c."],["RIALTO THEATRE","Friday and Saturday. Doors open 7 p.m."],["HALE'S BAKERY","Fresh bread daily. Pies to order for church suppers."],["CRANE LIVERY & FEED","Horses boarded. Teams for hire by the day."],["VOSS LUNCHROOM","Plate lunch 25c. Open late."]];
 const SENT={petty:["let off with a warning","fined $2 and costs","fined $10 and costs"],
   moderate:["fined $5 and costs","fined $15 and costs","fined $30 and costs"],
@@ -1369,9 +1378,19 @@ function buildPaper(prev,reports){
       :pickT([`${cap(A)} and ${B} are said to be not on speaking terms since a disagreement at the Lenten supper.`,`Words passed between ${A} and ${B} on Front Street Saturday, to the interest of passers-by.`,`${cap(A)} is understood to have taken ${B} to task over a matter of money.`,`${cap(A)} was heard to remark that ${B} "would not be missed."`]));
   });
   const lent=lentNotes(d);if(lent)paper.personal.push(lent);
+  const pic=rialtoNotes(d);if(pic)paper.personal.push(pic);
+  if(!prev)paper.personal.push("By an act signed yesterday by President Hoover, \"The Star-Spangled Banner\" is now the national anthem of the United States. The high school band has been practising it since Christmas, and will need to.");
   shuffle(FILLER).slice(0,lent?1:2).forEach(f=>paper.personal.push(f));
   paper.personal=shuffle(paper.personal);
   return paper;
+}
+// the Rialto has Dracula (Universal, February 1931) on Friday and Saturday of the first week, and back by demand on day 11
+function rialtoNotes(d){
+  if(d===2)return "The Rialto announces \"Dracula,\" the new Universal picture with Mr. Bela Lugosi, for Friday and Saturday evenings. Admission 25 cents. The management does not recommend it for children or for persons of a nervous disposition.";
+  if(d===6)return "Both showings of \"Dracula\" at the Rialto were sold out Saturday. Two ladies had to be helped out before the end, and a third would not walk home alone.";
+  if(d===11)return "At the request of patrons, though not of the Methodist ladies, the Rialto will show \"Dracula\" once more this evening.";
+  if(d===16&&spiritUp())return "More than one resident has told the Courier that the town's present troubles began the week the Rialto showed \"Dracula.\" The manager says he has shown worse pictures, and the town did not notice.";
+  return null;
 }
 function lentNotes(d){
   const fish=!N[4].jailed&&!N[4].dead,dunn=!N[8].jailed&&!N[8].dead,up=spiritUp();
@@ -1531,6 +1550,11 @@ const SLIP_OPEN=["Detective,","Detective —","Thought you should know.","For yo
 function slipsFor(){
   S.slips=[];
   if(!S.name||S.day<3||quietSunday(S.day))return;
+  // once, late, while the spirit walks: a note in a hand nobody in town writes. Never explained.
+  if(spiritUp()&&S.rite&&S.rite.story){S.oddNoteDay=S.oddNoteDay||16+Math.floor(Math.random()*3);
+    if(S.day===S.oddNoteDay&&!S.oddNoteDone){S.oddNoteDone=true;const pl=S.rite.story.place;
+      const text=rnd([`It is very cold at ${pl}, and nobody comes. Will you not come?`,`They have all forgotten. You will not forget.`,`I am still at ${pl}. I have been waiting such a long time.`]);
+      const h=hear(null,text,[]);S.slips.push({src:null,hid:h.hid,text,o:"",c:"",sign:false,odd:true})}}
   const vis=S.visit&&S.visit.npc;
   const pool=free().filter(n=>n.rel>=65&&n!==vis&&n.id!==MAYOR&&n.id!==8&&!n.away);
   if(!pool.length||Math.random()>.1+.015*S.day)return;
@@ -1543,7 +1567,7 @@ function slipsFor(){
 function slipsDoc(){
   if(!S.slips||!S.slips.length)return `<p class="deskmsg">Nothing was left for you this morning.</p>`;
   return `<p class="deskmsg">${S.slips.length>1?"Folded notes":"A folded note"}, pushed under the station door overnight.</p><div class="slips">${S.slips.map(s=>{const h=S.heard[s.hid];
-    return `<div class="slip">${esc(s.o)}<br>${esc(s.text)} ${esc(s.c)}<div class="sig">${s.sign?initials(N[s.src]):""}</div>${h&&!h.noted?`<button class="nm slipnb" data-slip="${s.hid}">Copy it into the notebook</button>`:h?`<p class="slipnb muted">Copied into your notebook.</p>`:""}</div>`}).join("")}</div>`;
+    return `<div class="slip${s.odd?" odd":""}">${s.o?esc(s.o)+"<br>":""}${esc(s.text)} ${esc(s.c)}<div class="sig">${s.sign?initials(N[s.src]):""}</div>${h&&!h.noted?`<button class="nm slipnb" data-slip="${s.hid}">Copy it into the notebook</button>`:h?`<p class="slipnb muted">Copied into your notebook.</p>`:""}</div>`}).join("")}</div>`;
 }
 function cabinetDoc(){
   const list=[...N].sort((a,b)=>surname(a).localeCompare(surname(b)));
@@ -1602,18 +1626,22 @@ function callsDoc(){
     <ul class="calls">${people.map(p=>`<li><span>${esc(p.name)}</span><span class="d">${disposition(p)}</span><button class="nm" data-call="${p.id}">Call</button></li>`).join("")}</ul></article>`;
 }
 function seeded(n){let x=Math.sin(n*9301+49297)*233280;return x-Math.floor(x)}
-function scrawl(text,seed){
-  return esc(text).split("\n").map((ln,i)=>{const r=k=>seeded(seed*97+i*13+k);
-    const rot=(r(1)-.5)*2.2,dx=r(2)*12,fs=23+Math.round(r(3)*6),ls=((r(4)-.5)*1.4).toFixed(2),op=(.78+r(5)*.22).toFixed(2),sk=((r(6)-.5)*6).toFixed(1);
-    return `<span class="ln" style="transform:translateX(${dx.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) skewX(${sk}deg);font-size:${fs}px;letter-spacing:${ls}px;opacity:${op}">${ln||"&nbsp;"}</span>`}).join("");
+// k (0..1) is how badly the hand shakes: the notebook's writing gets worse as the town's temper does
+function scrawl(text,seed,k=0){
+  return esc(text).split("\n").map((ln,i)=>{const r=k2=>seeded(seed*97+i*13+k2);
+    const rot=(r(1)-.5)*2.2*(1+2.5*k),dx=r(2)*12+k*14,fs=23+Math.round(r(3)*6),ls=((r(4)-.5)*1.4+k*1.2).toFixed(2),op=(.78+r(5)*.22-k*.12).toFixed(2),sk=((r(6)-.5)*6*(1+1.5*k)-k*4).toFixed(1);
+    const body=k<.15||!ln?ln:ln.split(" ").map((w,j)=>{const q=n=>seeded(seed*31+i*7+j*3+n);return `<span class="wd" style="display:inline-block;transform:translateY(${((q(1)-.5)*7*k).toFixed(1)}px) rotate(${((q(2)-.5)*7*k).toFixed(1)}deg)">${w}</span>`}).join(" ");
+    return `<span class="ln${k>=.5?" shaky":""}" style="${k>0?`margin-right:${(dx+k*26).toFixed(0)}px;`:""}transform:translateX(${dx.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) skewX(${sk}deg);font-size:${fs}px;letter-spacing:${ls}px;opacity:${op}">${body||"&nbsp;"}</span>`}).join("");
 }
+const nbShake=d=>{const u=d===S.day?S.unrest:(S.nbUnrest&&S.nbUnrest[d]);return u==null?0:Math.max(0,Math.min(1,(u-30)/55))};
 function stain(seed){if(seeded(seed*7.3)>.34)return "";const x=10+seeded(seed*3.1)*70,y=8+seeded(seed*5.7)*70,sz=90+seeded(seed*2.2)*70;return `<span class="stain" style="left:${x.toFixed(0)}%;top:${y.toFixed(0)}%;width:${sz.toFixed(0)}px;height:${sz.toFixed(0)}px"></span>`}
 function wobble(seed){let d="M4 8";for(let k=1;k<=12;k++){d+=` L${(k*33).toFixed(0)} ${(8+(seeded(seed+k)-.5)*7).toFixed(1)}`}return `<svg class="divider" viewBox="0 0 400 16" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="#3a2a1a" stroke-width="1.6" stroke-linecap="round" opacity=".7"/></svg>`}
 function nbHalf(d,editable){
   if(d<1)return `<div class="half"><div class="hd"></div><div class="hb"></div></div>`;
   const txt=S.pages[d]||"";
-  const body=editable?`<textarea id="nbText" aria-label="Today's notes" placeholder="Scrawl down whatever you remember...">${esc(txt)}</textarea>`
-    :txt.trim()?`<div class="scr">${scrawl(txt,d)}</div>`:`<div class="scr blank">Nothing written.</div>`;
+  const k=nbShake(d);
+  const body=editable?`<textarea id="nbText" aria-label="Today's notes" placeholder="Scrawl down whatever you remember..." style="${k>0?`transform:skewX(${(-k*5).toFixed(1)}deg) rotate(${(-k*.9).toFixed(2)}deg);letter-spacing:${(k*1.4).toFixed(2)}px;padding-left:${(4+k*12).toFixed(0)}px;`:""}${k>=.5?"text-shadow:.7px .5px 0 rgba(38,26,16,.35);":""}">${esc(txt)}</textarea>`
+    :txt.trim()?`<div class="scr">${scrawl(txt,d,k)}</div>`:`<div class="scr blank">Nothing written.</div>`;
   return `<div class="half"><div class="hd">${nbDate(d)}</div><div class="hb">${body}</div></div>`;
 }
 function notebookDoc(){
@@ -1666,7 +1694,7 @@ function goHome(){
         if(c.prep&&sev>0)c.prep.solved=true;
         if(c.artStage&&sev>0)c.artStage.solved=true;
         let line=`${no} ${who.name} admitted the offense and was ${SENT[c.tier][sev]}.`;
-        if(c.outsider)line+=` Nobody had named ${him(who)}, but the evidence did. Nicely done.`;
+        if(c.outsider){line+=` Nobody had named ${him(who)}, but the evidence did. Nicely done.`;steamAch("NOBODY_NAMED_HIM")}
         if(c.tier!=="petty"&&sev===0)line+=` I'll be honest, folks are saying you let ${him(who)} off lightly.`;
         if((c.tier==="petty"||c.tier==="moderate")&&sev===2){who.fam.forEach(f=>adj(N[f.id],-4))}
         if(c.tier==="grave"&&sev===2)line+=" The town approves.";
@@ -1786,7 +1814,7 @@ function phoneDoc(){
       return open.length?open.map(([c,i])=>`<p style="margin:8px 0 2px"><b>No. ${c.no}</b>, ${esc(titleOf(c))}</p><ul class="calls">${c.suspects.map(t=>`<li><span>Where was ${esc(t.name)} that night?</span>${(c.calls||[]).some(x=>x.n===t.id)?`<span class="d">asked</span>`:`<button class="nm" data-alibi="${i}:${t.id}">Ask the operator</button>`}</li>`).join("")}</ul>`).join(""):`<p class="muted">No complaint on the desk names anyone yet.</p>`})()}
     </article>`;
 }
-function turnIn(){S.visit=null;if(S.mugFallen){S.mugFallen=false;G.mugFall=0;if(G.objs&&G.objs.coffee){G.objs.coffee.position.set(4.5,0,-.9);G.objs.coffee.rotation.set(0,0,0)}}if(S.day>=19&&N[5].away){N[5].away=false;if(S.pip)S.pip.found=true}S.day++;S.cases=S.next;S.next=[];numberCases(S.cases);morning()}
+function turnIn(){S.visit=null;(S.nbUnrest=S.nbUnrest||{})[S.day]=S.unrest;if(S.mugFallen){S.mugFallen=false;G.mugFall=0;if(G.objs&&G.objs.coffee){G.objs.coffee.position.set(4.5,0,-.9);G.objs.coffee.rotation.set(0,0,0)}}if(S.day>=19&&N[5].away){N[5].away=false;if(S.pip){S.pip.found=true;if(S.pip.search)steamAch("BOY_CAME_HOME")}}S.day++;S.cases=S.next;S.next=[];numberCases(S.cases);morning()}
 
 function finish(kind){
   S.phase="over";
@@ -2016,10 +2044,130 @@ function loadGame(id){
 }
 function clearVisitor(){if(typeof G!=="undefined"){if(G.visitor){(G.visitor.comps||[]).forEach(C=>G.scene.remove(C.sp));G.scene.remove(G.visitor.sp);G.visitor=null;G.doorOpen=false}G.talkItem=null}if(typeof TALK!=="undefined"&&TALK){clearInterval(TALK.timer)}const t=document.getElementById("talk");if(t)t.classList.remove("show")}
 function deleteSave(id){try{const st=struckIds();if(!st.includes(id)){st.push(id);localStorage.setItem(STRUCK_KEY,JSON.stringify(st.slice(-200)))}}catch(e){}writeSaves(readSaves().filter(x=>x.id!==id));cloudDelete(id);refresh()}
+/* ================= the town map on the board ================= */
+// where everyone lives on the 1912 county survey of Dunreath (viewBox 600 x 420)
+const MAP_HOME=[[220,158],[230,161],[184,118],[178,126],[262,236],[270,238],[438,212],[448,222],[248,98],[312,128],[350,158],[86,70],[86,368],[212,346],[60,122],[522,346],[452,280],[386,160]];
+const MAP_SITE={"the ferry landing":[460,288],"the river bottoms":[512,362],"the old schoolhouse lot on Oak Street":[160,90]};
+function ghostSite(){const st=S&&S.rite&&S.rite.story;return st&&MAP_SITE[st.place]}
+// how near someone lives to the place the dead keep returning to (0 far, 1 on top of it)
+function nearGhost(n){const g=ghostSite(),h=MAP_HOME[n.id];if(!g||!h)return 0;return Math.exp(-Math.hypot(g[0]-h[0],g[1]-h[1])/110)}
+function mapComplaints(){
+  const seen=new Set(),out=[];
+  const add=c=>{if(!c||!c.victim||c.victim.id==null||seen.has(c.no))return;seen.add(c.no);out.push(c)};
+  (S.history||[]).forEach(h=>h.cases.forEach(x=>add(x.ref)));(S.cases||[]).forEach(add);
+  return out;
+}
+const MAP_BASE=`<rect x="0" y="0" width="600" height="420" fill="#E9DFC6"/>
+  <g fill="none" stroke="#5b4a38" stroke-linecap="round">
+   <path d="M600 70 C540 120 520 170 495 215 C470 262 470 300 440 335 C410 372 360 392 300 420" stroke-width="15" stroke="#cfc2a3"/>
+   <path d="M600 70 C540 120 520 170 495 215 C470 262 470 300 440 335 C410 372 360 392 300 420" stroke-width="1.2"/>
+   <path d="M608 84 C552 132 532 178 507 222 C484 268 484 306 454 344 C424 382 372 402 316 428" stroke-width="1.2"/>
+   <path d="M458 289 L512 300" stroke-width="1" stroke-dasharray="4 4"/>
+   <g stroke-width=".8" opacity=".75">${[[500,330],[525,318],[548,340],[515,372],[540,385],[565,360],[490,392],[575,322],[555,400]].map(([x,y])=>`<path d="M${x-7} ${y} h14 M${x-4} ${y} l-2 -6 M${x} ${y} v-7 M${x+4} ${y} l2 -6"/>`).join("")}</g>
+   <path d="M0 300 L430 300" stroke-width="1.6"/>
+   <path d="M0 300 L430 300" stroke-width="6" stroke-dasharray="1 7"/>
+   <g stroke-width="2.2" stroke="#4a3b2c">
+    <path d="M70 170 L425 170"/><path d="M110 228 L470 228"/><path d="M172 48 L172 300"/><path d="M304 76 L304 228"/>
+    <path d="M425 170 C445 190 462 232 458 286"/><path d="M110 170 C80 150 66 120 74 76"/><path d="M110 228 C96 260 92 300 90 352"/>
+   </g>
+   <ellipse cx="86" cy="372" rx="40" ry="22" stroke-width="1.4"/>
+   <rect x="196" y="332" width="34" height="24" stroke-width="1" stroke-dasharray="2 2"/>
+   <rect x="148" y="78" width="22" height="22" stroke-width=".9" stroke-dasharray="3 3"/>
+   <g stroke-width="1">${[[60,48],[72,56],[84,46],[96,58],[66,66],[104,44],[90,34],[54,60]].map(([x,y])=>`<path d="M${x} ${y-5} v10 M${x-3} ${y-2} h6"/>`).join("")}</g>
+  </g>
+  <g fill="#3d3024">
+   ${[[214,152,12,9],[226,155,10,8],[180,114,12,10],[256,231,14,9],[434,206,12,10],[444,216,10,8],[306,123,11,9],[344,153,12,9],[380,155,13,9],[296,160,16,12],[116,238,14,11],[80,64,10,8],[56,116,14,10],[516,341,9,7],[446,275,10,8]].map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`).join("")}
+   <rect x="240" y="88" width="16" height="14"/><path d="M248 74 v14 M243 79 h10" stroke="#3d3024" stroke-width="1.6"/>
+  </g>
+  <g font-family="Old Standard TT, serif" fill="#3d3024" font-size="10" letter-spacing=".08em">
+   <text x="300" y="34" text-anchor="middle" font-size="22" letter-spacing=".3em">DUNREATH</text>
+   <text x="300" y="50" text-anchor="middle" font-size="9" font-style="italic" letter-spacing=".05em">surveyed for the County, 1912</text>
+   <text x="330" y="166">MAIN STREET</text><text x="350" y="242">FRONT STREET</text>
+   <text x="166" y="210" transform="rotate(-90 166 210)">OAK ST.</text><text x="298" y="214" transform="rotate(-90 298 214)">ELM ST.</text>
+   <text x="62" y="148" transform="rotate(-66 62 148)">HILL ROAD</text><text x="440" y="186" transform="rotate(62 440 186)">RIVER ROAD</text>
+   <text x="40" y="24" font-style="italic">Hill Cemetery</text><text x="262" y="102" font-style="italic">St. Brendan's</text>
+   <text x="68" y="402" font-style="italic">Fair Grounds</text><text x="20" y="294" font-size="8">C. R. I. &amp; P. RY.</text>
+   <text x="520" y="230" font-style="italic" transform="rotate(-58 520 230)">Des Moines River</text>
+   <text x="472" y="312" font-size="8" font-style="italic">ferry</text><text x="540" y="412" font-style="italic" font-size="9">bottoms</text>
+  </g>
+  <g transform="translate(560 54)" fill="none" stroke="#3d3024" stroke-width="1"><circle r="16"/><path d="M0 -22 L4 0 L0 22 L-4 0 Z" fill="#3d3024"/><text y="-26" text-anchor="middle" font-size="9" fill="#3d3024" stroke="none" font-family="Old Standard TT, serif">N</text></g>
+  <g transform="translate(30 410)" stroke="#3d3024" stroke-width="1"><path d="M0 0 h80 M0 -3 v6 M40 -3 v6 M80 -3 v6"/><text x="86" y="3" font-size="8" fill="#3d3024" stroke="none" font-family="Old Standard TT, serif">¼ mile</text></g>`;
+function mapDoc(){
+  const cs=mapComplaints(),g=ghostSite();
+  // a ring someone drew round the place years ago, rubbed half out
+  const old=g?`<g fill="none" stroke="#6d665c" stroke-linecap="round" opacity=".32"><path d="M${g[0]-30} ${g[1]+4} C${g[0]-30} ${g[1]-26} ${g[0]+28} ${g[1]-30} ${g[0]+31} ${g[1]-2} C${g[0]+34} ${g[1]+26} ${g[0]-22} ${g[1]+30} ${g[0]-27} ${g[1]+9}" stroke-width="1.6" stroke-dasharray="40 3 22 6 60 4"/></g>`:"";
+  const marks=cs.map(c=>{const h=MAP_HOME[c.victim.id],r=seededRng(c.no*7919+3),x=h[0]+(r()-.5)*22,y=h[1]+(r()-.5)*18-6,a=(r()-.5)*24;
+    return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(1)})"><ellipse rx="9" ry="7" fill="none" stroke="#4e4a45" stroke-width="1" opacity=".8"/><text text-anchor="middle" y="3.5" font-size="9" fill="#3f3b36" font-family="Caveat, cursive">${c.no}</text></g>`}).join("");
+  const mine=(S.mapMarks||[]).map(([x,y],i)=>`<g transform="translate(${x} ${y})" data-mk="${i}"><path d="M-5 -5 L5 5 M5 -5 L-5 5" stroke="#3a3632" stroke-width="1.5" stroke-linecap="round" opacity=".85"/></g>`).join("");
+  return `<article class="paper mapdoc"><svg class="townmap" viewBox="0 0 600 420" role="img" aria-label="Map of Dunreath with the complaints pencilled on">${MAP_BASE}${old}<g>${marks}</g><g>${mine}</g></svg>
+    <p class="muted" style="font-size:12px;margin-top:6px">Obermeyer pencils each complaint onto the map where it was made. Touch the map to make a mark of your own, and touch a mark to rub it out.</p></article>`;
+}
+function wireMap(root){
+  root.querySelectorAll("svg.townmap").forEach(svg=>svg.onclick=ev=>{
+    const m=svg.getScreenCTM();if(!m)return;const p=new DOMPoint(ev.clientX,ev.clientY).matrixTransform(m.inverse());
+    S.mapMarks=S.mapMarks||[];const i=S.mapMarks.findIndex(([x,y])=>Math.hypot(x-p.x,y-p.y)<9);
+    if(i>=0)S.mapMarks.splice(i,1);else{if(S.mapMarks.length>=40)S.mapMarks.shift();S.mapMarks.push([Math.round(p.x),Math.round(p.y)])}
+    Sound.scribble(i>=0?500:260);refresh();saveSoon()});
+}
+/* the appointment photograph of each detective, taken in the station on the first morning */
+const PHOTO_CACHE={};
+function detectivePhoto(id,behind){
+  const key=id+(behind?"+":"");if(PHOTO_CACHE[key])return PHOTO_CACHE[key];
+  const W=150,H=190,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  let seed=0;for(const ch of id)seed=seed*31+ch.charCodeAt(0)>>>0;const r=seededRng(seed),sep=(l,a=1)=>`rgba(${Math.round(40+l*196)},${Math.round(28+l*170)},${Math.round(18+l*130)},${a})`;
+  const oval=(cx,cy,rx,ry,f)=>{x.fillStyle=f;x.beginPath();x.ellipse(cx,cy,rx,ry,0,0,7);x.fill()};
+  // backdrop: a painted studio cloth, lighter behind the sitter
+  const bg=x.createRadialGradient(W*.48,H*.36,8,W*.5,H*.5,130);bg.addColorStop(0,sep(.74));bg.addColorStop(.6,sep(.5));bg.addColorStop(1,sep(.3));x.fillStyle=bg;x.fillRect(0,0,W,H);
+  x.filter="blur(.7px)";
+  const hx=W*.5+(r()-.5)*8,hy=H*.4+(r()-.5)*6,hw=22+r()*3,hh=30+r()*3,side=r()<.5?-1:1;
+  if(behind){
+    // someone stands just behind the sitter's shoulder, a little out of focus
+    x.save();x.filter="blur(1.6px)";const fx=hx+side*44,fy=hy-26,ink=sep(.1,.92);
+    x.fillStyle=ink;x.beginPath();x.moveTo(fx-62,H);x.bezierCurveTo(fx-56,fy+48,fx-34,fy+34,fx-12,fy+30);x.lineTo(fx+12,fy+30);x.bezierCurveTo(fx+34,fy+34,fx+56,fy+48,fx+62,H);x.fill();
+    oval(fx,fy,hw*.9,hh*.62,sep(.3,.9));
+    oval(fx,fy-hh*.5,hw*1.9,5.5,ink);x.fillStyle=ink;x.beginPath();x.moveTo(fx-hw*.92,fy-hh*.5);x.lineTo(fx-hw*.8,fy-hh*1.18);x.quadraticCurveTo(fx,fy-hh*1.32,fx+hw*.8,fy-hh*1.18);x.lineTo(fx+hw*.92,fy-hh*.5);x.fill();
+    x.fillStyle="rgba(20,14,8,.55)";x.fillRect(fx-hw*.9,fy-hh*.5,hw*1.8,hh*.42);
+    x.restore();
+  }
+  // coat with lapels, collar and tie
+  const coat=sep(.1+r()*.08),shy=hy+hh*.78;
+  x.fillStyle=coat;x.beginPath();x.moveTo(hx-60,H);x.bezierCurveTo(hx-58,shy+30,hx-44,shy+6,hx-14,shy);x.lineTo(hx+14,shy);x.bezierCurveTo(hx+44,shy+6,hx+58,shy+30,hx+60,H);x.fill();
+  x.fillStyle=sep(.88);x.beginPath();x.moveTo(hx-11,shy-2);x.lineTo(hx,shy+22);x.lineTo(hx+11,shy-2);x.fill();
+  x.fillStyle=sep(.2);x.beginPath();x.moveTo(hx-3,shy+4);x.lineTo(hx+3,shy+4);x.lineTo(hx+6,H);x.lineTo(hx-6,H);x.fill();
+  x.strokeStyle=sep(.24);x.lineWidth=1.4;x.beginPath();x.moveTo(hx-11,shy);x.lineTo(hx-20,shy+40);x.lineTo(hx-8,H);x.moveTo(hx+11,shy);x.lineTo(hx+20,shy+40);x.lineTo(hx+8,H);x.stroke();
+  // neck, ears and face, lit from the window on the left
+  x.fillStyle=sep(.5);x.fillRect(hx-8,hy+hh*.4,16,hh*.45);
+  oval(hx-hw*.98,hy+2,4,7,sep(.52));oval(hx+hw*.98,hy+2,4,7,sep(.42));
+  const fg=x.createRadialGradient(hx-8,hy-6,3,hx,hy,hw*1.35);fg.addColorStop(0,sep(.86));fg.addColorStop(.7,sep(.62));fg.addColorStop(1,sep(.44));x.fillStyle=fg;x.beginPath();x.ellipse(hx,hy,hw,hh*.66,0,0,7);x.fill();
+  oval(hx-hw*.38,hy-hh*.08,4,2.4,sep(.22,.85));oval(hx+hw*.38,hy-hh*.08,4,2.4,sep(.22,.85));
+  x.strokeStyle=sep(.3,.6);x.lineWidth=1.2;x.beginPath();x.moveTo(hx-hw*.56,hy-hh*.2);x.lineTo(hx-hw*.18,hy-hh*.22);x.moveTo(hx+hw*.18,hy-hh*.22);x.lineTo(hx+hw*.56,hy-hh*.2);x.stroke();
+  x.fillStyle=sep(.46,.7);x.beginPath();x.moveTo(hx+1,hy-hh*.06);x.lineTo(hx+4,hy+hh*.16);x.lineTo(hx-2,hy+hh*.17);x.fill();
+  x.strokeStyle=sep(.3,.8);x.lineWidth=1.4;x.beginPath();x.moveTo(hx-6,hy+hh*.32);x.quadraticCurveTo(hx,hy+hh*.34,hx+6,hy+hh*.31);x.stroke();
+  if(r()<.3){x.fillStyle=sep(.2,.8);x.beginPath();x.moveTo(hx-9,hy+hh*.25);x.quadraticCurveTo(hx,hy+hh*.18,hx+9,hy+hh*.25);x.quadraticCurveTo(hx,hy+hh*.29,hx-9,hy+hh*.25);x.fill()}
+  // a hat, hair pinned up, or hair parted and combed flat
+  const top=r(),hair=sep(.12+r()*.1);x.fillStyle=hair;
+  if(top<.45){oval(hx,hy-hh*.42,hw*1.6,5,sep(.08));x.fillStyle=sep(.08);x.beginPath();x.moveTo(hx-hw*.95,hy-hh*.42);x.lineTo(hx-hw*.82,hy-hh*1.02);x.quadraticCurveTo(hx,hy-hh*1.16,hx+hw*.82,hy-hh*1.02);x.lineTo(hx+hw*.95,hy-hh*.42);x.fill();x.fillStyle=sep(.22);x.fillRect(hx-hw*.95,hy-hh*.58,hw*1.9,4)}
+  else if(top<.72){x.beginPath();x.ellipse(hx,hy-hh*.3,hw*1.08,hh*.45,0,Math.PI,0);x.fill();oval(hx+hw*.1,hy-hh*.74,hw*.62,hh*.24,hair);x.fillRect(hx-hw*1.06,hy-hh*.32,6,hh*.36);x.fillRect(hx+hw*1.06-6,hy-hh*.32,6,hh*.36)}
+  else{x.beginPath();x.ellipse(hx,hy-hh*.3,hw*1.04,hh*.42,0,Math.PI,0);x.fill();x.strokeStyle=sep(.5,.6);x.lineWidth=1;x.beginPath();x.moveTo(hx-hw*.3,hy-hh*.7);x.lineTo(hx-hw*.25,hy-hh*.35);x.stroke()}
+  x.filter="none";
+  // age: fading, foxing, a few fine scratches and a dark oval vignette
+  x.fillStyle="rgba(232,220,196,.14)";x.fillRect(0,0,W,H);
+  for(let i=0;i<12;i++){x.fillStyle=`rgba(120,82,40,${.05+r()*.1})`;x.beginPath();x.arc(r()*W,r()*H,1+r()*3.5,0,7);x.fill()}
+  x.strokeStyle="rgba(240,232,214,.22)";x.lineWidth=.5;for(let i=0;i<4;i++){const sx=r()*W;x.beginPath();x.moveTo(sx,r()*H*.4);x.lineTo(sx+(r()-.5)*10,H*.5+r()*H*.5);x.stroke()}
+  x.strokeStyle="rgba(244,236,220,.16)";x.lineWidth=1.2;x.beginPath();x.moveTo(0,H*(.25+r()*.5));x.lineTo(W,H*(.25+r()*.5));x.stroke();
+  const vg=x.createRadialGradient(W/2,H*.45,H*.26,W/2,H/2,H*.64);vg.addColorStop(0,"rgba(30,20,12,0)");vg.addColorStop(1,"rgba(30,20,12,.8)");x.fillStyle=vg;x.fillRect(0,0,W,H);
+  return PHOTO_CACHE[key]=c.toDataURL("image/jpeg",.85);
+}
+function photosSection(list){
+  const born=s=>parseInt(String(s.id).slice(1),36)||0,all=[...list].sort((a,b)=>born(a)-born(b)).slice(-8);
+  if(!all.length)return "";
+  const last=all[all.length-1],cur=S&&S.saveId,haunt=last.id!==cur||(S&&S.day>=16);
+  return `<div class="sect">LIKENESSES ON FILE</div><div class="photos">${all.map(s=>`<figure class="photo"><img src="${detectivePhoto(s.id,haunt&&s===last)}" alt="Photograph of ${esc(s.name)}"><figcaption>${esc(s.name)}</figcaption></figure>`).join("")}</div>`;
+}
 function registerDoc(){
   const list=readSaves().sort((a,b)=>successRate(b.stats)-successRate(a.stats)||b.rep-a.rep);
   const cur=S&&S.saveId;
-  return `<article class="paper"><div class="lh">REGISTER OF DETECTIVES, WAPSIE COUNTY</div>
+  return `<article class="paper"><div class="lh">REGISTER OF DETECTIVES, MARION COUNTY</div>
     <p class="muted" style="font-size:13px">Every appointment to Dunreath is entered here and saved as you go: each morning, each evening, and whenever you file or call on someone. Saves are kept ${IN_APP?"on this computer":"in this browser"}.</p>
     ${cloudSection()}
     <div class="sect">CARRY YOUR SAVES ACROSS</div>
@@ -2030,6 +2178,7 @@ function registerDoc(){
     <div class="sect">NEW APPOINTMENT</div>
     <div class="sign" style="margin-top:8px"><label for="newName" class="muted">Name</label><input id="newName" class="namein" maxlength="28" placeholder="e.g. Harriet Lowe" autocomplete="off"><button class="btn" id="newBtn">Take the post</button></div>
     ${easyUnlocked()?`<label class="opt" style="margin-top:12px"><input type="checkbox" id="newEasy"><span class="box">[ ]</span><span>Easy terms. The council gives its word not to recall you, however badly things go.</span></label>`:`<p class="muted" style="font-size:13px;margin-top:12px">Easy terms, under which the council gives its word not to recall a detective, are offered only to one who has already taken the post on ordinary terms.</p>`}
+    ${photosSection(list)}
     <div class="sect">STANDING OF ALL DETECTIVES</div>
     ${list.length?`<div class="tablewrap"><table class="ledger"><thead><tr><th>Name</th><th>Status</th><th>Day</th><th>Success</th><th>Solved</th><th>Wrongful</th><th>Open</th><th>Unexplained</th><th>Standing</th><th>Spirit</th><th>Heist</th><th>Art</th><th></th></tr></thead><tbody>
     ${list.map(s=>`<tr${s.id===cur?' class="cur"':""}><td>${esc(s.name)}${s.easy?" (easy terms)":""}${s.id===cur?" (at the desk)":""}</td><td>${statusOf(s)}</td><td>${s.day}</td><td>${successRate(s.stats)}%</td><td>${s.stats.solved}</td><td>${s.stats.wrong}</td><td>${s.stats.shelved}</td><td>${s.stats.unexplained}</td><td>${councilWord(s.stats,s.rep)}</td><td>${s.spirit?"Laid to rest":"Unquiet"}</td><td>${s.heist==="foiled"?"Foiled":s.heist==="robbed"?"Robbed":"Not yet"}</td><td>${s.art==="recovered"?"Recovered":s.art==="lost"?"Lost":"Not yet"}</td>
@@ -2313,7 +2462,7 @@ function visitScript(v){
 }
 
 /* ================= desk state: up to three documents ================= */
-const DOC_NAMES={lockup:"Lockup book",paper:"The Courier",slips:"Note under the door",ledger:"Case ledger",letter:"Letter from the Sheriff",report:"Sergeant's report",calls:"Calls for this evening",notebook:"Notebook",end:"Letter from the Mayor",phone:"Telephone",register:"Register of detectives"};
+const DOC_NAMES={lockup:"Lockup book",paper:"The Courier",slips:"Note under the door",ledger:"Case ledger",letter:"Letter from the Sheriff",report:"Sergeant's report",calls:"Calls for this evening",notebook:"Notebook",end:"Letter from the Mayor",phone:"Telephone",register:"Register of detectives",map:"Map of the town"};
 function docTitle(k){
   if(k.startsWith("case:")){const c=S.cases[+k.slice(5)];return c?`Complaint No. ${c.no}`:"Complaint"}
   if(k.startsWith("file:")){const n=N[+k.slice(5)];return `File: ${n.name}`}
@@ -2327,7 +2476,7 @@ function docHtml(k){
   if(k.startsWith("oldnb:"))return oldNotebookDoc(k.slice(6));
   if(k.startsWith("oldlet:"))return oldLettersDoc(k.slice(7));
   switch(k){case "lockup":return lockupDoc();case "paper":return paperDoc();case "ledger":return ledgerDoc();case "letter":return letterDoc();
-    case "report":return reportDoc();case "slips":return slipsDoc();case "notebook":return notebookDoc();case "end":return S.endLetter;case "register":return registerDoc();case "phone":return phoneDoc()}
+    case "report":return reportDoc();case "slips":return slipsDoc();case "notebook":return notebookDoc();case "end":return S.endLetter;case "register":return registerDoc();case "map":return mapDoc();case "phone":return phoneDoc()}
   return "";
 }
 let reading=false,picker=null;
@@ -2381,6 +2530,7 @@ function signAndFile(i,btn){
 }
 const slotCase=el=>S.cases[+el.closest(".slot").dataset.key.slice(5)];
 function wireDocs(root){
+  wireMap(root);
   root.querySelectorAll("[data-away]").forEach(b=>b.onclick=()=>{Sound.rustle();putAway(b.dataset.away)});
   root.querySelectorAll("[data-file]").forEach(b=>b.onclick=()=>{Sound.rustle();place("file:"+b.dataset.file)});
   root.querySelectorAll("[data-call]").forEach(b=>b.onclick=()=>visit(N[+b.dataset.call]));
@@ -2413,11 +2563,11 @@ function objects(){
   if(S.phase==="day"){
     if(S.letterGiven)o.push(["letter","Letter"]);
     if(S.slips&&S.slips.length)o.push(["slips","Note under the door"]);
-    o.push(["paper","The Courier"],["tray","In-tray"],["cards","Card index"],["ledger","Case ledger"],["lockup","The cells"],["notebook","Notebook"],["phone","Telephone"],["pipe","Pipe"],["coffee","Coffee"],["lamp","Put out the lamp"]);
+    o.push(["paper","The Courier"],["tray","In-tray"],["cards","Card index"],["ledger","Case ledger"],["lockup","The cells"],["notebook","Notebook"],["map","Map of the town"],["phone","Telephone"],["pipe","Pipe"],["coffee","Coffee"],["lamp","Put out the lamp"]);
   }else if(S.phase==="evening"){
     if(S.reportGiven)o.push(["report","Sergeant's report"]);
     if(S.slips&&S.slips.length)o.push(["slips","Note under the door"]);
-    o.push(["notebook","Notebook"],["paper","The Courier"],["cards","Card index"],["ledger","Case ledger"],["lockup","The cells"],["pipe","Pipe"],["coffee","Coffee"],["hat","Hat and coat"]);
+    o.push(["notebook","Notebook"],["paper","The Courier"],["cards","Card index"],["ledger","Case ledger"],["lockup","The cells"],["map","Map of the town"],["pipe","Pipe"],["coffee","Coffee"],["hat","Hat and coat"]);
   }else{if(S.endGiven)o.push(["end","Letter"]);o.push(["ledger","Case ledger"],["notebook","Notebook"],["pipe","Pipe"],["hat","Begin again"])}
   o.push(["register","Register"]);
   return o;
@@ -2482,6 +2632,23 @@ const WATCH_LINES=[
   n=>`"Is it always this quiet at night?" ${n.name} asks. ${He(n)} doesn't wait for an answer.`,
   n=>`${n.name} has stopped muttering. The quiet is worse.`,
   n=>`"Don't let the stove go out," ${n.name} says. "Please."`];
+/* The clock skips: on some evenings from day 9 while the spirit walks, the tick stops for a few seconds
+   and the minute hand stands several minutes back, then both carry on as if nothing happened. No new sound. */
+function catTick(now){
+  const c=G.cat;if(!c)return;const d=S&&S.day,ev=S&&S.phase==="evening";
+  c.visible=!(ev&&((S.watchPlan&&S.watchPlan[d]>=1)||d===(S.flashDay||19)));
+  if(!c.visible)return;const t=now/1000;
+  G.catTail.rotation.z=-.15+Math.sin(t*.7)*.12+Math.sin(t*2.3)*.03;
+  // now and then it turns its head to look along the street, then back
+  G.catHead.rotation.y=Math.max(0,Math.sin(t*.13+1.7)-.6)*1.6-.05;
+}
+function clockSkipTick(now,dt){
+  if(!S||!S.name||S.phase!=="evening"||!spiritUp()||S.day<9||S.day>18||quietSunday(S.day)||S.clockSkipDay===S.day)return;
+  if(G.visitor||TALK||G.blackoutUntil||now<(G.clockStill||0))return;
+  G.clockIdle=(G.clockIdle||0)+dt;if(G.clockIdle<12||Math.random()>dt/90)return;
+  S.clockSkipDay=S.day;G.clockIdle=0;if(Math.random()<.4)return; // not every evening
+  G.clockStill=now+3200+Math.random()*2200;G.clockBack=5+Math.floor(Math.random()*6);
+}
 function nightWatchTick(now,dt){
   const W=S&&S.name&&S.phase==="evening"&&S.nightWatch;if(!W||W.done||busy()||G.blackoutUntil||TALK)return;
   const n=N[W.id];
@@ -2531,7 +2698,7 @@ const Sound={ctx:null,master:null,on:true,started:false,gains:{},vol:1,out:null,
       if(c.createStereoPanner){const p=c.createStereoPanner();p.pan.value=pan;src.connect(f).connect(g).connect(p).connect(this.master)}else src.connect(f).connect(g).connect(this.master);src.start(t,Math.random()*2,dur+.05)};
     this.burst=burst;
     const drop=()=>{if(!this.ctx)return;const lv=this.level||0;if(lv>0)burst(1800+Math.random()*3500,6,(.15+Math.random()*.3)*lv/.4,.05+Math.random()*.05,0,Math.random()*1.6-.8);setTimeout(drop,lv>0?40+Math.random()*(300/Math.max(lv,.1)*.1+220):400)};drop();
-    const tick=()=>{if(!this.ctx)return;burst(3200,12,.035,.02,0,-.3);setTimeout(tick,1000)};tick();
+    const tick=()=>{if(!this.ctx)return;if(!(typeof G!=="undefined"&&performance.now()<(G.clockStill||0)))burst(3200,12,.035,.02,0,-.3);setTimeout(tick,1000)};tick();
     const bird=()=>{if(!this.ctx)return;if(this.w==="fair"&&S&&S.phase==="day"&&Math.random()<.5){const n=2+Math.floor(Math.random()*4),f=2600+Math.random()*1800;for(let i=0;i<n;i++)this.tone("sine",f*(1+Math.random()*.15),f*(1.25+Math.random()*.3),.09,.035,i*.13,null,.6)}
       if(this.w==="fog"&&Math.random()<.5)this.burst(1400+Math.random()*900,8,.08,.06,0,.4);setTimeout(bird,2500+Math.random()*5000)};setTimeout(bird,3000);
     const crackle=()=>{if(!this.ctx)return;if(Math.random()<.6)burst(900+Math.random()*1500,4,.05+Math.random()*.06,.03,0,-.7);setTimeout(crackle,200+Math.random()*1400)};crackle();
@@ -2948,6 +3115,17 @@ function init3D(){
   const frameM=mat(0x221a14,.55);
   [[0,WH/2+.06,WW+.24,.14],[0,-WH/2-.06,WW+.24,.14],[-WW/2-.06,0,.14,WH+.24],[WW/2+.06,0,.14,WH+.24],[0,0,.07,WH],[0,0,WW,.07]].forEach(([x0,y0,w0,h0])=>{const f=box(w0,h0,.12,frameM);f.position.set(WX+x0,WY+y0,WZ+.02);scene.add(f)});
   const sill=box(WW+.5,.08,.34,mat(0x2a1d14,.5));sill.position.set(WX,B-.08,WZ+.16);scene.add(sill);
+  // the station cat: sits on the sill looking out at the street, and is never there on the evenings someone else is looking in
+  {const fur=mat(0x1b1511,.92),c=G.cat=new THREE.Group();
+    // a sitting cat seen from behind: broad haunches narrowing to the shoulders
+    const prof=[[0,0],[.12,.004],[.158,.04],[.165,.09],[.15,.15],[.12,.205],[.092,.25],[.074,.29],[.066,.32],[.05,.34],[0,.345]].map(([r,y])=>new THREE.Vector2(r,y));
+    const body=new THREE.Mesh(new THREE.LatheGeometry(prof,28),fur);body.scale.set(1,1,.82);body.castShadow=true;c.add(body);
+    const hd=G.catHead=new THREE.Group();hd.position.set(0,.385,-.01);c.add(hd);
+    const h=new THREE.Mesh(new THREE.SphereGeometry(.072,20,16),fur);h.scale.set(1.18,.92,1);hd.add(h);
+    const ch=new THREE.Mesh(new THREE.SphereGeometry(.05,16,12),fur);ch.scale.set(1.2,.8,1);ch.position.set(0,-.025,-.03);hd.add(ch);
+    [-1,1].forEach(sd=>{const e=new THREE.Mesh(new THREE.ConeGeometry(.03,.07,4),fur);e.position.set(sd*.05,.072,.005);e.rotation.set(0,Math.PI/4,-sd*.28);hd.add(e)});
+    const tl=G.catTail=new THREE.Mesh(new THREE.TorusGeometry(.165,.02,8,28,Math.PI*.95),fur);tl.rotation.x=Math.PI/2;tl.rotation.z=-.15;tl.position.set(0,.02,-.01);c.add(tl);
+    c.scale.setScalar(1.25);c.position.set(WX-.95,B-.04,WZ+.19);c.rotation.y=.35;scene.add(c)}
   // lettering on the glass of the door, and the door itself
   G.door=new THREE.Group();const doorM=new THREE.MeshStandardMaterial({map:tiled(planks,.5,1),color:0x8a6e58,roughness:.7});
   const leaf=box(2.5,6.5,.1,doorM);leaf.position.set(1.25,0,0);G.door.add(leaf);
@@ -2963,10 +3141,20 @@ function init3D(){
   const df=mat(0x1e140d,.6);[[5.72,.7,.16,6.7],[8.38,.7,.16,6.7],[7.05,3.98,2.84,.18]].forEach(([x,y,w,h])=>{const f=box(w,h,.2,df);f.position.set(x,y,WZ+.1);scene.add(f)});
   // wanted posters on a board
   const board=box(2.4,1.6,.06,mat(0x5a3f2a,.95));board.position.set(-3.3,2.5,WZ+.04);scene.add(board);
-  [[-4.0,2.72,.62,.8,"WANTED","$50 REWARD"],[-3.25,2.5,.6,.78,"WANTED","FOR ROBBERY"],[-2.55,2.75,.55,.7,"NOTICE","Dog license"],[-3.9,2.0,.7,.42,"",""],[-2.8,2.05,.5,.5,"LOST","Brown mare"]].forEach(([x,y,w,h,t1,t2])=>{
+  [[-4.0,2.72,.62,.8,"WANTED","$50 REWARD"],[-3.25,2.5,.6,.78,"WANTED","FOR ROBBERY"],[-2.55,2.75,.55,.7,"NOTICE","Dog license"],[-2.8,2.05,.5,.5,"LOST","Brown mare"]].forEach(([x,y,w,h,t1,t2])=>{
     const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshStandardMaterial({map:canvasTex(128,160,(c,W,H)=>{c.fillStyle="#e7dfcb";c.fillRect(0,0,W,H);speckle(c,W,H,.12,500);c.fillStyle="#1e1a16";c.textAlign="center";c.font='bold 22px "Old Standard TT", serif';c.fillText(t1,W/2,28);if(t1==="WANTED"){c.fillStyle="#5a4a3a";c.fillRect(34,40,60,64);c.fillStyle="#1e1a16"}c.font='14px "Old Standard TT", serif';c.fillText(t2,W/2,t1==="WANTED"?126:60);typedLines(c,14,t1==="WANTED"?136:74,100,4,8,"rgba(30,26,22,.5)")}),roughness:.95}));
     p.position.set(x,y,WZ+.08);p.rotation.z=(Math.random()-.5)*.08;scene.add(p);
     const pin=new THREE.Mesh(new THREE.SphereGeometry(.03,8,6),mat(0x1e1a16,.4));pin.position.set(x,y+h/2-.06,WZ+.1);scene.add(pin)});
+  // the old survey map of the town, pinned to the board; Obermeyer pencils the complaints onto it
+  {const mg=new THREE.Group(),mp=new THREE.Mesh(new THREE.PlaneGeometry(.72,.5),new THREE.MeshStandardMaterial({map:canvasTex(256,180,(c,W,H)=>{c.fillStyle="#e2d7bd";c.fillRect(0,0,W,H);speckle(c,W,H,.1,400);
+      c.strokeStyle="#cfc2a3";c.lineWidth=7;c.beginPath();c.moveTo(256,30);c.bezierCurveTo(222,70,210,130,190,140);c.bezierCurveTo(175,165,150,170,128,180);c.stroke();
+      c.strokeStyle="#5b4a38";c.lineWidth=1;c.stroke();c.lineWidth=1.6;c.strokeStyle="#4a3b2c";[[30,73,182,73],[47,97,200,97],[73,20,73,128],[130,32,130,97]].forEach(([a,b,e,f])=>{c.beginPath();c.moveTo(a,b);c.lineTo(e,f);c.stroke()});
+      c.lineWidth=1;c.setLineDash([2,3]);c.beginPath();c.moveTo(0,128);c.lineTo(184,128);c.stroke();c.setLineDash([]);
+      c.fillStyle="#3d3024";c.textAlign="center";c.font='bold 15px "Old Standard TT", serif';c.fillText("DUNREATH",128,16);
+      c.strokeStyle="rgba(70,66,60,.75)";for(let i=0;i<7;i++){c.beginPath();c.ellipse(60+Math.random()*150,40+Math.random()*120,4,3,0,0,7);c.stroke()}}),roughness:.95}));
+    mp.position.set(-3.95,1.97,WZ+.085);mp.rotation.z=.03;mg.add(mp);
+    [[-4.27,2.18],[-3.63,2.19]].forEach(([x,y])=>{const pin=new THREE.Mesh(new THREE.SphereGeometry(.03,8,6),mat(0x1e1a16,.4));pin.position.set(x,y,WZ+.1);mg.add(pin)});
+    obj("map","Map of the town",mg,0,0,0)}
   // wall clock that keeps the game's time
   const clk=new THREE.Group();const rimC=new THREE.Mesh(new THREE.CylinderGeometry(.55,.55,.12,32),mat(0x2a1d14,.5));rimC.rotation.x=Math.PI/2;clk.add(rimC);
   const face=new THREE.Mesh(new THREE.CircleGeometry(.47,32),new THREE.MeshStandardMaterial({map:canvasTex(256,256,(c,w,h)=>{c.fillStyle="#ece6d8";c.fillRect(0,0,w,h);c.fillStyle="#1e1a16";c.textAlign="center";c.textBaseline="middle";c.font='22px "Old Standard TT", serif';for(let k=1;k<=12;k++){const a=k/12*Math.PI*2;c.fillText(["I","II","III","IIII","V","VI","VII","VIII","IX","X","XI","XII"][k-1],w/2+Math.sin(a)*96,h/2-Math.cos(a)*96)}}),roughness:.6}));face.position.z=.065;clk.add(face);
@@ -3181,7 +3369,7 @@ function sync3D(){
   if(!G.renderer)return;
   const vis=new Set(objects().map(o=>o[0]));
   Object.entries(G.objs).forEach(([k,o])=>{o.visible=vis.has(k)&&!S.desk.includes(k)});
-  G.objs.lamp.visible=true;G.objs.pipe.visible=true;G.objs.lockup.visible=true;G.objs.phone.visible=true;
+  G.objs.lamp.visible=true;G.objs.pipe.visible=true;G.objs.map.visible=vis.has("map");G.objs.lockup.visible=true;G.objs.phone.visible=true;
   const inCell=N.filter(n=>n.jailed&&!n.dead).slice(0,3),key=inCell.map(n=>n.id).join(",")+S.phase;
   if(G.cellKey!==key){G.cellKey=key;G.cellSprites.forEach(sp=>{G.scene.remove(sp);sp.material.map.dispose()});G.cellSprites=[];
     inCell.forEach((n,i)=>{const hm=n.age===14?.78:n.height==="short"?.93:n.height==="tall"?1.07:1,h=5.9*hm;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:spriteTex(n,0,false),transparent:true}));sp.material.color.setScalar(S.phase==="day"?.5:.35);sp.scale.set(h/2,h,1);sp.position.set(-9.2+i*1.05,-2.6+h/2,-5.75);G.scene.add(sp);G.cellSprites.push(sp)})}G.objs.coffee.visible=true;G.coffee.position.y=.03+.28*((S.coffee==null?4:S.coffee)/4);G.coffee.visible=(S.coffee==null?4:S.coffee)>0;G.objs.register.visible=!S.desk.includes("register");G.objs.hat.visible=true;G.objs.notebook.visible=!S.desk.includes("notebook");
@@ -3236,7 +3424,7 @@ function loop(){
   }else if(!reading){
     const tp=camView().p.clone().add(new THREE.Vector3(G.par.x*.25,G.par.y*.12,0));G.camera.position.lerp(tp,.06);G.look.lerp(camView().t,.08);
   }
-  const tm=gameMinutes();G.minHand.rotation.z=-(tm%60)/60*Math.PI*2;G.hourHand.rotation.z=-((tm/60)%12)/12*Math.PI*2;
+  const tm=gameMinutes()-(now<(G.clockStill||0)?G.clockBack||0:0);G.minHand.rotation.z=-(tm%60)/60*Math.PI*2;G.hourHand.rotation.z=-((tm/60)%12)/12*Math.PI*2;
   const fl=.45+Math.sin(now/170)*.08+Math.sin(now/53)*.05+Math.random()*.05;G.stoveLight.intensity=fl;G.stoveGlow.material.color.setRGB(.38+fl*.3,.15+fl*.08,.04);
   const wiT=WEATHERS.indexOf(G.weather||"fair");
   const canT=S&&S.name&&wiT>=3&&!G.blackoutUntil&&(S.firstThunder?(wiT===4||S.phase==="evening"):(S.phase==="evening"&&!G.visitor&&!TALK));
@@ -3251,7 +3439,7 @@ function loop(){
   stationWear();
   G.door.rotation.y+=((G.doorOpen?-1.2:0)-G.door.rotation.y)*Math.min(1,dt*5);if(!G.doorOpen&&Math.abs(G.door.rotation.y)<.002&&!(G.doorShake&&now-G.doorShake<(G.doorShakeLen||1100)))G.door.rotation.y=0;
   stepVisitor(dt,now);
-  watcherTick(now,dt);
+  watcherTick(now,dt);clockSkipTick(now,dt);catTick(now);
   nightWatchTick(now,dt);
   if(G.objs.coffee&&S&&S.name){const m=G.objs.coffee;
     if(!S.mugFallen&&!S.mugFell&&spiritUp()&&S.phase==="evening"&&S.day===(S.mugDay||18)&&!G.visitor&&!TALK&&!reading){G.mugT=(G.mugT||0)+dt;if(G.mugT>18){S.mugFell=S.mugFallen=true;G.mugFall=now;S.coffee=0;Sound.mugFall();setTimeout(()=>{S.say="Your mug tips over on its own and rolls to the edge of the desk. Nobody touched it. The coffee soaks slowly into the blotter.";renderHud()},500)}}
@@ -3635,7 +3823,7 @@ function scriptFor(item){
       choices:[{label:`Lock ${t.name} up, as they demand`,fn:()=>{V.outcome="appeased";t.jailed=true;t.jailUntil=S.day+3;t.jailFor="Held at the committee's demand";t.jailFrom=S.day;adj(t,-25);adj(N[6],6);adj(N[7],6);S.unrest=clamp(S.unrest-6);S.rep=clamp(S.rep-5);
           talkMore(`You take ${t.name} from them and walk ${him(t)} to the cells yourself. The men cheer. ${t.name} looks at you once, and doesn't look at you again.`,[{label:"Let them go",fn:()=>endVisit("The committee goes out into the rain, pleased with itself.")}])}},
         {label:"Refuse. Send them home",fn:()=>{
-          if(standing){V.outcome="stoodDown";adj(N[6],6);adj(t,15);S.rep=clamp(S.rep+5);S.unrest=clamp(S.unrest-3);
+          if(standing){V.outcome="stoodDown";steamAch("COMMITTEE_STOOD_DOWN");adj(N[6],6);adj(t,15);S.rep=clamp(S.rep+5);S.unrest=clamp(S.unrest-3);
             talkMore(`${L.name} looks at you a long moment. Then he lowers his lantern. "All right. You've done right by this town so far. I'll trust you on this." He turns to the others. "Let ${him(t)} go. Go home." They grumble, but they go. ${t.name} sits down on the bench by the door and cries.`,[{label:`See ${him(t)} home safely`,fn:()=>endVisit()}])}
           else{V.outcome="frenzy";adj(N[6],-10);
             talkMore(`${L.name} stares at you. "You've had your chance, detective. The whole town's watched you have it." ${!N[7].jailed?"Karl":"Someone"} spits on the floor. They drag ${t.name} back out into the night, and the door slams, and you hear them singing as they go down the street.`,[{label:"...",fn:()=>endVisit("You sit in the dark for a long time.")}])}
@@ -3703,10 +3891,13 @@ function arrive(item){
   Sound.door();
   reframe();
 }
+// Options > Visitors: "Come straight in" skips the walk from the door (saved per computer)
+let QUICK_VISITS=(()=>{try{return localStorage.getItem("hollowcreek.quickvisits")==="1"}catch(e){return false}})();
 function stepVisitor(dt,now){
   const V=G.visitor;if(!V)return;
   V.t+=dt;
-  const sp=V.sp,walk=(tx,tz)=>{const dx=tx-sp.position.x,dz=tz-sp.position.z,dist=Math.hypot(dx,dz),st=3.0*dt*(G.fast||1);
+  if(QUICK_VISITS&&V.state==="in"&&V.path&&V.path.length){const [tx,tz]=V.path[V.path.length-1];V.sp.position.x=tx;V.sp.position.z=tz;V.i=V.path.length-1;(V.comps||[]).forEach(C=>{C.sp.position.x=C.slot[0];C.sp.position.z=C.slot[1]})}
+  const sp=V.sp,walk=(tx,tz)=>{const dx=tx-sp.position.x,dz=tz-sp.position.z,dist=Math.hypot(dx,dz),st=3.0*dt*(G.fast||1)*(QUICK_VISITS&&V.state==="out"?3:1);
     if(dist<=st){sp.position.x=tx;sp.position.z=tz;return true}sp.position.x+=dx/dist*st;sp.position.z+=dz/dist*st;
     V.leg+=dt;const f=Math.floor(V.leg/.2)%2;if(f!==V.lastF){V.lastF=f;Sound.step(Math.max(-.9,Math.min(.9,sp.position.x/8)))}
     sp.material.map=V.tex[f];sp.position.y=-2.6+V.h/2+Math.abs(Math.sin(V.leg*15.7))*.06;return false};
@@ -3809,11 +4000,13 @@ function renderTitle(){
     b.innerHTML=`<div class="tpane topts">
       <div class="orow"><span>Sound</span><button class="btn" id="oSnd">${Sound.on?"On":"Off"}</button></div>
       <div class="orow"><label for="oVol">Volume</label><input type="range" id="oVol" min="0" max="100" step="5" value="${Math.round(Sound.vol*100)}"></div>
+      <div class="orow"><span>Visitors</span><button class="btn" id="oQuick">${QUICK_VISITS?"Come straight in":"Walk in from the door"}</button></div>
       ${fs?`<div class="orow"><span>Full screen</span><button class="btn" id="oFull">${isFs?"On":"Off"}</button></div>`:""}
       ${IN_APP?`<p class="muted" style="font-size:12px;margin:4px 0 0">F11 also switches full screen.</p>`:""}
       <button class="btn tback" id="oBack">${optFromGame?"Back to the desk":"Back"}</button></div>`;
     $("oSnd").onclick=()=>{Sound.toggle();renderTitle();renderHud()};
     $("oVol").oninput=e=>Sound.setVol(e.target.value/100);
+    $("oQuick").onclick=()=>{QUICK_VISITS=!QUICK_VISITS;try{localStorage.setItem("hollowcreek.quickvisits",QUICK_VISITS?"1":"0")}catch(e){}renderTitle()};
     if($("oFull"))$("oFull").onclick=()=>toggleFull();
     $("oBack").onclick=()=>{if(optFromGame){optFromGame=false;hideTitle();renderHud()}else{titlePane="menu";renderTitle()}};
     return;
