@@ -21,7 +21,7 @@ to the run as `Dunreath-Steam-Windows`.
 2. Steam Cloud: set a byte quota (1 MB is plenty) and a file count (5).
 3. Upload the `Dunreath-Steam-Windows` folder as the Windows depot, with
    `Dunreath.exe` as the launch option.
-4. Achievements: under Stats & Achievements, add these five with exactly
+4. Achievements: under Stats & Achievements, add these eight with exactly
    these API names, then publish. Icons can come later.
 
    | API name | Name | Unlocked when |
@@ -31,6 +31,9 @@ to the run as `Dunreath-Steam-Windows`.
    | `ROBBERY_FOILED` | Nothing Taken | The big robbery is foiled |
    | `SEASON_SERVED` | Twenty Days | All twenty days served without being recalled |
    | `HIGH_STANDING` | Made Permanent | The season ends with the council's opinion High |
+   | `COMMITTEE_STOOD_DOWN` | The Committee Stood Down | You turn the mob away from the station door |
+   | `NOBODY_NAMED_HIM` | Nobody Named Him | You rightly convict someone nobody had named |
+   | `BOY_CAME_HOME` | The Boy Came Home | You send the search party and Pip is found |
 
    Games started with `?day=N` never unlock anything. On easy terms, Twenty
    Days only counts if the council would not have recalled you anyway.

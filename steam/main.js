@@ -49,7 +49,8 @@ ipcMain.handle("cloud-write", (e, name, text) => {
 });
 // Achievements the game may unlock. Each API name must match one set up in
 // Steamworks (Stats & Achievements); see README.md.
-const ACHIEVEMENTS = ["SPIRIT_LAID_TO_REST", "ART_RECOVERED", "ROBBERY_FOILED", "SEASON_SERVED", "HIGH_STANDING"];
+const ACHIEVEMENTS = ["SPIRIT_LAID_TO_REST", "ART_RECOVERED", "ROBBERY_FOILED", "SEASON_SERVED", "HIGH_STANDING",
+  "COMMITTEE_STOOD_DOWN", "NOBODY_NAMED_HIM", "BOY_CAME_HOME"];
 ipcMain.on("achieve", (e, id) => {
   if (!steam || !ACHIEVEMENTS.includes(id)) return;
   try {
